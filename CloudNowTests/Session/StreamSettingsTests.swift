@@ -447,6 +447,35 @@ struct StreamSettingsTests {
         #expect(StreamColorRequest.resolveColorMode(preference: preference, capabilities: capabilities) == expected)
     }
 
+    @Test(
+        "HDR10 always requests 4:2:0 because the tvOS HDR compositor rejects 4:4:4",
+        arguments: [
+            (ColorModePreference.preferHDR, ChromaFormat.yuv444, ChromaFormat.yuv420.cloudMatchValue),
+            (.preferHDR, .yuv420, ChromaFormat.yuv420.cloudMatchValue),
+            (.preferSDR10, .yuv444, ChromaFormat.yuv444.cloudMatchValue),
+            (.forceSDR8, .yuv444, ChromaFormat.yuv444.cloudMatchValue),
+        ]
+    )
+    func hdr10ForcesYUV420(preference: ColorModePreference, chroma: ChromaFormat, expected: Int) {
+        let capabilities = StreamColorCapabilities(
+            gameHDRSupport: .supported,
+            accountAllowsHDR: true,
+            serverAllowsHDR: true,
+            decoderSupports10Bit: true,
+            hdrRenderPipelineAvailable: true,
+            displaySupportsHDR: true,
+            displayHDROutputAvailable: true
+        )
+
+        let request = StreamColorRequest.resolve(
+            preference: preference,
+            capabilities: capabilities,
+            chromaFormat: chroma
+        )
+
+        #expect(request.chromaFormat == expected)
+    }
+
     private func decodeFixture(_ name: String) throws -> StreamSettings {
         try JSONDecoder().decode(
             StreamSettings.self,

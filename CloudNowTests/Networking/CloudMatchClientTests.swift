@@ -118,14 +118,15 @@ struct CloudMatchClientTests {
     ) async throws {
         let (codec, chromaFormat, expectedChroma) = configuration
         let usesHEVC = codec == .automatic || codec == .h265
+        let requestsHDR = usesHEVC && color == .preferHDR
         let fixture = try NetworkingFixture.data("cloudmatch-session.json")
         let transport = RecordingHTTPTransport { request, _ in
             let root = try jsonObject(from: request)
             let session = try #require(root["sessionRequestData"] as? [String: Any])
             let features = try #require(session["requestedStreamingFeatures"] as? [String: Any])
-            #expect(features["chromaFormat"] as? Int == expectedChroma)
+            #expect(features["chromaFormat"] as? Int == (requestsHDR ? 0 : expectedChroma))
             #expect(features["bitDepth"] as? Int == (usesHEVC && color != .forceSDR8 ? 1 : 0))
-            #expect(session["sdrHdrMode"] as? Int == (usesHEVC && color == .preferHDR ? 1 : 0))
+            #expect(session["sdrHdrMode"] as? Int == (requestsHDR ? 1 : 0))
             return StubbedHTTPResponse(data: fixture)
         }
         let client = CloudMatchClient(transport: transport, deviceId: { "fixture-device" })

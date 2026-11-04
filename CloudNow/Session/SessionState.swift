@@ -710,11 +710,14 @@ nonisolated struct StreamColorRequest: Codable, Equatable {
         chromaFormat: ChromaFormat = .yuv420
     ) -> StreamColorRequest {
         let mode = resolveColorMode(preference: preference, capabilities: capabilities)
+        // The tvOS HDR compositor rejects 4:4:4 frames ("p444 is not supported yet",
+        // HDRProcessor -17007) on every frame, which stalls presentation and input.
+        let chroma: ChromaFormat = mode == .hdr10 ? .yuv420 : chromaFormat
         return StreamColorRequest(
             mode: mode,
             bitDepth: mode.bitDepth,
             hdrRequested: mode == .hdr10,
-            chromaFormat: chromaFormat.cloudMatchValue,
+            chromaFormat: chroma.cloudMatchValue,
             displayCapabilities: mode == .hdr10 ? .conservativeHDR10 : nil
         )
     }
