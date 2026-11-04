@@ -17,6 +17,8 @@ Local fork of [owenselles/CloudNow](https://github.com/owenselles/CloudNow) for 
 - [ ] Confirm the MES `features.features[]` shape (`SUPPORTED_DL_PREFILTERING.setValue`, `HUD_STREAMING.textValue`) against a real membership response; it was inferred from the native JS. When the list is absent or the shape is wrong, the AI filter and HUD Sharpening stay unavailable (only Off is requested), so a wrong guess hides the feature rather than sending unentitled requests.
 - [ ] L4S: CloudNow only requests `enabledL4S` (gated off when network adjustment is Off, matching native). Client-side ECN/L4S feedback is not possible in libwebrtc as shipped, so real L4S benefit is unverified.
 - [ ] Jitter Buffer Pacing (native `FrameTiming` port in `JitterBufferFramePacer`): validate on device that it smooths jitter without adding noticeable latency (adds 8-32 ms by design, 20 ms during warm-up). libwebrtc has no video jitter-buffer tuning API, so this presentation-side pacer is the substitute. Off by default.
+- [ ] On-device verify the preset display-height cap: re-run Cinematic on Bedroom(2) at 30 Hz and confirm `piqca_gmstats_dump` returns to `evicted: 0` at 3840x2160. The 5K 4:4:4 regression (5-15 evicted per 180, repeated frames) was seen with the display-locked queue engaged; attributing it to the 5K decode + 5K->4K downscale is inferred from the 4K run being clean, not measured.
+- [ ] Custom settings can still pick a resolution above the TV's output mode (Settings shows every entitled resolution). Consider a "higher than your TV" hint on those rows.
 - [ ] Native per-frame NACK / retransmission tuning (libGeronimo) has no libwebrtc equivalent exposed to CloudNow; not ported.
 - [ ] Visual pass of the Neon Glass theme on the TV (simulator screenshots only so far; real artwork not shown in fixtures)
 - [ ] Xbox quality presets (Xbox currently gets the theme only; it exposes only proven controls)
@@ -33,6 +35,7 @@ Local fork of [owenselles/CloudNow](https://github.com/owenselles/CloudNow) for 
   - FEC repair min/max bounds and burst-loss FEC (`bllFec`) in the NVST SDP.
   - Optional Jitter Buffer Pacing: `JitterBufferFramePacer` + `ScheduledFrameQueue` (capacity 7) in the renderer.
   - Bitrate row is a focus section so pressing down from the preset row reaches the -/+ buttons.
+  - Presets cap resolution at the TV's current output-mode height (`StreamQualityPresetContext.maximumDisplayHeight`, from `screen.currentMode`); with nothing at or below it, the smallest entitled resolution is used. A saved non-Custom preset is re-applied when the subscription loads, so an existing 5K Cinematic selection drops to 4K on a 4K TV.
   - Tests: `JitterBufferFramePacerTests`, `StreamQualityPresetTests`, `GFNStreamControllerTests` (network adjustment, loss protection, prefilter entitlement), `CloudMatchClientTests`, `MESClientTests`; 34 localization tables updated.
 
 - [x] Display-locked presentation at <= 30 Hz output: `CADisplayLink` releases at most one frame per refresh through `DisplayLockedFrameQueue` (capacity 2, 1 s backlog trim) so jitter-bunched frames no longer evict each other (tests 5/5). Verified on Bedroom(2) Release build at 4K30: `piqca_gmstats_dump` reports `enqueued: 180, displayed: 180, evicted: 0` (was 3-13 evicted per 180 before)

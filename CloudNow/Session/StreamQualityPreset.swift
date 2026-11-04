@@ -64,6 +64,9 @@ nonisolated struct StreamQualityPresetContext: Equatable, Sendable {
     /// Resolutions the account may request, as `WIDTHxHEIGHT` labels.
     let availableResolutions: [String]
     let maximumDisplayFramesPerSecond: Int
+    /// Output-mode height in pixels. Presets never request more lines than the TV shows,
+    /// because the extra decode and downscale cost frame pacing without adding detail.
+    var maximumDisplayHeight: Int?
 }
 
 nonisolated enum StreamQualityPresetPolicy {
@@ -151,8 +154,11 @@ nonisolated enum StreamQualityPresetPolicy {
         result.qualityPreset = preset
         guard let profile = profile(for: preset) else { return result }
 
-        result.resolution = resolution(for: profile.resolution, available: context.availableResolutions)
-            ?? settings.resolution
+        result.resolution = resolution(
+            for: profile.resolution,
+            available: context.availableResolutions,
+            maximumHeight: context.maximumDisplayHeight
+        ) ?? settings.resolution
         result.fps = frameRate(for: profile.frameRate, resolution: result.resolution, context: context)
             ?? settings.fps
         result.maxBitrateKbps = profile.maxBitrateKbps
@@ -170,15 +176,23 @@ nonisolated enum StreamQualityPresetPolicy {
         Double(bitrateKbps) * 3600 / 8 / 1_000_000
     }
 
-    private static func resolution(for target: ResolutionTarget, available: [String]) -> String? {
+    private static func resolution(
+        for target: ResolutionTarget,
+        available: [String],
+        maximumHeight: Int?
+    ) -> String? {
         let parsed = available.compactMap { label -> (label: String, width: Int, height: Int)? in
             let parts = label.split(separator: "x").compactMap { Int($0) }
             guard parts.count == 2 else { return nil }
             return (label, parts[0], parts[1])
         }
         let widescreen = parsed.filter { $0.width * 9 == $0.height * 16 }
-        let candidates = (widescreen.isEmpty ? parsed : widescreen)
+        let sorted = (widescreen.isEmpty ? parsed : widescreen)
             .sorted { ($0.height, $0.width) < ($1.height, $1.width) }
+        let displayable = sorted.filter { candidate in
+            maximumHeight.map { candidate.height <= $0 } ?? true
+        }
+        let candidates = displayable.isEmpty ? Array(sorted.prefix(1)) : displayable
         switch target {
         case .highest:
             return candidates.last?.label

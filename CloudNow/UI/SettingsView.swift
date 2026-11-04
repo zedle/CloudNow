@@ -1727,11 +1727,7 @@ struct SettingsView: View {
         viewModel.streamSettings = StreamQualityPresetPolicy.apply(
             preset,
             to: viewModel.streamSettings,
-            context: StreamQualityPresetContext(
-                entitledResolutions: viewModel.subscription?.entitledResolutions,
-                availableResolutions: viewModel.availableResolutions,
-                maximumDisplayFramesPerSecond: viewModel.maximumDisplayFramesPerSecond
-            )
+            context: viewModel.qualityPresetContext
         )
     }
 

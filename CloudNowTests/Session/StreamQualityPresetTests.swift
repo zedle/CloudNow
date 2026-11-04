@@ -152,6 +152,28 @@ struct StreamQualityPresetTests {
         #expect(settings.hudSharpening)
     }
 
+    @Test(
+        "Highest-resolution presets stop at the TV's output height",
+        arguments: [
+            (StreamQualityPreset.cinematic, 2160, "3840x2160"),
+            (.balanced, 2160, "3840x2160"),
+            (.cinematic, 1080, "1920x1080"),
+            (.cinematic, 480, "1280x720"),
+        ]
+    )
+    func displayHeightCap(preset: StreamQualityPreset, displayHeight: Int, expected: String) {
+        let context = StreamQualityPresetContext(
+            entitledResolutions: nil,
+            availableResolutions: ["1280x720", "1920x1080", "3840x2160", "5120x2880"],
+            maximumDisplayFramesPerSecond: 60,
+            maximumDisplayHeight: displayHeight
+        )
+
+        let settings = StreamQualityPresetPolicy.apply(preset, to: StreamSettings(), context: context)
+
+        #expect(settings.resolution == expected)
+    }
+
     @Test("Switching away from Cinematic clears its AI filter and HUD sharpening")
     func presetsResetVideoFilter() {
         let cinematic = StreamQualityPresetPolicy.apply(.cinematic, to: StreamSettings(), context: Self.ultimateContext)

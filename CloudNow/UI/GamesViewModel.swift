@@ -413,6 +413,25 @@ class GamesViewModel {
             .first?.screen.maximumFramesPerSecond ?? 60
     }
 
+    /// Height in pixels of the Apple TV's current output mode.
+    var maximumDisplayHeight: Int? {
+        guard let screen = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?.screen
+        else { return nil }
+        let height = screen.currentMode?.size.height ?? screen.nativeBounds.height
+        return height.isFinite && height > 0 ? Int(height.rounded()) : nil
+    }
+
+    var qualityPresetContext: StreamQualityPresetContext {
+        StreamQualityPresetContext(
+            entitledResolutions: subscription?.entitledResolutions,
+            availableResolutions: availableResolutions,
+            maximumDisplayFramesPerSecond: maximumDisplayFramesPerSecond,
+            maximumDisplayHeight: maximumDisplayHeight
+        )
+    }
+
     // MARK: Computed — Games
 
     var continuePlaying: [GameInfo] {
@@ -2165,6 +2184,17 @@ class GamesViewModel {
     private func normalizeStreamSettingsForCurrentEntitlements() {
         let resolutions = availableResolutions
         guard !resolutions.isEmpty else { return }
+
+        if streamSettings.qualityPreset != .custom {
+            let reapplied = StreamQualityPresetPolicy.apply(
+                streamSettings.qualityPreset,
+                to: streamSettings,
+                context: qualityPresetContext
+            )
+            if reapplied != streamSettings {
+                streamSettings = reapplied
+            }
+        }
 
         if !resolutions.contains(streamSettings.resolution) {
             // Keep the tvOS Picker in a valid state if the persisted resolution is no
