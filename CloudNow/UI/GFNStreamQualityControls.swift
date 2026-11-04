@@ -148,6 +148,7 @@ struct GFNBitrateControl: View {
                     .disabled(bitrateKbps >= range.upperBound)
                     .accessibilityIdentifier("settings.stream-quality.bitrate.increase")
             }
+            .focusSection()
 
             Text(Self.dataEstimate(bitrateKbps: bitrateKbps))
                 .font(.caption)
@@ -187,13 +188,79 @@ struct GFNBitrateControl: View {
         .accessibilityHidden(true)
     }
 
+    /// Steps to the next multiple of the step size so off-grid preset values rejoin the grid.
+    static func steppedBitrate(_ bitrateKbps: Int, delta: Int) -> Int {
+        let step = StreamSettings.bitrateStepKbps
+        let range = StreamSettings.minSelectableBitrateKbps ... StreamSettings.maxSelectableBitrateKbps
+        let next = delta > 0
+            ? (bitrateKbps / step + 1) * step
+            : (bitrateKbps - 1) / step * step
+        return min(max(next, range.lowerBound), range.upperBound)
+    }
+
     private func adjustButton(systemImage: String, delta: Int) -> some View {
         Button {
-            bitrateKbps = min(max(bitrateKbps + delta, range.lowerBound), range.upperBound)
+            bitrateKbps = Self.steppedBitrate(bitrateKbps, delta: delta)
         } label: {
             Image(systemName: systemImage)
                 .font(.headline.weight(.bold))
         }
         .buttonStyle(CloudNowGlowButtonStyle(isProminent: false))
+    }
+}
+
+/// Native AI Video Filter (server prefilter) and HUD sharpening rows, gated by membership.
+struct GFNVideoFilterControls: View {
+    @Binding var prefilterMode: VideoPrefilterMode
+    @Binding var denoiseLevel: Int
+    @Binding var sharpnessLevel: Int
+    @Binding var hudSharpening: Bool
+    let entitlements: GFNStreamingFeatureEntitlements?
+
+    var body: some View {
+        CloudNowSettingSelectionRow(
+            L10n.text("ai_video_filter"),
+            description: L10n.text("ai_video_filter_description"),
+            selection: $prefilterMode,
+            accessibilityIdentifier: "settings.stream-quality.ai-video-filter",
+            options: VideoPrefilterMode.allCases.map { mode in
+                CloudNowSettingOption(
+                    value: mode,
+                    title: mode.label,
+                    accessibilityIdentifier: "\(mode.rawValue)",
+                    unavailability: entitlements?.allows(mode) == true || mode == .off
+                        ? nil
+                        : CloudNowSettingUnavailability(reason: L10n.text("not_in_membership"))
+                )
+            }
+        )
+
+        if prefilterMode == .custom {
+            levelRow("prefilter_denoise", selection: $denoiseLevel, identifier: "denoise")
+            levelRow("prefilter_sharpen", selection: $sharpnessLevel, identifier: "sharpen")
+        }
+
+        Toggle(isOn: $hudSharpening) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(L10n.text("hud_sharpening"))
+                Text(L10n.text(entitlements?.hudStreaming == true ? "hud_sharpening_description" : "not_in_membership"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 8)
+        }
+        .disabled(entitlements?.hudStreaming != true)
+        .accessibilityIdentifier("settings.stream-quality.hud-sharpening")
+    }
+
+    private func levelRow(_ titleKey: String, selection: Binding<Int>, identifier: String) -> some View {
+        CloudNowSettingSelectionRow(
+            L10n.text(titleKey),
+            selection: selection,
+            accessibilityIdentifier: "settings.stream-quality.ai-video-filter.\(identifier)",
+            options: VideoPrefilterMode.levelRange.map { level in
+                CloudNowSettingOption(value: level, title: "\(level)", accessibilityIdentifier: "\(level)")
+            }
+        )
     }
 }

@@ -1205,13 +1205,13 @@ final class CloudNowUITests: XCTestCase {
         let dataSaver = app.buttons["settings.stream-quality.preset.dataSaver"]
         focusAndSelect(dataSaver, directions: [.right, .left], pressesPerDirection: 5)
         let summary = element("settings.stream-quality.preset.summary", in: app)
-        XCTAssertTrue(waitForAccessibilityText("15 Mbps", in: summary))
+        XCTAssertTrue(waitForAccessibilityText("12 Mbps", in: summary))
         XCTAssertTrue(dataSaver.isSelected)
         attachScreenshot(of: app, named: "GFN stream quality Data Saver preset")
 
         let increase = app.buttons["settings.stream-quality.bitrate.increase"]
-        focusAndSelect(increase, directions: [.down], pressesPerDirection: 12)
-        XCTAssertTrue(waitForAccessibilityText("20 Mbps", in: summary))
+        focusAndSelect(increase, directions: [.down, .right], pressesPerDirection: 1)
+        XCTAssertTrue(waitForAccessibilityText("15 Mbps", in: summary))
         XCTAssertTrue(app.buttons["settings.stream-quality.preset.custom"].isSelected)
         XCTAssertFalse(dataSaver.isSelected)
         attachScreenshot(of: app, named: "GFN stream quality custom bitrate")

@@ -121,7 +121,8 @@ actor MESClient {
             totalMinutes: raw.totalTimeInMinutes,
             entitledResolutions: resolutions,
             cloudStorage: storage,
-            installToPlayAccess: installToPlayAccess
+            installToPlayAccess: installToPlayAccess,
+            streamingFeatures: raw.features?.streamingFeatureEntitlements
         )
     }
 }
@@ -171,11 +172,48 @@ private nonisolated struct MESRawResponse: Decodable {
 
     struct Features: Decodable {
         let resolutions: [Resolution]?
+        let features: [Feature]?
+
         struct Resolution: Decodable {
             let widthInPixels: Int
             let heightInPixels: Int
             let framesPerSecond: Int
             let isEntitled: Bool?
+        }
+
+        /// Membership feature flag. The native client reads list features from `setValue`
+        /// and boolean features from the JSON-encoded `textValue`.
+        struct Feature: Decodable {
+            let key: String?
+            let textValue: String?
+            let setValue: [String]?
+
+            var isEntitled: Bool? {
+                if let setValue, !setValue.isEmpty {
+                    return true
+                }
+                guard let data = textValue?.data(using: .utf8),
+                      let parsed = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                else { return setValue == nil ? nil : false }
+                switch parsed {
+                case let array as [Any]: return !array.isEmpty
+                case let number as NSNumber: return number.boolValue
+                case let string as String: return string.lowercased() == "true"
+                default: return nil
+                }
+            }
+        }
+
+        var streamingFeatureEntitlements: GFNStreamingFeatureEntitlements? {
+            guard let features else { return nil }
+            let prefilter = features.first { $0.key == "SUPPORTED_DL_PREFILTERING" }
+            let hud = features.first { $0.key == "HUD_STREAMING" }
+            return GFNStreamingFeatureEntitlements(
+                prefilterModes: Set((prefilter?.setValue ?? []).compactMap { value in
+                    VideoPrefilterMode.allCases.first { $0.entitlementValue == value.uppercased() }
+                }),
+                hudStreaming: hud?.isEntitled ?? false
+            )
         }
     }
 }

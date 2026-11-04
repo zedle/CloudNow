@@ -233,6 +233,7 @@ private nonisolated func buildSessionRequestBody(
         localCapabilities: input.localVideoCapabilities,
         accountAllowsHDR: input.accountAllowsHDR
     )
+    let features = GFNRequestedStreamingFeatures(settings: input.settings, entitlements: input.streamingFeatures)
 
     return [
         "sessionRequestData": [
@@ -293,14 +294,14 @@ private nonisolated func buildSessionRequestBody(
                 "reflex": input.settings.fps >= 120,
                 "bitDepth": cloudMatchBitDepth(color),
                 "cloudGsync": false,
-                "enabledL4S": input.settings.enableL4S,
-                "profile": 0,
+                "enabledL4S": features.enabledL4S,
+                "profile": features.profile,
                 "fallbackToLogicalResolution": false,
                 "chromaFormat": cloudMatchChromaFormat(color),
-                "prefilterMode": 0,
-                "prefilterSharpness": 0,
-                "prefilterNoiseReduction": 0,
-                "hudStreamingMode": 0,
+                "prefilterMode": features.prefilterMode.rawValue,
+                "prefilterSharpness": features.prefilterSharpnessLevel,
+                "prefilterNoiseReduction": features.prefilterDenoiseLevel,
+                "hudStreamingMode": features.hudStreamingMode,
             ],
         ],
     ]

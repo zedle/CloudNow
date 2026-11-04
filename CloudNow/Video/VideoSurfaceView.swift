@@ -235,7 +235,11 @@ final class VideoSurfaceView: UIView {
     }
 
     func setAdaptiveFramePacing(_ enabled: Bool, frameRate: Int) {
-        renderer.setAdaptiveFramePacing(enabled, frameRate: frameRate)
+        setFramePacing(enabled ? .adaptive : .immediate, frameRate: frameRate)
+    }
+
+    func setFramePacing(_ mode: FramePacingMode, frameRate: Int) {
+        renderer.setFramePacing(mode, frameRate: frameRate)
     }
 
     /// Clears renderer and input ownership when SwiftUI dismantles the representable. The stream
@@ -532,6 +536,8 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
         var pacingSize: CGSize?
         var pendingDeadline: TimeInterval?
         var displayLockedQueue: DisplayLockedFrameQueue<PendingFrame>?
+        var jitterPacer: JitterBufferFramePacer?
+        var jitterQueue = ScheduledFrameQueue<PendingFrame>()
     }
 
     var sampleBufferRenderer: AVSampleBufferVideoRenderer?
@@ -550,20 +556,28 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
 
     func setSize(_: CGSize) {}
 
-    func setAdaptiveFramePacing(_ enabled: Bool, frameRate: Int) {
-        let pacer = enabled ? AdaptiveFramePacer(frameRate: frameRate) : nil
-        let identifier = state.withLock { state -> UInt64? in
-            guard state.pacer?.frameRate != pacer?.frameRate else { return nil }
+    func setFramePacing(_ mode: FramePacingMode, frameRate: Int) {
+        let pacer = mode == .adaptive ? AdaptiveFramePacer(frameRate: frameRate) : nil
+        let jitterPacer = mode == .jitterBuffer ? JitterBufferFramePacer() : nil
+        let result = state.withLock { state -> (UInt64?, [PendingFrame]) in
+            guard state.pacer?.frameRate != pacer?.frameRate
+                || (state.jitterPacer == nil) != (jitterPacer == nil)
+            else { return (nil, []) }
             state.pacer = pacer
+            state.jitterPacer = jitterPacer
+            let dropped = state.jitterQueue.removeAll()
             state.pacingSize = nil
             state.pendingDeadline = nil
             state.generation &+= 1
             state.drainSchedule.finish()
-            guard !state.isFlushing, state.mailbox.hasPending else { return nil }
+            guard !state.isFlushing, state.mailbox.hasPending else { return (nil, dropped) }
             _ = state.drainSchedule.beginIfNeeded()
-            return state.drainSchedule.identifier
+            return (state.drainSchedule.identifier, dropped)
         }
-        if let identifier {
+        for dropped in result.1 {
+            diagnostics.recordDrop(dropped.trace)
+        }
+        if let identifier = result.0 {
             scheduleDrain(identifier)
         }
     }
@@ -584,6 +598,17 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
             if state.displayLockedQueue != nil {
                 guard !state.mailbox.isTerminated else { return (pendingFrame, nil) }
                 return (state.displayLockedQueue?.push(pendingFrame), nil)
+            }
+            if var jitterPacer = state.jitterPacer {
+                guard !state.mailbox.isTerminated else { return (pendingFrame, nil) }
+                let presentationTime = jitterPacer.presentationTime(
+                    rtpTimestamp: UInt32(bitPattern: frame.timeStamp),
+                    arrivalTime: pendingFrame.arrivalTime
+                )
+                state.jitterPacer = jitterPacer
+                let overflow = state.jitterQueue.push(pendingFrame, presentationTime: presentationTime)
+                let shouldSchedule = state.drainSchedule.beginIfNeeded()
+                return (overflow, shouldSchedule ? state.drainSchedule.identifier : nil)
             }
             if state.pacer?.observe(
                 timestamp: UInt32(bitPattern: frame.timeStamp),
@@ -641,21 +666,28 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
                 }
                 return (newest, queued, state.generation)
             }
+            var superseded: [PendingFrame] = []
             if state.displayLockedQueue == nil {
                 var queue = DisplayLockedFrameQueue<PendingFrame>(backlogTrimRefreshes: refreshRate)
                 if let pending = state.mailbox.take() {
                     _ = queue.push(pending)
                 }
+                var jitterFrames = state.jitterQueue.removeAll()
+                if let newest = jitterFrames.popLast() {
+                    _ = queue.push(newest)
+                }
+                superseded = jitterFrames
                 state.displayLockedQueue = queue
                 state.drainSchedule.finish()
                 state.pacer?.reset()
+                state.jitterPacer?.reset()
                 state.pendingDeadline = nil
                 state.pacingSize = nil
             }
             guard !state.isFlushing, let release = state.displayLockedQueue?.releaseForRefresh() else {
-                return (nil, [], state.generation)
+                return (nil, superseded, state.generation)
             }
-            return (release.presented, release.trimmed.map { [$0] } ?? [], state.generation)
+            return (release.presented, superseded + (release.trimmed.map { [$0] } ?? []), state.generation)
         }
         for dropped in release.1 {
             diagnostics.recordDrop(dropped.trace)
@@ -697,37 +729,54 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
     }
 
     private func nextDrainAction(identifier: UInt64) -> DrainAction {
-        state.withLock { state in
-            guard state.drainSchedule.isCurrent(identifier) else { return .idle }
-            guard !state.isFlushing, let pending = state.mailbox.take() else {
+        let (action, superseded) = state.withLock { state -> (DrainAction, [PendingFrame]) in
+            guard state.drainSchedule.isCurrent(identifier) else { return (.idle, []) }
+            guard state.jitterPacer != nil else { return (Self.mailboxDrainAction(&state), []) }
+            guard !state.isFlushing, let next = state.jitterQueue.nextPresentationTime else {
                 state.drainSchedule.finish()
-                return .idle
+                return (.idle, [])
             }
-            if var pacer = state.pacer {
-                let size = CGSize(width: Int(pending.frame.width), height: Int(pending.frame.height))
-                if state.pacingSize != size {
-                    pacer.reset()
-                    state.pacingSize = size
-                    state.pendingDeadline = nil
-                }
-                let now = Self.now
-                let timestamp = UInt32(bitPattern: pending.frame.timeStamp)
-                let deadline = state.pendingDeadline ?? pacer.deadline(
-                    timestamp: timestamp, arrivalTime: pending.arrivalTime, now: now
-                )
-                if deadline > now {
-                    // Keep this deadline when newer arrivals replace the mailbox, avoiding starvation.
-                    state.pendingDeadline = deadline
-                    state.pacer = pacer
-                    _ = state.mailbox.storeIfEmpty(pending)
-                    return .wait(deadline)
-                }
-                pacer.didSubmit(timestamp: timestamp, deadline: deadline)
-                state.pacer = pacer
+            let now = Self.now
+            guard next <= now else { return (.wait(next), []) }
+            let due = state.jitterQueue.takeDue(now: now)
+            guard let presented = due.presented else { return (.wait(next), due.superseded) }
+            return (.process(presented, state.generation), due.superseded)
+        }
+        for dropped in superseded {
+            diagnostics.recordDrop(dropped.trace)
+        }
+        return action
+    }
+
+    private static func mailboxDrainAction(_ state: inout State) -> DrainAction {
+        guard !state.isFlushing, let pending = state.mailbox.take() else {
+            state.drainSchedule.finish()
+            return .idle
+        }
+        if var pacer = state.pacer {
+            let size = CGSize(width: Int(pending.frame.width), height: Int(pending.frame.height))
+            if state.pacingSize != size {
+                pacer.reset()
+                state.pacingSize = size
                 state.pendingDeadline = nil
             }
-            return .process(pending, state.generation)
+            let now = Self.now
+            let timestamp = UInt32(bitPattern: pending.frame.timeStamp)
+            let deadline = state.pendingDeadline ?? pacer.deadline(
+                timestamp: timestamp, arrivalTime: pending.arrivalTime, now: now
+            )
+            if deadline > now {
+                // Keep this deadline when newer arrivals replace the mailbox, avoiding starvation.
+                state.pendingDeadline = deadline
+                state.pacer = pacer
+                _ = state.mailbox.storeIfEmpty(pending)
+                return .wait(deadline)
+            }
+            pacer.didSubmit(timestamp: timestamp, deadline: deadline)
+            state.pacer = pacer
+            state.pendingDeadline = nil
         }
+        return .process(pending, state.generation)
     }
 
     private func process(
@@ -855,8 +904,9 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
     func teardown() {
         let result = state.withLock { state -> (VideoRendererFlushRequest?, PendingFrame?, [PendingFrame]) in
             guard !state.mailbox.isTerminated else { return (nil, nil, []) }
-            let queued = state.displayLockedQueue?.removeAll() ?? []
+            let queued = (state.displayLockedQueue?.removeAll() ?? []) + state.jitterQueue.removeAll()
             state.displayLockedQueue = nil
+            state.jitterPacer?.reset()
             state.generation &+= 1
             state.isFlushing = true
             state.inspectionCache.reset()
@@ -932,7 +982,8 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
             guard !state.isFlushing, !state.mailbox.isTerminated else {
                 return (false, nil, nil, [])
             }
-            let queued = state.displayLockedQueue?.removeAll() ?? []
+            let queued = (state.displayLockedQueue?.removeAll() ?? []) + state.jitterQueue.removeAll()
+            state.jitterPacer?.reset()
             state.isFlushing = true
             state.generation &+= 1
             state.inspectionCache.reset()
@@ -1001,12 +1052,12 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
     }
 
     private func dropPendingFrame() {
-        let dropped = state.withLock { state -> PendingFrame? in
+        let dropped = state.withLock { state -> [PendingFrame] in
             state.drainSchedule.finish()
-            return state.mailbox.flush()
+            return [state.mailbox.flush()].compactMap(\.self) + state.jitterQueue.removeAll()
         }
-        if let dropped {
-            diagnostics.recordDrop(dropped.trace)
+        for frame in dropped {
+            diagnostics.recordDrop(frame.trace)
         }
     }
 

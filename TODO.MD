@@ -11,7 +11,13 @@ Local fork of [owenselles/CloudNow](https://github.com/owenselles/CloudNow) for 
 - [ ] On-device verify GFN hold-Start pass-through (in-game hold actions + 1.8 s CloudNow menu)
 - [ ] `GamesViewModel` permanently clamps and saves `streamSettings.fps` to `screen.maximumFramesPerSecond`; a temporary 30 Hz output leaves the saved preference at 30. Clamp only the requested value instead.
 - [ ] Consider display-locked presentation at 60 Hz too (currently only <= 30 Hz to avoid changing 60 Hz latency)
-- [ ] On-device verify "Adjust for Poor Network Conditions" -> NVST `a=vqos.drc.enable` actually drops resolution under loss (mapping is inferred from the native client, not yet confirmed)
+- [ ] On-device verify "Adjust for Poor Network Conditions" (Off / Optimal Latency / Optimal Quality) -> NVST `a=vqos.dynamicStreamingMode` + `a=vqos.drc.enable` actually changes behavior under loss. The native client writes indexed `x-nv-` keys; CloudNow sends the unindexed web-style `a=vqos.*` form (present in Bifrost's parser strings). Deriving `drc.enable` from mode != 0 is inferred, not confirmed.
+- [ ] On-device verify the server honors the new loss-protection SDP keys on the WebRTC path: `a=vqos.fec.repairMinPercent:5`, `repairMaxPercent:40`, `a=vqos.bllFec.enable:1`, `a=vqos.bllFec.repairMinPercent:5` (native defaults; `repairPercent` stays at the web value 5, native uses 20)
+- [ ] On-device verify AI Video Filter (CloudMatch `prefilterMode/Sharpness/NoiseReduction` + SDP `a=video.prefilterParams.*`) and HUD Sharpening (`hudStreamingMode:1` = QP_MAP) visibly change the stream. Which channel the server actually reads (CloudMatch vs SDP) is unconfirmed.
+- [ ] Confirm the MES `features.features[]` shape (`SUPPORTED_DL_PREFILTERING.setValue`, `HUD_STREAMING.textValue`) against a real membership response; it was inferred from the native JS. When the list is absent or the shape is wrong, the AI filter and HUD Sharpening stay unavailable (only Off is requested), so a wrong guess hides the feature rather than sending unentitled requests.
+- [ ] L4S: CloudNow only requests `enabledL4S` (gated off when network adjustment is Off, matching native). Client-side ECN/L4S feedback is not possible in libwebrtc as shipped, so real L4S benefit is unverified.
+- [ ] Jitter Buffer Pacing (native `FrameTiming` port in `JitterBufferFramePacer`): validate on device that it smooths jitter without adding noticeable latency (adds 8-32 ms by design, 20 ms during warm-up). libwebrtc has no video jitter-buffer tuning API, so this presentation-side pacer is the substitute. Off by default.
+- [ ] Native per-frame NACK / retransmission tuning (libGeronimo) has no libwebrtc equivalent exposed to CloudNow; not ported.
 - [ ] Visual pass of the Neon Glass theme on the TV (simulator screenshots only so far; real artwork not shown in fixtures)
 - [ ] Xbox quality presets (Xbox currently gets the theme only; it exposes only proven controls)
 
@@ -19,6 +25,15 @@ Local fork of [owenselles/CloudNow](https://github.com/owenselles/CloudNow) for 
 
 - [x] Neon Glass dark theme (`CloudNowTheme`): forced dark, provider accent (GFN green / Xbox green), glow buttons, glass cards, backdrop; applied to service picker, login, device code, tab shell, Home/Library/catalog, Xbox login/rails
 - [x] GFN native-style quality presets (Balanced / Data Saver / Competitive / Cinematic / Custom) clamped to entitlement + display, bitrate meter with GB/hr estimate, "Adjust for Poor Network Conditions" toggle (default off) wired to NVST `vqos.drc.enable`; manual edits flip to Custom. Unit tests in `StreamQualityPresetTests` + `GFNStreamControllerTests`, UI test `testStreamQualityPresetAppliesAndManualBitrateEditSwitchesToCustom`
+- [x] Native parity pass (REA on GeForceNOW 2.0.90.126), code + unit tests only, not yet verified on device (see Open):
+  - Presets realigned to native: CloudMatch `profile` ids (Custom 0 / Balanced 1 / Competitive 2 / Data Saver 3 / Cinematic 4), Data Saver 720p60 at 12 Mbps, Balanced highest res/fps at max bitrate, Cinematic adds Optimal Quality + AI filter Auto + HUD Sharpening. Min bitrate 5 Mbps (native slider 5-100).
+  - "Adjust for Poor Network Conditions" is now a 3-way picker (`NetworkAdjustmentMode`, default Optimal Latency; legacy Bool decodes true -> Optimal Latency, false -> Off) driving `a=vqos.dynamicStreamingMode` + `drc.enable`.
+  - L4S toggle disabled (and request forced off) when network adjustment is Off.
+  - AI Video Filter (Off / Auto / Custom with Denoise + Sharpen 0-10) and HUD Sharpening, gated by MES membership features.
+  - FEC repair min/max bounds and burst-loss FEC (`bllFec`) in the NVST SDP.
+  - Optional Jitter Buffer Pacing: `JitterBufferFramePacer` + `ScheduledFrameQueue` (capacity 7) in the renderer.
+  - Bitrate row is a focus section so pressing down from the preset row reaches the -/+ buttons.
+  - Tests: `JitterBufferFramePacerTests`, `StreamQualityPresetTests`, `GFNStreamControllerTests` (network adjustment, loss protection, prefilter entitlement), `CloudMatchClientTests`, `MESClientTests`; 34 localization tables updated.
 
 - [x] Display-locked presentation at <= 30 Hz output: `CADisplayLink` releases at most one frame per refresh through `DisplayLockedFrameQueue` (capacity 2, 1 s backlog trim) so jitter-bunched frames no longer evict each other (tests 5/5). Verified on Bedroom(2) Release build at 4K30: `piqca_gmstats_dump` reports `enqueued: 180, displayed: 180, evicted: 0` (was 3-13 evicted per 180 before)
 

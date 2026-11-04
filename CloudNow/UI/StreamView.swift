@@ -827,7 +827,8 @@ struct StreamView: View {
                     accountAllowsHDR: viewModel.subscription?.allowsHDR,
                     membershipTier: currentMembershipTier,
                     sessionStartedAt: persistedSessionStart(for: sessionInfo),
-                    supportedControls: streamSupportedControls
+                    supportedControls: streamSupportedControls,
+                    streamingFeatures: viewModel.subscription?.streamingFeatures
                 )
                 return
             } catch is CancellationError {
@@ -1065,7 +1066,8 @@ struct StreamView: View {
                 accountAllowsHDR: viewModel.subscription?.allowsHDR,
                 membershipTier: currentMembershipTier,
                 sessionStartedAt: persistedSessionStart(for: sessionInfo),
-                supportedControls: supportedControls(for: connectedAppId)
+                supportedControls: supportedControls(for: connectedAppId),
+                streamingFeatures: viewModel.subscription?.streamingFeatures
             )
         } catch is CancellationError {
             return
@@ -1427,7 +1429,8 @@ struct StreamView: View {
             localVideoCapabilities: LocalVideoCapabilities.detect(codec: settings.codec.resolvedCodec),
             accountLinked: true,
             accountAllowsHDR: viewModel.subscription?.allowsHDR,
-            skipNvidiaFallback: !isNvidiaProvider || storageRegion != nil
+            skipNvidiaFallback: !isNvidiaProvider || storageRegion != nil,
+            streamingFeatures: viewModel.subscription?.streamingFeatures
         )
 
         do {

@@ -16,6 +16,17 @@ nonisolated enum StreamQualityPreset: String, Codable, CaseIterable, Sendable {
         self = Self(rawValue: raw) ?? .custom
     }
 
+    /// Native CloudMatch `profile` value.
+    var nativeProfile: Int {
+        switch self {
+        case .custom: 0
+        case .balanced: 1
+        case .competitive: 2
+        case .dataSaver: 3
+        case .cinematic: 4
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .balanced: "dial.medium.fill"
@@ -73,40 +84,44 @@ nonisolated enum StreamQualityPresetPolicy {
         let codec: VideoCodec
         let colorPreference: ColorModePreference
         let chromaFormat: ChromaFormat
-        let adjustForPoorNetwork: Bool
+        let networkAdjustment: NetworkAdjustmentMode
+        var prefilterMode: VideoPrefilterMode = .off
+        var hudSharpening = false
     }
 
+    /// Mirrors the native client's server-provided streaming profiles. "Auto" bitrate maps
+    /// to the highest selectable ceiling.
     private static func profile(for preset: StreamQualityPreset) -> Profile? {
         switch preset {
         case .dataSaver:
             Profile(
                 resolution: .height(720),
                 frameRate: .fixed(60),
-                maxBitrateKbps: 15000,
+                maxBitrateKbps: 12000,
                 codec: .automatic,
                 colorPreference: .forceSDR8,
                 chromaFormat: .yuv420,
-                adjustForPoorNetwork: true
+                networkAdjustment: .optimalLatency
             )
         case .balanced:
             Profile(
-                resolution: .height(1080),
-                frameRate: .fixed(60),
-                maxBitrateKbps: 50000,
+                resolution: .highest,
+                frameRate: .highest,
+                maxBitrateKbps: StreamSettings.maxSelectableBitrateKbps,
                 codec: .automatic,
                 colorPreference: .automatic,
                 chromaFormat: .yuv420,
-                adjustForPoorNetwork: true
+                networkAdjustment: .optimalLatency
             )
         case .competitive:
             Profile(
                 resolution: .height(1080),
                 frameRate: .highest,
-                maxBitrateKbps: 75000,
+                maxBitrateKbps: StreamSettings.maxSelectableBitrateKbps,
                 codec: .automatic,
                 colorPreference: .forceSDR8,
                 chromaFormat: .yuv420,
-                adjustForPoorNetwork: true
+                networkAdjustment: .optimalLatency
             )
         case .cinematic:
             Profile(
@@ -116,7 +131,9 @@ nonisolated enum StreamQualityPresetPolicy {
                 codec: .h265,
                 colorPreference: .preferHDR,
                 chromaFormat: .yuv444,
-                adjustForPoorNetwork: false
+                networkAdjustment: .optimalQuality,
+                prefilterMode: .auto,
+                hudSharpening: true
             )
         case .custom:
             nil
@@ -142,7 +159,9 @@ nonisolated enum StreamQualityPresetPolicy {
         result.codec = profile.codec
         result.colorPreference = profile.colorPreference
         result.chromaFormat = profile.chromaFormat
-        result.adjustForPoorNetwork = profile.adjustForPoorNetwork
+        result.networkAdjustment = profile.networkAdjustment
+        result.prefilterMode = profile.prefilterMode
+        result.hudSharpening = profile.hudSharpening
         return result
     }
 

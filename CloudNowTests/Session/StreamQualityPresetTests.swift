@@ -15,14 +15,17 @@ struct StreamQualityPresetTests {
         maximumDisplayFramesPerSecond: 60
     )
 
-    @Test("Existing settings without preset fields decode as Custom with network adaptation off")
+    @Test("Existing settings without preset fields decode as Custom with the native network default")
     func legacyDecodingDefaults() throws {
         let json = Data(#"{"resolution":"3840x2160","fps":120,"maxBitrateKbps":80000}"#.utf8)
 
         let settings = try JSONDecoder().decode(StreamSettings.self, from: json)
 
         #expect(settings.qualityPreset == .custom)
-        #expect(!settings.adjustForPoorNetwork)
+        #expect(settings.networkAdjustment == .optimalLatency)
+        #expect(settings.prefilterMode == .off)
+        #expect(!settings.hudSharpening)
+        #expect(!settings.jitterBufferPacing)
         #expect(settings.resolution == "3840x2160")
         #expect(settings.maxBitrateKbps == 80000)
     }
@@ -31,7 +34,12 @@ struct StreamQualityPresetTests {
     func presetRoundTrip() throws {
         var settings = StreamSettings()
         settings.qualityPreset = .cinematic
-        settings.adjustForPoorNetwork = true
+        settings.networkAdjustment = .optimalQuality
+        settings.prefilterMode = .custom
+        settings.prefilterDenoiseLevel = 4
+        settings.prefilterSharpnessLevel = 7
+        settings.hudSharpening = true
+        settings.jitterBufferPacing = true
 
         let decoded = try JSONDecoder().decode(
             StreamSettings.self,
@@ -42,22 +50,72 @@ struct StreamQualityPresetTests {
             from: Data(#"{"qualityPreset":"ultraMax"}"#.utf8)
         )
 
-        #expect(decoded.qualityPreset == .cinematic)
-        #expect(decoded.adjustForPoorNetwork)
+        #expect(decoded == settings)
+        #expect(decoded.framePacingMode == .jitterBuffer)
         #expect(unknown.qualityPreset == .custom)
     }
 
-    @Test("Data Saver requests 720p60 at 15 Mbps with network adaptation")
+    @Test(
+        "Legacy adjust-for-poor-network flag maps onto the native mode",
+        arguments: [(true, NetworkAdjustmentMode.optimalLatency), (false, .off)]
+    )
+    func legacyNetworkAdjustment(stored: Bool, expected: NetworkAdjustmentMode) throws {
+        let json = Data(#"{"adjustForPoorNetwork":\#(stored)}"#.utf8)
+
+        let settings = try JSONDecoder().decode(StreamSettings.self, from: json)
+
+        #expect(settings.networkAdjustment == expected)
+    }
+
+    @Test("Prefilter levels clamp to the native 0-10 range")
+    func prefilterLevelClamping() throws {
+        let json = Data(#"{"prefilterMode":9,"prefilterDenoiseLevel":42,"prefilterSharpnessLevel":-3}"#.utf8)
+
+        let settings = try JSONDecoder().decode(StreamSettings.self, from: json)
+
+        #expect(settings.prefilterMode == .off)
+        #expect(settings.prefilterDenoiseLevel == 10)
+        #expect(settings.prefilterSharpnessLevel == 0)
+    }
+
+    @Test(
+        "Presets send the native CloudMatch profile",
+        arguments: [
+            (StreamQualityPreset.custom, 0),
+            (.balanced, 1),
+            (.competitive, 2),
+            (.dataSaver, 3),
+            (.cinematic, 4),
+        ]
+    )
+    func nativeProfile(preset: StreamQualityPreset, expected: Int) {
+        #expect(preset.nativeProfile == expected)
+    }
+
+    @Test("Data Saver requests 720p60 at 12 Mbps with network adaptation")
     func dataSaver() {
         let settings = StreamQualityPresetPolicy.apply(.dataSaver, to: StreamSettings(), context: Self.ultimateContext)
 
         #expect(settings.qualityPreset == .dataSaver)
         #expect(settings.resolution == "1280x720")
         #expect(settings.fps == 60)
-        #expect(settings.maxBitrateKbps == 15000)
+        #expect(settings.maxBitrateKbps == 12000)
         #expect(settings.colorPreference == .forceSDR8)
         #expect(settings.chromaFormat == .yuv420)
-        #expect(settings.adjustForPoorNetwork)
+        #expect(settings.networkAdjustment == .optimalLatency)
+        #expect(settings.prefilterMode == .off)
+    }
+
+    @Test("Balanced takes the plan's best resolution and frame rate at the auto bitrate")
+    func balanced() {
+        let settings = StreamQualityPresetPolicy.apply(.balanced, to: StreamSettings(), context: Self.ultimateContext)
+
+        #expect(settings.resolution == "3840x2160")
+        #expect(settings.fps == 60)
+        #expect(settings.maxBitrateKbps == StreamSettings.maxSelectableBitrateKbps)
+        #expect(settings.colorPreference == .automatic)
+        #expect(settings.chromaFormat == .yuv420)
+        #expect(settings.networkAdjustment == .optimalLatency)
     }
 
     @Test("Competitive takes the highest frame rate the display allows")
@@ -89,7 +147,20 @@ struct StreamQualityPresetTests {
         #expect(settings.codec == .h265)
         #expect(settings.colorPreference == .preferHDR)
         #expect(settings.chromaFormat == .yuv444)
-        #expect(!settings.adjustForPoorNetwork)
+        #expect(settings.networkAdjustment == .optimalQuality)
+        #expect(settings.prefilterMode == .auto)
+        #expect(settings.hudSharpening)
+    }
+
+    @Test("Switching away from Cinematic clears its AI filter and HUD sharpening")
+    func presetsResetVideoFilter() {
+        let cinematic = StreamQualityPresetPolicy.apply(.cinematic, to: StreamSettings(), context: Self.ultimateContext)
+
+        let competitive = StreamQualityPresetPolicy.apply(.competitive, to: cinematic, context: Self.ultimateContext)
+
+        #expect(competitive.prefilterMode == .off)
+        #expect(!competitive.hudSharpening)
+        #expect(competitive.networkAdjustment == .optimalLatency)
     }
 
     @Test("Presets stay inside a Free-tier account's resolutions and frame rates")
@@ -128,5 +199,20 @@ struct StreamQualityPresetTests {
     func dataEstimate() {
         #expect(StreamQualityPresetPolicy.estimatedGigabytesPerHour(bitrateKbps: 50000) == 22.5)
         #expect(StreamQualityPresetPolicy.estimatedGigabytesPerHour(bitrateKbps: 100_000) == 45)
+    }
+
+    @Test(
+        "Bitrate steps rejoin the 5 Mbps grid inside the 5-100 Mbps range",
+        arguments: [
+            (12000, 5000, 15000),
+            (12000, -5000, 10000),
+            (15000, 5000, 20000),
+            (15000, -5000, 10000),
+            (5000, -5000, 5000),
+            (100_000, 5000, 100_000),
+        ]
+    )
+    func bitrateStepping(start: Int, delta: Int, expected: Int) {
+        #expect(GFNBitrateControl.steppedBitrate(start, delta: delta) == expected)
     }
 }

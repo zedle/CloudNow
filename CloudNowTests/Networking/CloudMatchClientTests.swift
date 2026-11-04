@@ -137,6 +137,53 @@ struct CloudMatchClientTests {
         ))
     }
 
+    @Test(
+        "Requested features carry the native profile, entitled AI filter and HUD, and L4S gating",
+        arguments: [true, false]
+    )
+    func nativeRequestedFeatures(entitled: Bool) async throws {
+        let fixture = try NetworkingFixture.data("cloudmatch-session.json")
+        let transport = RecordingHTTPTransport { request, _ in
+            let root = try jsonObject(from: request)
+            let session = try #require(root["sessionRequestData"] as? [String: Any])
+            let features = try #require(session["requestedStreamingFeatures"] as? [String: Any])
+            #expect(features["profile"] as? Int == 4)
+            #expect(features["enabledL4S"] as? Bool == false)
+            #expect(features["prefilterMode"] as? Int == (entitled ? 2 : 0))
+            #expect(features["prefilterNoiseReduction"] as? Int == (entitled ? 3 : 0))
+            #expect(features["prefilterSharpness"] as? Int == (entitled ? 8 : 0))
+            #expect(features["hudStreamingMode"] as? Int == (entitled ? 1 : 0))
+            return StubbedHTTPResponse(data: fixture)
+        }
+        var input = makeSessionRequest()
+        input.streamingFeatures = GFNStreamingFeatureEntitlements(
+            prefilterModes: entitled ? [.off, .auto, .custom] : [],
+            hudStreaming: entitled
+        )
+        var settings = input.settings
+        settings.qualityPreset = .cinematic
+        settings.networkAdjustment = .off
+        settings.prefilterMode = .custom
+        settings.prefilterDenoiseLevel = 3
+        settings.prefilterSharpnessLevel = 8
+        settings.hudSharpening = true
+        input = SessionCreateRequest(
+            appId: input.appId,
+            internalTitle: input.internalTitle,
+            token: input.token,
+            streamingBaseUrl: input.streamingBaseUrl,
+            routingZoneUrl: input.routingZoneUrl,
+            settings: settings,
+            localVideoCapabilities: input.localVideoCapabilities,
+            accountLinked: input.accountLinked,
+            accountAllowsHDR: input.accountAllowsHDR,
+            skipNvidiaFallback: input.skipNvidiaFallback,
+            streamingFeatures: input.streamingFeatures
+        )
+
+        _ = try await CloudMatchClient(transport: transport, deviceId: { "fixture-device" }).createSession(input)
+    }
+
     @Test("Failed preferred endpoint falls back to default routing endpoint")
     func createFallback() async throws {
         let fixture = try NetworkingFixture.data("cloudmatch-session.json")

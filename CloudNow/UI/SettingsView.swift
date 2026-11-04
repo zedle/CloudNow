@@ -909,16 +909,27 @@ struct SettingsView: View {
                         bitrateKbps: presetTrackingBinding(\.maxBitrateKbps)
                     )
 
-                    Toggle(isOn: presetTrackingBinding(\.adjustForPoorNetwork)) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(L10n.text("adjust_for_poor_network"))
-                            Text(L10n.text("adjust_for_poor_network_description"))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                    CloudNowSettingSelectionRow(
+                        L10n.text("adjust_for_poor_network"),
+                        description: L10n.text("network_adjust_description"),
+                        selection: presetTrackingBinding(\.networkAdjustment),
+                        accessibilityIdentifier: "settings.stream-quality.adjust-for-poor-network",
+                        options: NetworkAdjustmentMode.allCases.map {
+                            CloudNowSettingOption(
+                                value: $0,
+                                title: $0.label,
+                                accessibilityIdentifier: "\($0.rawValue)"
+                            )
                         }
-                        .padding(.vertical, 8)
-                    }
-                    .accessibilityIdentifier("settings.stream-quality.adjust-for-poor-network")
+                    )
+
+                    GFNVideoFilterControls(
+                        prefilterMode: presetTrackingBinding(\.prefilterMode),
+                        denoiseLevel: presetTrackingBinding(\.prefilterDenoiseLevel),
+                        sharpnessLevel: presetTrackingBinding(\.prefilterSharpnessLevel),
+                        hudSharpening: presetTrackingBinding(\.hudSharpening),
+                        entitlements: viewModel.subscription?.streamingFeatures
+                    )
 
                     CloudNowSettingSelectionRow(
                         L10n.text("resolution"),
@@ -1046,12 +1057,18 @@ struct SettingsView: View {
                     Toggle(isOn: $vm.streamSettings.enableL4S) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(L10n.text("low_latency_mode"))
-                            Text(L10n.text("low_latency_mode_description"))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            Text(L10n.text(
+                                vm.streamSettings.networkAdjustment == .off
+                                    ? "l4s_requires_network_adjust"
+                                    : "low_latency_mode_description"
+                            ))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         }
                         .padding(.vertical, 8)
                     }
+                    .disabled(vm.streamSettings.networkAdjustment == .off)
+                    .accessibilityIdentifier("settings.stream-quality.l4s")
 
                     Toggle(isOn: $vm.streamSettings.adaptiveFramePacing) {
                         VStack(alignment: .leading, spacing: 4) {
@@ -1063,6 +1080,17 @@ struct SettingsView: View {
                         .padding(.vertical, 8)
                     }
                     .accessibilityIdentifier("settings.stream-quality.adaptive-frame-pacing")
+
+                    Toggle(isOn: $vm.streamSettings.jitterBufferPacing) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(L10n.text("jitter_buffer_pacing"))
+                            Text(L10n.text("jitter_buffer_pacing_description"))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    .accessibilityIdentifier("settings.stream-quality.jitter-buffer-pacing")
                 }
 
                 Section(L10n.text("server_location")) {

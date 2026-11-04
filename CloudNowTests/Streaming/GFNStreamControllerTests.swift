@@ -49,21 +49,65 @@ struct GFNStreamControllerTests {
         #expect(sdp.contains("a=general.dtlsFingerprint:fixture-fingerprint\r\n"))
     }
 
-    @Test("NVST dynamic resolution control follows Adjust for Poor Network Conditions", arguments: [false, true])
-    func nvstDynamicResolutionControl(adjustForPoorNetwork: Bool) {
+    @Test(
+        "NVST network adaptation sends the native dynamic streaming mode",
+        arguments: [
+            (NetworkAdjustmentMode.off, 0),
+            (.optimalLatency, 1),
+            (.optimalQuality, 1),
+        ]
+    )
+    func nvstNetworkAdjustment(mode: NetworkAdjustmentMode, expectedDrc: Int) {
         var settings = StreamSettings()
-        settings.adjustForPoorNetwork = adjustForPoorNetwork
-        let controller = GFNStreamController()
+        settings.networkAdjustment = mode
 
-        let sdp = controller.buildNvstSdp(
+        let sdp = buildSdp(settings)
+
+        #expect(sdp.contains("a=vqos.dynamicStreamingMode:\(mode.rawValue)\r\n"))
+        #expect(sdp.contains("a=vqos.drc.enable:\(expectedDrc)\r\n"))
+        #expect(sdp.contains("a=vqos.dfc.enable:0\r\n"))
+    }
+
+    @Test("NVST advertises the native adaptive and burst-loss FEC defaults")
+    func nvstLossProtection() {
+        let sdp = buildSdp(StreamSettings())
+
+        #expect(sdp.contains("a=vqos.fec.repairPercent:5\r\n"))
+        #expect(sdp.contains("a=vqos.fec.repairMinPercent:5\r\n"))
+        #expect(sdp.contains("a=vqos.fec.repairMaxPercent:40\r\n"))
+        #expect(sdp.contains("a=vqos.bllFec.enable:1\r\n"))
+        #expect(sdp.contains("a=vqos.bllFec.repairMinPercent:5\r\n"))
+    }
+
+    @Test("NVST prefilter parameters require a membership entitlement")
+    func nvstPrefilterEntitlement() throws {
+        var settings = StreamSettings()
+        settings.prefilterMode = .custom
+        settings.prefilterDenoiseLevel = 3
+        settings.prefilterSharpnessLevel = 6
+        let entitled = GFNStreamingFeatureEntitlements(prefilterModes: [.off, .auto, .custom], hudStreaming: true)
+
+        let unknown = buildSdp(settings)
+        let allowed = buildSdp(settings, streamingFeatures: entitled)
+        let video = try #require(allowed.components(separatedBy: "m=audio").first)
+
+        #expect(!unknown.contains("prefilterParams"))
+        #expect(video.contains("a=video.prefilterParams.prefilterMode:2\r\n"))
+        #expect(video.contains("a=video.prefilterParams.denoiseLevel:3\r\n"))
+        #expect(video.contains("a=video.prefilterParams.sharpnessLevel:6\r\n"))
+    }
+
+    private func buildSdp(
+        _ settings: StreamSettings,
+        streamingFeatures: GFNStreamingFeatureEntitlements? = nil
+    ) -> String {
+        GFNStreamController().buildNvstSdp(
             settings: settings,
             iceUfrag: "fixture-user",
             icePwd: "fixture-password",
             dtlsFingerprint: "fixture-fingerprint",
-            microphoneEnabled: false
+            microphoneEnabled: false,
+            streamingFeatures: streamingFeatures
         )
-
-        #expect(sdp.contains("a=vqos.drc.enable:\(adjustForPoorNetwork ? 1 : 0)\r\n"))
-        #expect(sdp.contains("a=vqos.dfc.enable:0\r\n"))
     }
 }

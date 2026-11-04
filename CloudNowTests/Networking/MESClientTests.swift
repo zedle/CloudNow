@@ -58,6 +58,32 @@ struct MESClientTests {
         #expect(subscription.entitledResolutions.isEmpty)
     }
 
+    @Test("Membership feature flags expose AI video filter modes and HUD streaming")
+    func streamingFeatureEntitlements() async throws {
+        let entitled = try await fetchSubscription(
+            #"""
+            {
+              "membershipTier": "ULTIMATE",
+              "features": {
+                "features": [
+                  {"key": "SUPPORTED_DL_PREFILTERING", "setValue": ["OFF", "AUTO", "CUSTOM"]},
+                  {"key": "HUD_STREAMING", "textValue": "true"}
+                ]
+              }
+            }
+            """#
+        )
+        let withoutFlags = try await fetchSubscription(#"{"features": {"features": []}}"#)
+        let unreported = try await fetchSubscription(#"{"membershipTier": "FREE"}"#)
+
+        #expect(entitled.streamingFeatures == GFNStreamingFeatureEntitlements(
+            prefilterModes: [.off, .auto, .custom],
+            hudStreaming: true
+        ))
+        #expect(withoutFlags.streamingFeatures == GFNStreamingFeatureEntitlements(prefilterModes: [], hudStreaming: false))
+        #expect(unreported.streamingFeatures == nil)
+    }
+
     @Test("Storage add-ons expose the account plan, capacity, and authoritative region")
     func persistentStorage() async throws {
         let subscription = try await fetchSubscription(

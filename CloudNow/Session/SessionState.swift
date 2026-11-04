@@ -5,7 +5,7 @@ import Foundation
 
 nonisolated struct StreamSettings: Codable, Equatable {
     static let maxSelectableBitrateKbps = 100_000
-    static let minSelectableBitrateKbps = 15000
+    static let minSelectableBitrateKbps = 5000
     static let bitrateStepKbps = 5000
     static let minControllerDeadzone = 0.0
     static let maxControllerDeadzone = 0.30
@@ -38,10 +38,24 @@ nonisolated struct StreamSettings: Codable, Equatable {
     /// Last Streaming Quality preset chosen in Settings. Custom means the individual values
     /// were edited directly.
     var qualityPreset: StreamQualityPreset = .custom
-    /// Lets the GFN server lower resolution when the network degrades (NVST dynamic
-    /// resolution control) instead of holding resolution and dropping quality.
-    var adjustForPoorNetwork: Bool = false
+    /// Native "Adjust for poor network conditions" mode (NVST `dynamicStreamingMode`).
+    var networkAdjustment: NetworkAdjustmentMode = .optimalLatency
+    /// Server-side AI prefilter applied before encoding. Levels are 0-10 and only apply to Custom.
+    var prefilterMode: VideoPrefilterMode = .off
+    var prefilterDenoiseLevel: Int = 0 {
+        didSet { prefilterDenoiseLevel = VideoPrefilterMode.clampedLevel(prefilterDenoiseLevel) }
+    }
+
+    var prefilterSharpnessLevel: Int = 0 {
+        didSet { prefilterSharpnessLevel = VideoPrefilterMode.clampedLevel(prefilterSharpnessLevel) }
+    }
+
+    /// Native HUD streaming (QP map) keeps in-game text sharp at lower bitrates.
+    var hudSharpening: Bool = false
     var adaptiveFramePacing: Bool = false
+    /// Presents frames on the server capture cadence through the native jitter-buffer model.
+    /// Takes precedence over `adaptiveFramePacing`.
+    var jitterBufferPacing: Bool = false
     var micEnabled: Bool = false
     var rumbleEnabled: Bool = true
     /// Rumble power multiplier (0.0–2.0, 1.0 = default). Higher values stress controller motors.
@@ -152,6 +166,13 @@ nonisolated struct StreamSettings: Codable, Equatable {
         gameLanguage == Self.automaticGameLanguage ? L10n.nvidiaLocaleCode() : gameLanguage
     }
 
+    var framePacingMode: FramePacingMode {
+        if jitterBufferPacing {
+            return .jitterBuffer
+        }
+        return adaptiveFramePacing ? .adaptive : .immediate
+    }
+
     var effectiveChromaFormat: ChromaFormat {
         codec.resolvedCodec == .h265 ? chromaFormat : .yuv420
     }
@@ -178,7 +199,9 @@ extension StreamSettings {
         case sessionEndWarningMinutes
         case audioFormat
         case colorQuality
-        case qualityPreset, adjustForPoorNetwork
+        case qualityPreset, adjustForPoorNetwork, networkAdjustment
+        case prefilterMode, prefilterDenoiseLevel, prefilterSharpnessLevel, hudSharpening
+        case jitterBufferPacing
     }
 
     nonisolated init(from decoder: Decoder) throws {
@@ -277,7 +300,19 @@ extension StreamSettings {
         )
         audioFormat = try c.decodeIfPresent(AudioFormatPreference.self, forKey: .audioFormat) ?? d.audioFormat
         qualityPreset = try c.decodeIfPresent(StreamQualityPreset.self, forKey: .qualityPreset) ?? d.qualityPreset
-        adjustForPoorNetwork = try c.decodeIfPresent(Bool.self, forKey: .adjustForPoorNetwork) ?? d.adjustForPoorNetwork
+        let legacyAdjustment = try c.decodeIfPresent(Bool.self, forKey: .adjustForPoorNetwork)
+            .map { $0 ? NetworkAdjustmentMode.optimalLatency : .off }
+        networkAdjustment = try c.decodeIfPresent(NetworkAdjustmentMode.self, forKey: .networkAdjustment)
+            ?? legacyAdjustment ?? d.networkAdjustment
+        prefilterMode = try c.decodeIfPresent(VideoPrefilterMode.self, forKey: .prefilterMode) ?? d.prefilterMode
+        prefilterDenoiseLevel = try VideoPrefilterMode.clampedLevel(
+            c.decodeIfPresent(Int.self, forKey: .prefilterDenoiseLevel) ?? d.prefilterDenoiseLevel
+        )
+        prefilterSharpnessLevel = try VideoPrefilterMode.clampedLevel(
+            c.decodeIfPresent(Int.self, forKey: .prefilterSharpnessLevel) ?? d.prefilterSharpnessLevel
+        )
+        hudSharpening = try c.decodeIfPresent(Bool.self, forKey: .hudSharpening) ?? d.hudSharpening
+        jitterBufferPacing = try c.decodeIfPresent(Bool.self, forKey: .jitterBufferPacing) ?? d.jitterBufferPacing
     }
 
     nonisolated func encode(to encoder: Encoder) throws {
@@ -313,7 +348,12 @@ extension StreamSettings {
         try c.encode(sessionEndWarningMinutes, forKey: .sessionEndWarningMinutes)
         try c.encode(audioFormat, forKey: .audioFormat)
         try c.encode(qualityPreset, forKey: .qualityPreset)
-        try c.encode(adjustForPoorNetwork, forKey: .adjustForPoorNetwork)
+        try c.encode(networkAdjustment, forKey: .networkAdjustment)
+        try c.encode(prefilterMode, forKey: .prefilterMode)
+        try c.encode(prefilterDenoiseLevel, forKey: .prefilterDenoiseLevel)
+        try c.encode(prefilterSharpnessLevel, forKey: .prefilterSharpnessLevel)
+        try c.encode(hudSharpening, forKey: .hudSharpening)
+        try c.encode(jitterBufferPacing, forKey: .jitterBufferPacing)
     }
 }
 
@@ -902,6 +942,7 @@ nonisolated struct SubscriptionInfo: Codable {
     let entitledResolutions: [EntitledResolution]
     var cloudStorage: GFNCloudStorage? = nil
     var installToPlayAccess: Bool? = nil
+    var streamingFeatures: GFNStreamingFeatureEntitlements? = nil
 
     /// HDR entitlement by tier: Ultimate and Performance (formerly Priority) stream HDR,
     /// Free is SDR-only. Unrecognized tiers stay undetermined (nil).
@@ -1209,4 +1250,5 @@ nonisolated struct SessionCreateRequest {
     /// When true, CloudMatchClient will not fall back to the NVIDIA global endpoint
     /// on failure — partner sessions must only reach their own streaming service.
     let skipNvidiaFallback: Bool
+    var streamingFeatures: GFNStreamingFeatureEntitlements?
 }

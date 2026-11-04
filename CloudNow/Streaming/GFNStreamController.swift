@@ -374,6 +374,7 @@ final class GFNStreamController: NSObject {
     private var settings = StreamSettings()
     /// Account HDR entitlement resolved from the subscription tier at connect time.
     private var accountAllowsHDR: Bool?
+    private var streamingFeatures: GFNStreamingFeatureEntitlements?
     private var micAudioSource: LKRTCAudioSource?
     private var micAudioTrack: LKRTCAudioTrack?
     private let audioSessionCoordinator = CloudAudioSessionCoordinator()
@@ -413,7 +414,8 @@ final class GFNStreamController: NSObject {
         accountAllowsHDR: Bool? = nil,
         membershipTier: String? = nil,
         sessionStartedAt: Date? = nil,
-        supportedControls: [String]? = nil
+        supportedControls: [String]? = nil,
+        streamingFeatures: GFNStreamingFeatureEntitlements? = nil
     ) async {
         // Block if already active; allow from idle, disconnected, or failed (retry case)
         let currentState = state
@@ -440,8 +442,9 @@ final class GFNStreamController: NSObject {
         self.sessionStartedAt = sessionStartedAt
         gameSupportsDualShock = GFNSonyGamepad.gameSupportsSonyInput(supportedControls)
         self.settings = settings
-        videoView?.setAdaptiveFramePacing(settings.adaptiveFramePacing, frameRate: settings.fps)
+        videoView?.setFramePacing(settings.framePacingMode, frameRate: settings.fps)
         self.accountAllowsHDR = accountAllowsHDR
+        self.streamingFeatures = streamingFeatures
         colorState = StreamColorState(
             preference: settings.colorPreference,
             requestedMode: colorRequest.mode,
@@ -515,7 +518,7 @@ final class GFNStreamController: NSObject {
     /// Stores a reference so the inputHandler can be wired up when InputSender starts.
     func bindVideoView(_ view: VideoSurfaceView) {
         videoView = view
-        view.setAdaptiveFramePacing(settings.adaptiveFramePacing, frameRate: settings.fps)
+        view.setFramePacing(settings.framePacingMode, frameRate: settings.fps)
         view.setDiagnosticsEnabled(diagnosticsEnabled)
         view.onDecodedVideoFormatChanged = { [weak self] format in
             Task { @MainActor [weak self] in
@@ -1283,7 +1286,8 @@ final class GFNStreamController: NSObject {
                     iceUfrag: iceUfrag,
                     icePwd: icePwd,
                     dtlsFingerprint: dtlsFingerprint,
-                    microphoneEnabled: effectiveMicrophoneEnabled
+                    microphoneEnabled: effectiveMicrophoneEnabled,
+                    streamingFeatures: streamingFeatures
                 )
             )
             signalingComplete = true
@@ -1375,7 +1379,8 @@ final class GFNStreamController: NSObject {
         iceUfrag: String,
         icePwd: String,
         dtlsFingerprint: String,
-        microphoneEnabled: Bool
+        microphoneEnabled: Bool,
+        streamingFeatures: GFNStreamingFeatureEntitlements? = nil
     ) -> String {
         let resolutionParts = settings.resolution.split(separator: "x")
         let width = Int(resolutionParts.first ?? "1920") ?? 1920
@@ -1386,6 +1391,7 @@ final class GFNStreamController: NSObject {
             localCapabilities: .detect(codec: settings.codec.resolvedCodec),
             accountAllowsHDR: accountAllowsHDR
         )
+        let features = GFNRequestedStreamingFeatures(settings: settings, entitlements: streamingFeatures)
 
         var lines: [String] = [
             "v=0",
@@ -1401,7 +1407,13 @@ final class GFNStreamController: NSObject {
             "a=msid:fbc-video-0",
             "a=vqos.fec.rateDropWindow:10",
             "a=vqos.fec.repairPercent:5",
-            "a=vqos.drc.enable:\(settings.adjustForPoorNetwork ? 1 : 0)",
+            // Native client adaptive FEC bounds and burst-loss FEC defaults.
+            "a=vqos.fec.repairMinPercent:5",
+            "a=vqos.fec.repairMaxPercent:40",
+            "a=vqos.bllFec.enable:1",
+            "a=vqos.bllFec.repairMinPercent:5",
+            "a=vqos.dynamicStreamingMode:\(features.networkAdjustment.rawValue)",
+            "a=vqos.drc.enable:\(features.networkAdjustment == .off ? 0 : 1)",
             "a=vqos.dfc.enable:0",
             "a=video.enableRtpNack:1",
             "a=video.packetSize:1140",
@@ -1419,6 +1431,15 @@ final class GFNStreamController: NSObject {
             "a=video.bitDepth:\(colorRequest.bitDepth)",
             // NVST defaults to 4:2:0 unless the final encoder request includes chroma sampling.
             "a=video.chromaFormat:\(colorRequest.chromaFormat ?? 0)",
+        ]
+        if features.prefilterMode != .off {
+            lines += [
+                "a=video.prefilterParams.prefilterMode:\(features.prefilterMode.rawValue)",
+                "a=video.prefilterParams.denoiseLevel:\(features.prefilterDenoiseLevel)",
+                "a=video.prefilterParams.sharpnessLevel:\(features.prefilterSharpnessLevel)",
+            ]
+        }
+        lines += [
             "m=audio 0 RTP/AVP",
             "a=msid:audio",
         ]
