@@ -698,16 +698,17 @@ nonisolated func mapGCControllerToXInput(
     if pressed(pad.rightShoulder) {
         buttons |= GFNInput.rb
     }
-    if pressed(pad.buttonA) {
+    let face = ControllerFaceButtons(pad)
+    if pressed(face.a) {
         buttons |= GFNInput.buttonA
     }
-    if pressed(pad.buttonB) {
+    if pressed(face.b) {
         buttons |= GFNInput.buttonB
     }
-    if pressed(pad.buttonX) {
+    if pressed(face.x) {
         buttons |= GFNInput.buttonX
     }
-    if pressed(pad.buttonY) {
+    if pressed(face.y) {
         buttons |= GFNInput.buttonY
     }
 

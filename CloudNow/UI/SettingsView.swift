@@ -2378,16 +2378,17 @@ private struct TextInputTriggerSequenceCaptureView: View {
         if pad.dpad.right.isPressed {
             pressedButtons.insert(.dpadRight)
         }
-        if pad.buttonA.isPressed {
+        let face = ControllerFaceButtons(pad)
+        if face.a.isPressed {
             pressedButtons.insert(.buttonA)
         }
-        if pad.buttonB.isPressed {
+        if face.b.isPressed {
             pressedButtons.insert(.buttonB)
         }
-        if pad.buttonX.isPressed {
+        if face.x.isPressed {
             pressedButtons.insert(.buttonX)
         }
-        if pad.buttonY.isPressed {
+        if face.y.isPressed {
             pressedButtons.insert(.buttonY)
         }
         if pad.buttonMenu.isPressed {
