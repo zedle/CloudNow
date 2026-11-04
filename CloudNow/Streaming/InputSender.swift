@@ -568,13 +568,98 @@ final nonisolated class InputEncoder {
     }
 }
 
+// MARK: - Overlay Long Press
+
+/// Tracks the local "hold the overlay trigger" gesture for one controller slot.
+/// The trigger reaches the game live while held so in-game hold actions (skip
+/// cutscene, hold Start to restart) still work. Once the hold opens the local
+/// menu, the trigger is masked until the physical release.
+nonisolated struct OverlayLongPressGesture: Equatable, Sendable {
+    static let defaultThresholdTicks = 216
+
+    private(set) var ticks = 0
+    private(set) var triggered = false
+    let thresholdTicks: Int
+
+    init(thresholdTicks: Int = Self.defaultThresholdTicks) {
+        self.thresholdTicks = thresholdTicks
+    }
+
+    /// A hold that began while input was paused (for example the press that
+    /// dismissed the local menu) must not leak to the game on resume.
+    static func suppressedUntilRelease() -> Self {
+        var gesture = Self()
+        gesture.triggered = true
+        return gesture
+    }
+
+    var forwardsTriggerToGame: Bool {
+        !triggered
+    }
+
+    /// Advances one sample while the trigger is held. Returns true exactly once,
+    /// on the sample where the hold should open the local menu.
+    mutating func advance() -> Bool {
+        guard !triggered else { return false }
+        ticks += 1
+        guard ticks >= thresholdTicks else { return false }
+        triggered = true
+        return true
+    }
+}
+
 // MARK: - GCController → XInput Mapping
 
-nonisolated func mapGCControllerToXInput(_ controller: GCController, deadzone: Float = 0.15) -> (
+nonisolated struct AnalogStickDeadzoneFilter: Equatable, Sendable {
+    /// True while the stick is treated as outside the deadzone (after hysteresis).
+    private(set) var isActive = false
+
+    /// Radial deadzone with release hysteresis so sticks do not chatter around the
+    /// threshold and leave a non-zero XInput sample after the user lets go.
+    /// Enter threshold is `deadzone`; exit threshold is `deadzone * 0.65`.
+    /// Remapping uses the exit floor once engaged so the release band stays
+    /// direction-correct instead of inverting via a negative `(mag - enter)` scale.
+    mutating func apply(x: Float, y: Float, deadzone: Float) -> (Int16, Int16) {
+        let clampedX = max(-1, min(1, x))
+        let clampedY = max(-1, min(1, y))
+        let magnitude = (clampedX * clampedX + clampedY * clampedY).squareRoot()
+        let enter = max(0, min(0.95, deadzone))
+        let exit = enter * 0.65
+        if !isActive {
+            guard magnitude > enter, magnitude > 0 else {
+                return (0, 0)
+            }
+            isActive = true
+        } else if magnitude <= exit {
+            isActive = false
+            return (0, 0)
+        }
+
+        // Once engaged, remap from the exit floor so values between exit and enter
+        // remain live and polarity-correct until the stick fully releases.
+        let remapFloor = exit
+        let scaled = min(1, (magnitude - remapFloor) / max(0.000_1, 1 - remapFloor))
+        let factor = scaled / magnitude
+        return (axisToInt16(clampedX * factor), axisToInt16(clampedY * factor))
+    }
+
+    mutating func reset() {
+        isActive = false
+    }
+}
+
+nonisolated func mapGCControllerToXInput(
+    _ controller: GCController,
+    deadzone: Float = 0.15,
+    leftStickFilter: inout AnalogStickDeadzoneFilter,
+    rightStickFilter: inout AnalogStickDeadzoneFilter
+) -> (
     buttons: UInt16, leftTrigger: UInt8, rightTrigger: UInt8,
     lx: Int16, ly: Int16, rx: Int16, ry: Int16
 ) {
     guard let pad = controller.extendedGamepad else {
+        leftStickFilter.reset()
+        rightStickFilter.reset()
         return (0, 0, 0, 0, 0, 0, 0)
     }
 
@@ -629,12 +714,12 @@ nonisolated func mapGCControllerToXInput(_ controller: GCController, deadzone: F
     let lt = UInt8(clamping: Int(pad.leftTrigger.value * 255))
     let rt = UInt8(clamping: Int(pad.rightTrigger.value * 255))
 
-    let (lx, ly) = radialDeadzone(
+    let (lx, ly) = leftStickFilter.apply(
         x: pad.leftThumbstick.xAxis.value,
         y: pad.leftThumbstick.yAxis.value,
         deadzone: deadzone
     )
-    let (rx, ry) = radialDeadzone(
+    let (rx, ry) = rightStickFilter.apply(
         x: pad.rightThumbstick.xAxis.value,
         y: pad.rightThumbstick.yAxis.value,
         deadzone: deadzone
@@ -643,15 +728,19 @@ nonisolated func mapGCControllerToXInput(_ controller: GCController, deadzone: F
     return (buttons, lt, rt, lx, ly, rx, ry)
 }
 
-private nonisolated func radialDeadzone(x: Float, y: Float, deadzone: Float) -> (Int16, Int16) {
-    let clampedX = max(-1, min(1, x))
-    let clampedY = max(-1, min(1, y))
-    let magnitude = (clampedX * clampedX + clampedY * clampedY).squareRoot()
-    guard magnitude > deadzone, magnitude > 0 else { return (0, 0) }
-
-    let scaled = min(1, (magnitude - deadzone) / (1 - deadzone))
-    let factor = scaled / magnitude
-    return (axisToInt16(clampedX * factor), axisToInt16(clampedY * factor))
+/// Convenience for call sites that do not track stick hysteresis (tests / one-shots).
+nonisolated func mapGCControllerToXInput(_ controller: GCController, deadzone: Float = 0.15) -> (
+    buttons: UInt16, leftTrigger: UInt8, rightTrigger: UInt8,
+    lx: Int16, ly: Int16, rx: Int16, ry: Int16
+) {
+    var left = AnalogStickDeadzoneFilter()
+    var right = AnalogStickDeadzoneFilter()
+    return mapGCControllerToXInput(
+        controller,
+        deadzone: deadzone,
+        leftStickFilter: &left,
+        rightStickFilter: &right
+    )
 }
 
 private nonisolated func axisToInt16(_ value: Float) -> Int16 {
@@ -671,11 +760,6 @@ nonisolated protocol DataChannelSender: AnyObject {
 /// Owns all mutable input state on one latency-sensitive serial queue.
 final nonisolated class InputSender: @unchecked Sendable {
     static let remoteSensitivity: Float = 250
-
-    private struct OverlayPressState {
-        var ticks = 0
-        var triggered = false
-    }
 
     private struct GamepadSnapshot: Equatable {
         let buttons: UInt16
@@ -732,6 +816,10 @@ final nonisolated class InputSender: @unchecked Sendable {
     private var lastButtons: [Int: UInt16] = [:]
     private var lastSnapshots: [Int: GamepadSnapshot] = [:]
     private var lastSnapshotSend: [Int: UInt64] = [:]
+    private var leftStickFilters: [Int: AnalogStickDeadzoneFilter] = [:]
+    private var rightStickFilters: [Int: AnalogStickDeadzoneFilter] = [:]
+    private var neutralReinforceTokens: [Int: UUID] = [:]
+    private static let neutralReinforceDelaysMs = [16, 33]
 
     private var lastMicroDpad: (x: Float, y: Float) = (0, 0)
     private var lastControllerTouchpad: (x: Float, y: Float) = (0, 0)
@@ -745,7 +833,7 @@ final nonisolated class InputSender: @unchecked Sendable {
     private var heldKeys: [UInt32: (vk: UInt16, scancode: UInt16, modifiers: UInt16)] = [:]
     private var heldMouseButtons = Set<UInt8>()
 
-    private var overlayPresses: [Int: OverlayPressState] = [:]
+    private var overlayPresses: [Int: OverlayLongPressGesture] = [:]
     private var overlayReplaySlots = Set<Int>()
     private var keyboardShortcutResolvers: [Int: ControllerKeyboardShortcutResolver] = [:]
     private var steamHoldTicks: [Int: Int] = [:]
@@ -755,7 +843,6 @@ final nonisolated class InputSender: @unchecked Sendable {
     private static let sampleInterval = 8_333_333
     private static let gamepadKeepAlive = UInt64(33_333_333)
     private static let heartbeatInterval = UInt64(2_000_000_000)
-    private static let overlayLongPressThreshold = 216
     private static let steamLongPressThreshold = 120
     private static let microGamepadSuppressionWindow = UInt64(100_000_000)
     private static let replayEventIntervalMs: Int = 18
@@ -821,6 +908,7 @@ final nonisolated class InputSender: @unchecked Sendable {
             gamepadBitmap = 0
             lastSnapshots.removeAll()
             lastSnapshotSend.removeAll()
+            clearAllStickHysteresis()
         }
     }
 
@@ -883,6 +971,10 @@ final nonisolated class InputSender: @unchecked Sendable {
                 haptics.values.forEach { $0.stop() }
             } else {
                 lastSnapshots.removeAll()
+                for controller in extendedControllers where isOverlayButtonHeld(on: controller) {
+                    guard let slot = controllerSlots[ObjectIdentifier(controller)] else { continue }
+                    overlayPresses[slot] = .suppressedUntilRelease()
+                }
             }
         }
     }
@@ -926,6 +1018,7 @@ final nonisolated class InputSender: @unchecked Sendable {
         steamHoldTicks.removeAll()
         steamTriggeredSlots.removeAll()
         lastSnapshots.removeAll()
+        clearAllStickHysteresis()
         for controller in extendedControllers {
             claimControllerInput(controller)
         }
@@ -1095,22 +1188,25 @@ final nonisolated class InputSender: @unchecked Sendable {
         guard !isPaused,
               let slot = controllerSlots[ObjectIdentifier(controller)] else { return }
 
-        let buttons = mapGCControllerToXInput(controller, deadzone: deadzone).buttons
+        let mapped = mappedControllerState(controller, slot: slot)
+        let buttons = mapped.buttons
         let previousButtons = lastButtons[slot] ?? buttons
         let changed = previousButtons ^ buttons
         lastButtons[slot] = buttons
 
         if changed & overlayButtonMask != 0 {
             if buttons & overlayButtonMask != 0 {
-                overlayPresses[slot] = OverlayPressState()
+                overlayPresses[slot] = OverlayLongPressGesture()
             } else if ControllerKeyboardShortcutOverlayPolicy.shouldFinishPressOnRelease(
                 resolverOwnsGesture: keyboardShortcutResolvers[slot]?.ownsCandidateGesture == true
             ) {
-                finishOverlayPress(for: controller, slot: slot)
+                overlayPresses[slot] = nil
             }
         }
 
-        guard changed & ~overlayButtonMask != 0 else { return }
+        // Stick / trigger-only updates used to wait for the 120 Hz tick, which made
+        // releases feel sticky under load. Forward every GC value change immediately;
+        // sendGamepadSnapshot still dedupes unchanged packets.
         sendGamepadState(
             for: controller,
             sampleOverlay: false,
@@ -1118,9 +1214,41 @@ final nonisolated class InputSender: @unchecked Sendable {
         )
     }
 
+    private func mappedControllerState(
+        _ controller: GCController,
+        slot: Int
+    ) -> (
+        buttons: UInt16, leftTrigger: UInt8, rightTrigger: UInt8,
+        lx: Int16, ly: Int16, rx: Int16, ry: Int16
+    ) {
+        var left = leftStickFilters[slot] ?? AnalogStickDeadzoneFilter()
+        var right = rightStickFilters[slot] ?? AnalogStickDeadzoneFilter()
+        let mapped = mapGCControllerToXInput(
+            controller,
+            deadzone: deadzone,
+            leftStickFilter: &left,
+            rightStickFilter: &right
+        )
+        leftStickFilters[slot] = left
+        rightStickFilters[slot] = right
+        return mapped
+    }
+
+    private func clearStickHysteresis(for slot: Int) {
+        leftStickFilters[slot] = nil
+        rightStickFilters[slot] = nil
+        neutralReinforceTokens[slot] = nil
+    }
+
+    private func clearAllStickHysteresis() {
+        leftStickFilters.removeAll()
+        rightStickFilters.removeAll()
+        neutralReinforceTokens.removeAll()
+    }
+
     private func sendGamepadState(for controller: GCController, sampleOverlay: Bool, now: UInt64) {
         guard let slot = controllerSlots[ObjectIdentifier(controller)] else { return }
-        var state = mapGCControllerToXInput(controller, deadzone: deadzone)
+        var state = mappedControllerState(controller, slot: slot)
         lastButtons[slot] = state.buttons
         let physicalState = state
 
@@ -1161,15 +1289,13 @@ final nonisolated class InputSender: @unchecked Sendable {
             if shortcutResolution.suppressesOverlayGestures {
                 overlayPresses[slot] = nil
             } else if isOverlayButtonHeld(on: controller) {
-                var press = overlayPresses[slot] ?? OverlayPressState()
-                press.ticks += 1
-                if !press.triggered, press.ticks >= Self.overlayLongPressThreshold {
-                    press.triggered = true
+                var press = overlayPresses[slot] ?? OverlayLongPressGesture()
+                if press.advance() {
                     notifyMenuToggle()
                 }
                 overlayPresses[slot] = press
-            } else if overlayPresses[slot] != nil {
-                finishOverlayPress(for: controller, slot: slot)
+            } else {
+                overlayPresses[slot] = nil
             }
 
             if shortcutResolution.suppressesSteamGestures {
@@ -1189,10 +1315,8 @@ final nonisolated class InputSender: @unchecked Sendable {
             }
         }
 
-        // The trigger is withheld for the entire gesture. A short press is replayed
-        // as down/up on release; a long press is consumed by the local overlay.
         if !shortcutResolution.bypassesLocalGestureHandling {
-            if overlayPresses[slot] != nil || isOverlayButtonHeld(on: controller) {
+            if overlayPresses[slot]?.forwardsTriggerToGame == false {
                 state.buttons &= ~overlayButtonMask
             } else if overlayReplaySlots.contains(slot) {
                 state.buttons |= overlayButtonMask
@@ -1231,6 +1355,8 @@ final nonisolated class InputSender: @unchecked Sendable {
         let returnedToNeutral = previous.map {
             isAnalogActive($0) && !isAnalogActive(snapshot)
         } ?? false
+        // Never coalesce the release-to-zero sample. A superseded non-zero keep-alive
+        // is exactly how sticks appear "stuck" after the player lets go.
         let isReplaceable = !force
             && previous?.buttons == snapshot.buttons
             && previous?.bitmap == snapshot.bitmap
@@ -1269,6 +1395,23 @@ final nonisolated class InputSender: @unchecked Sendable {
                 )
             }
         }
+        if returnedToNeutral {
+            scheduleNeutralReinforcement(snapshot, slot: slot)
+        } else if isAnalogActive(snapshot) {
+            neutralReinforceTokens[slot] = nil
+        }
+    }
+
+    private func scheduleNeutralReinforcement(_ snapshot: GamepadSnapshot, slot: Int) {
+        let token = UUID()
+        neutralReinforceTokens[slot] = token
+        for delayMs in Self.neutralReinforceDelaysMs {
+            inputQueue.asyncAfter(deadline: .now() + .milliseconds(delayMs)) { [weak self] in
+                guard let self, isRunning, neutralReinforceTokens[slot] == token else { return }
+                guard let current = lastSnapshots[slot], !isAnalogActive(current) else { return }
+                sendGamepadSnapshot(snapshot, slot: slot, force: true)
+            }
+        }
     }
 
     private func isAnalogActive(_ snapshot: GamepadSnapshot) -> Bool {
@@ -1280,15 +1423,10 @@ final nonisolated class InputSender: @unchecked Sendable {
             || snapshot.rightStickY != 0
     }
 
-    private func finishOverlayPress(for controller: GCController, slot: Int) {
-        guard let press = overlayPresses.removeValue(forKey: slot) else { return }
-        if !press.triggered {
-            sendOverlayTap(for: controller, slot: slot)
-        }
-    }
-
     private func sendOverlayTap(for controller: GCController, slot: Int) {
-        let state = mapGCControllerToXInput(controller, deadzone: deadzone)
+        // Preserve per-slot stick hysteresis so an overlay tap does not briefly
+        // zero an in-band stick sample that the continuous path would keep alive.
+        let state = mappedControllerState(controller, slot: slot)
         let baseButtons = state.buttons & ~overlayButtonMask
         let base = GamepadSnapshot(
             buttons: baseButtons,
@@ -1317,7 +1455,7 @@ final nonisolated class InputSender: @unchecked Sendable {
                   let controller,
                   overlayReplaySlots.remove(slot) != nil,
                   controllerSlots[ObjectIdentifier(controller)] == slot else { return }
-            let current = mapGCControllerToXInput(controller, deadzone: deadzone)
+            let current = mappedControllerState(controller, slot: slot)
             sendGamepadSnapshot(
                 GamepadSnapshot(
                     buttons: current.buttons & ~overlayButtonMask,
@@ -1989,6 +2127,10 @@ final nonisolated class InputSender: @unchecked Sendable {
             } else {
                 gamepadBitmap |= Self.extendedGamepadBitmapMask(for: slot)
             }
+            // Fresh slot ownership: drop any prior hysteresis / reinforce token so a
+            // reused slot cannot inherit an active stick filter from a previous pad.
+            clearStickHysteresis(for: slot)
+            // One-shot button seed is intentional; stick filters start reset above.
             lastButtons[slot] = mapGCControllerToXInput(controller, deadzone: deadzone).buttons
             pad.valueChangedHandler = { [weak self, weak controller] _, _ in
                 guard let controller else { return }
@@ -2041,6 +2183,7 @@ final nonisolated class InputSender: @unchecked Sendable {
             keyboardShortcutResolvers[slot] = nil
             steamHoldTicks[slot] = nil
             steamTriggeredSlots.remove(slot)
+            clearStickHysteresis(for: slot)
             if !wasSony {
                 sendGamepadSnapshot(neutralSnapshot(bitmap: gamepadBitmap), slot: slot, force: true)
             }

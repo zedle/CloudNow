@@ -549,5 +549,18 @@ enum L10nFI {
         "install_to_play_storage_unavailable": "Pilvitallennustila ei ole käytettävissä. Tarkista tallennustila asetuksissa ja yritä uudelleen.",
         "install_to_play_storage_full": "Pilvitallennustila ei riitä tälle pelille. Hallitse tallennustilaa asetuksissa ja yritä uudelleen.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Tasapainoinen",
+        "quality_preset_data_saver": "Datansäästö",
+        "quality_preset_competitive": "Kilpailullinen",
+        "quality_preset_cinematic": "Elokuvamainen",
+        "quality_preset_custom": "Mukautettu",
+        "quality_preset_balanced_description": "Enintään 1080p 60 fps:llä. Mukautuu verkkoosi sujuvaa suoratoistoa varten.",
+        "quality_preset_data_saver_description": "Enintään 720p 60 fps:llä ja 15 Mbit/s:n katolla. Käyttää vähiten dataa.",
+        "quality_preset_competitive_description": "Suurin kuvataajuus, jonka tilauksesi ja televisiosi sallivat, 8-bittisillä väreillä pienimmän viiveen saavuttamiseksi.",
+        "quality_preset_cinematic_description": "Suurin tarkkuus HDR:llä ja 4:4:4-väreillä enintään 100 Mbit/s. Vaatii nopean ja vakaan yhteyden.",
+        "quality_preset_custom_description": "Oma yhdistelmäsi tarkkuutta, kuvataajuutta, bittinopeutta ja värejä.",
+        "quality_data_estimate": "Enintään %@ Gt tunnissa",
+        "adjust_for_poor_network": "Mukauta heikkoihin verkko-olosuhteisiin",
+        "adjust_for_poor_network_description": "Palvelin laskee tarkkuutta, kun yhteys heikkenee, nykimisen sijaan. Koskee seuraavaa suoratoistoa.",
     ]
 }

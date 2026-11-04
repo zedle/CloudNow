@@ -5,6 +5,8 @@ import Foundation
 
 nonisolated struct StreamSettings: Codable, Equatable {
     static let maxSelectableBitrateKbps = 100_000
+    static let minSelectableBitrateKbps = 15000
+    static let bitrateStepKbps = 5000
     static let minControllerDeadzone = 0.0
     static let maxControllerDeadzone = 0.30
     static let minRumbleIntensity = 0.0
@@ -33,6 +35,12 @@ nonisolated struct StreamSettings: Codable, Equatable {
     var keyboardLayout: String = Self.defaultKeyboardLayout
     var gameLanguage: String = Self.defaultGameLanguage
     var enableL4S: Bool = true
+    /// Last Streaming Quality preset chosen in Settings. Custom means the individual values
+    /// were edited directly.
+    var qualityPreset: StreamQualityPreset = .custom
+    /// Lets the GFN server lower resolution when the network degrades (NVST dynamic
+    /// resolution control) instead of holding resolution and dropping quality.
+    var adjustForPoorNetwork: Bool = false
     var adaptiveFramePacing: Bool = false
     var micEnabled: Bool = false
     var rumbleEnabled: Bool = true
@@ -170,6 +178,7 @@ extension StreamSettings {
         case sessionEndWarningMinutes
         case audioFormat
         case colorQuality
+        case qualityPreset, adjustForPoorNetwork
     }
 
     nonisolated init(from decoder: Decoder) throws {
@@ -267,6 +276,8 @@ extension StreamSettings {
             Self.maxSessionEndWarningMinutes
         )
         audioFormat = try c.decodeIfPresent(AudioFormatPreference.self, forKey: .audioFormat) ?? d.audioFormat
+        qualityPreset = try c.decodeIfPresent(StreamQualityPreset.self, forKey: .qualityPreset) ?? d.qualityPreset
+        adjustForPoorNetwork = try c.decodeIfPresent(Bool.self, forKey: .adjustForPoorNetwork) ?? d.adjustForPoorNetwork
     }
 
     nonisolated func encode(to encoder: Encoder) throws {
@@ -301,6 +312,8 @@ extension StreamSettings {
         try c.encode(persistInGameSettings, forKey: .persistInGameSettings)
         try c.encode(sessionEndWarningMinutes, forKey: .sessionEndWarningMinutes)
         try c.encode(audioFormat, forKey: .audioFormat)
+        try c.encode(qualityPreset, forKey: .qualityPreset)
+        try c.encode(adjustForPoorNetwork, forKey: .adjustForPoorNetwork)
     }
 }
 

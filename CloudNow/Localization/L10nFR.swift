@@ -549,5 +549,18 @@ enum L10nFR {
         "install_to_play_storage_unavailable": "Le stockage cloud est indisponible. Vérifiez le stockage dans les réglages, puis réessayez.",
         "install_to_play_storage_full": "L’espace de stockage cloud est insuffisant pour ce jeu. Gérez le stockage dans les réglages, puis réessayez.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Équilibré",
+        "quality_preset_data_saver": "Économie de données",
+        "quality_preset_competitive": "Compétitif",
+        "quality_preset_cinematic": "Cinématique",
+        "quality_preset_custom": "Personnalisé",
+        "quality_preset_balanced_description": "Jusqu'à 1080p à 60 ips. S'adapte à votre réseau pour un streaming fluide.",
+        "quality_preset_data_saver_description": "Jusqu'à 720p à 60 ips, plafonné à 15 Mbit/s. Consomme le moins de données.",
+        "quality_preset_competitive_description": "La fréquence d'images la plus élevée permise par votre abonnement et votre téléviseur, en couleur 8 bits pour une latence minimale.",
+        "quality_preset_cinematic_description": "La résolution la plus élevée avec HDR et couleur 4:4:4 jusqu'à 100 Mbit/s. Nécessite une connexion rapide et stable.",
+        "quality_preset_custom_description": "Votre propre combinaison de résolution, fréquence d'images, débit et couleur.",
+        "quality_data_estimate": "Jusqu'à %@ Go par heure",
+        "adjust_for_poor_network": "Adapter aux mauvaises conditions réseau",
+        "adjust_for_poor_network_description": "Le serveur réduit la résolution quand la connexion faiblit au lieu de saccader. S'applique au prochain streaming.",
     ]
 }

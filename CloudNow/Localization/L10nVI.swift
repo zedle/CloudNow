@@ -549,5 +549,18 @@ enum L10nVI {
         "install_to_play_storage_unavailable": "Bộ nhớ đám mây không khả dụng. Kiểm tra bộ nhớ trong Cài đặt rồi thử lại.",
         "install_to_play_storage_full": "Không đủ bộ nhớ đám mây cho trò chơi này. Quản lý bộ nhớ trong Cài đặt rồi thử lại.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Cân bằng",
+        "quality_preset_data_saver": "Tiết kiệm dữ liệu",
+        "quality_preset_competitive": "Thi đấu",
+        "quality_preset_cinematic": "Điện ảnh",
+        "quality_preset_custom": "Tùy chỉnh",
+        "quality_preset_balanced_description": "Tối đa 1080p ở 60 fps. Tự điều chỉnh theo mạng để phát mượt mà.",
+        "quality_preset_data_saver_description": "Tối đa 720p ở 60 fps với giới hạn 15 Mbps. Dùng ít dữ liệu nhất.",
+        "quality_preset_competitive_description": "Tốc độ khung hình cao nhất mà gói và TV của bạn cho phép, với màu 8 bit để có độ trễ thấp nhất.",
+        "quality_preset_cinematic_description": "Độ phân giải cao nhất với HDR và màu 4:4:4, tối đa 100 Mbps. Cần kết nối nhanh và ổn định.",
+        "quality_preset_custom_description": "Kết hợp độ phân giải, tốc độ khung hình, tốc độ bit và màu của riêng bạn.",
+        "quality_data_estimate": "Tối đa %@ GB mỗi giờ",
+        "adjust_for_poor_network": "Điều chỉnh khi mạng kém",
+        "adjust_for_poor_network_description": "Cho phép máy chủ giảm độ phân giải khi kết nối yếu thay vì giật hình. Áp dụng từ lần phát tiếp theo.",
     ]
 }

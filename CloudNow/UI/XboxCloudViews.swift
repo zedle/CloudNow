@@ -4,7 +4,6 @@ import SwiftUI
 struct XboxLoginView: View {
     @Environment(CloudGamingProviderCoordinator.self) private var providerCoordinator
     @Environment(XboxAuthManager.self) private var xboxAuthManager
-    @Environment(\.colorScheme) private var colorScheme
     let fallbackProvider: CloudGamingProvider?
 
     init(fallbackProvider: CloudGamingProvider? = nil) {
@@ -13,7 +12,7 @@ struct XboxLoginView: View {
 
     var body: some View {
         ZStack {
-            adaptiveBackgroundColor.ignoresSafeArea()
+            CloudNowBackdrop(isAnimated: true)
 
             switch xboxAuthManager.signInState {
             case .idle, .cancelled:
@@ -27,7 +26,6 @@ struct XboxLoginView: View {
                         code: authorization.userCode,
                         verificationURL: displayURL(authorization.verificationURI),
                         verificationURLComplete: authorization.qrVerificationURI.absoluteString,
-                        accentColor: .blue,
                         accessibilityIdentifier: "xbox-device-code-login",
                         primaryForegroundColor: .primary,
                         secondaryForegroundColor: .secondary,
@@ -61,9 +59,7 @@ struct XboxLoginView: View {
     private var loginPrompt: some View {
         VStack(spacing: 48) {
             CloudNowBrandHeader(
-                subtitle: L10n.text("xbox_cloud_gaming"),
-                primaryForegroundColor: .primary,
-                secondaryForegroundColor: .secondary
+                subtitle: L10n.text("xbox_cloud_gaming")
             )
 
             VStack(spacing: 16) {
@@ -72,11 +68,9 @@ struct XboxLoginView: View {
                 } label: {
                     Label(L10n.text("sign_in_with_microsoft"), systemImage: "person.badge.key")
                         .font(.title2.weight(.semibold))
-                        .padding(.horizontal, 40)
-                        .padding(.vertical, 16)
+                        .padding(.horizontal, 20)
                 }
-                .buttonStyle(.bordered)
-                .tint(.blue)
+                .buttonStyle(CloudNowGlowButtonStyle())
 
                 Text(L10n.text("requires_xbox_cloud_subscription"))
                     .font(.caption)
@@ -130,8 +124,7 @@ struct XboxLoginView: View {
                         xboxAuthManager.login()
                     }
                 }
-                .buttonStyle(.bordered)
-                .tint(.blue)
+                .buttonStyle(CloudNowGlowButtonStyle())
 
                 if xboxAuthManager.isMicrosoftSignedIn {
                     Button(
@@ -144,13 +137,11 @@ struct XboxLoginView: View {
                             await xboxAuthManager.signInWithAnotherMicrosoftAccount()
                         }
                     }
-                    .buttonStyle(.bordered)
-                    .tint(.blue)
+                    .buttonStyle(CloudNowGlowButtonStyle(isProminent: false))
                 }
 
                 Button(L10n.text("cancel"), action: cancel)
-                    .buttonStyle(.bordered)
-                    .tint(.gray)
+                    .buttonStyle(CloudNowGlowButtonStyle(isProminent: false))
             }
         }
         .padding(80)
@@ -163,10 +154,6 @@ struct XboxLoginView: View {
 
     private func displayURL(_ url: URL) -> String {
         url.absoluteString.replacingOccurrences(of: "https://", with: "")
-    }
-
-    private var adaptiveBackgroundColor: Color {
-        colorScheme == .dark ? .black : .white
     }
 }
 
@@ -2032,7 +2019,7 @@ private struct XboxCatalogHome: View {
                                 : "lock.fill",
                             isActionEnabled: heroSelection.isPlayable,
                             actionTint: heroSelection.isPlayable
-                                ? .green
+                                ? nil
                                 : .gray,
                             actionFocus: $heroActionFocused,
                             action: {
@@ -2289,9 +2276,7 @@ private struct XboxCatalogRail: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(title)
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(.primary)
+            CloudNowSectionTitle(title: title)
                 .padding(.horizontal, 60)
 
             ScrollView(.horizontal, showsIndicators: false) {

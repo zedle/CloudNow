@@ -516,6 +516,7 @@ private struct CloudNowSettingSelectionPage<Value: Hashable>: View {
     let onRecoveryAction: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.cloudNowAccent) private var accent
     @FocusState private var focusedValue: Value?
     @State private var unavailableSelection: UnavailableSelection?
 
@@ -594,7 +595,8 @@ private struct CloudNowSettingSelectionPage<Value: Hashable>: View {
                 if option.value == selection {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.title3)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(accent)
+                        .shadow(color: accent.opacity(0.7), radius: 8)
                         .accessibilityHidden(true)
                 }
                 if !option.isAvailable {
@@ -897,16 +899,37 @@ struct SettingsView: View {
                 )
 
                 CloudNowStreamQualitySection {
+                    GFNStreamQualityPresetRow(
+                        selection: vm.streamSettings.qualityPreset,
+                        settings: vm.streamSettings,
+                        onSelect: applyQualityPreset
+                    )
+
+                    GFNBitrateControl(
+                        bitrateKbps: presetTrackingBinding(\.maxBitrateKbps)
+                    )
+
+                    Toggle(isOn: presetTrackingBinding(\.adjustForPoorNetwork)) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(L10n.text("adjust_for_poor_network"))
+                            Text(L10n.text("adjust_for_poor_network_description"))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    .accessibilityIdentifier("settings.stream-quality.adjust-for-poor-network")
+
                     CloudNowSettingSelectionRow(
                         L10n.text("resolution"),
-                        selection: $vm.streamSettings.resolution,
+                        selection: presetTrackingBinding(\.resolution),
                         accessibilityIdentifier: "settings.stream-quality.resolution",
                         groups: geForceNowResolutionGroups
                     )
 
                     CloudNowSettingSelectionRow(
                         L10n.text("frame_rate"),
-                        selection: $vm.streamSettings.fps,
+                        selection: presetTrackingBinding(\.fps),
                         accessibilityIdentifier: "settings.stream-quality.frame-rate",
                         options: viewModel.frameRateEligibility.map { eligibility in
                             CloudNowSettingOption(
@@ -922,7 +945,7 @@ struct SettingsView: View {
 
                     CloudNowSettingSelectionRow(
                         L10n.text("codec"),
-                        selection: $vm.streamSettings.codec,
+                        selection: presetTrackingBinding(\.codec),
                         accessibilityIdentifier: "settings.stream-quality.codec",
                         options: VideoCodec.allCases.map {
                             CloudNowSettingOption(
@@ -939,7 +962,7 @@ struct SettingsView: View {
                             ? L10n.text("av1_color_path_warning")
                             : vm.streamSettings.colorPreference.description,
                         descriptionIsWarning: vm.streamSettings.codec == .av1,
-                        selection: $vm.streamSettings.colorPreference,
+                        selection: presetTrackingBinding(\.colorPreference),
                         accessibilityIdentifier: "settings.stream-quality.color-mode",
                         options: ColorModePreference.allCases.map {
                             CloudNowSettingOption(
@@ -955,7 +978,7 @@ struct SettingsView: View {
                         description: L10n.text("chroma_sampling_description"),
                         selection: Binding(
                             get: { vm.streamSettings.effectiveChromaFormat },
-                            set: { vm.streamSettings.chromaFormat = $0 }
+                            set: { presetTrackingBinding(\.chromaFormat).wrappedValue = $0 }
                         ),
                         accessibilityIdentifier: "settings.stream-quality.chroma-sampling",
                         options: ChromaFormat.allCases.map {
@@ -1019,32 +1042,6 @@ struct SettingsView: View {
                             )
                         }
                     )
-
-                    LabeledContent(L10n.text("max_bitrate")) {
-                        HStack(spacing: 16) {
-                            Button {
-                                vm.streamSettings.maxBitrateKbps = max(15000, vm.streamSettings.maxBitrateKbps - 5000)
-                            } label: {
-                                Image(systemName: "minus.circle")
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(vm.streamSettings.maxBitrateKbps <= 15000)
-                            Text("\(vm.streamSettings.maxBitrateKbps / 1000) Mbps")
-                                .monospacedDigit()
-                                .frame(minWidth: 72)
-                                .padding(.horizontal, 24)
-                            Button {
-                                vm.streamSettings.maxBitrateKbps = min(StreamSettings.maxSelectableBitrateKbps, vm.streamSettings.maxBitrateKbps + 5000)
-                            } label: {
-                                Image(systemName: "plus.circle")
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(
-                                vm.streamSettings.maxBitrateKbps
-                                    >= StreamSettings.maxSelectableBitrateKbps
-                            )
-                        }
-                    }
 
                     Toggle(isOn: $vm.streamSettings.enableL4S) {
                         VStack(alignment: .leading, spacing: 4) {
@@ -1681,6 +1678,34 @@ struct SettingsView: View {
         ResolutionEntry(res: "3840x2160", badge: "4K", symbol: "4k.tv"),
         ResolutionEntry(res: "5120x2880", badge: "5K", symbol: "tv"),
     ]
+
+    /// Binding for a value a quality preset controls. Editing it directly selects Custom.
+    private func presetTrackingBinding<Value: Equatable>(
+        _ keyPath: WritableKeyPath<StreamSettings, Value>
+    ) -> Binding<Value> {
+        Binding(
+            get: { viewModel.streamSettings[keyPath: keyPath] },
+            set: { newValue in
+                guard viewModel.streamSettings[keyPath: keyPath] != newValue else { return }
+                var settings = viewModel.streamSettings
+                settings[keyPath: keyPath] = newValue
+                settings.qualityPreset = .custom
+                viewModel.streamSettings = settings
+            }
+        )
+    }
+
+    private func applyQualityPreset(_ preset: StreamQualityPreset) {
+        viewModel.streamSettings = StreamQualityPresetPolicy.apply(
+            preset,
+            to: viewModel.streamSettings,
+            context: StreamQualityPresetContext(
+                entitledResolutions: viewModel.subscription?.entitledResolutions,
+                availableResolutions: viewModel.availableResolutions,
+                maximumDisplayFramesPerSecond: viewModel.maximumDisplayFramesPerSecond
+            )
+        )
+    }
 
     private var geForceNowResolutionGroups: [CloudNowSettingOptionGroup<String>] {
         let availableResolutions = Set(viewModel.availableResolutions)

@@ -549,5 +549,18 @@ enum L10nHI {
         "install_to_play_storage_unavailable": "क्लाउड स्टोरेज उपलब्ध नहीं है। सेटिंग्ज़ में स्टोरेज जाँचें, फिर कोशिश करें।",
         "install_to_play_storage_full": "इस गेम के लिए पर्याप्त क्लाउड स्टोरेज नहीं है। सेटिंग्ज़ में स्टोरेज प्रबंधित करें, फिर कोशिश करें।",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "संतुलित",
+        "quality_preset_data_saver": "डेटा सेवर",
+        "quality_preset_competitive": "प्रतिस्पर्धी",
+        "quality_preset_cinematic": "सिनेमैटिक",
+        "quality_preset_custom": "कस्टम",
+        "quality_preset_balanced_description": "60 fps पर 1080p तक। सहज स्ट्रीम के लिए आपके नेटवर्क के अनुसार ढलता है।",
+        "quality_preset_data_saver_description": "60 fps पर 720p तक, 15 Mbps की सीमा के साथ। सबसे कम डेटा इस्तेमाल करता है।",
+        "quality_preset_competitive_description": "आपका प्लान और टीवी जितनी अनुमति देते हैं, उतनी सबसे ऊँची फ़्रेम दर, सबसे कम लेटेंसी के लिए 8-बिट रंग के साथ।",
+        "quality_preset_cinematic_description": "HDR और 4:4:4 रंग के साथ सबसे ऊँचा रेज़ोल्यूशन, 100 Mbps तक। तेज़ और स्थिर कनेक्शन चाहिए।",
+        "quality_preset_custom_description": "रेज़ोल्यूशन, फ़्रेम दर, बिटरेट और रंग का आपका अपना मेल।",
+        "quality_data_estimate": "प्रति घंटा %@ GB तक",
+        "adjust_for_poor_network": "कमज़ोर नेटवर्क के अनुसार समायोजित करें",
+        "adjust_for_poor_network_description": "कनेक्शन कमज़ोर होने पर अटकने के बजाय सर्वर रेज़ोल्यूशन घटा देता है। अगली स्ट्रीम से लागू।",
     ]
 }

@@ -549,5 +549,18 @@ enum L10nNB {
         "install_to_play_storage_unavailable": "Skylagring er utilgjengelig. Sjekk lagringen i Innstillinger, og prøv igjen.",
         "install_to_play_storage_full": "Ikke nok skylagring for dette spillet. Administrer lagringen i Innstillinger, og prøv igjen.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Balansert",
+        "quality_preset_data_saver": "Datasparing",
+        "quality_preset_competitive": "Konkurranse",
+        "quality_preset_cinematic": "Filmatisk",
+        "quality_preset_custom": "Egendefinert",
+        "quality_preset_balanced_description": "Opptil 1080p ved 60 fps. Tilpasser seg nettverket for en jevn strøm.",
+        "quality_preset_data_saver_description": "Opptil 720p ved 60 fps med et tak på 15 Mbit/s. Bruker minst data.",
+        "quality_preset_competitive_description": "Den høyeste bildefrekvensen abonnementet og TV-en tillater, med 8-biters farge for lavest forsinkelse.",
+        "quality_preset_cinematic_description": "Den høyeste oppløsningen med HDR og 4:4:4-farge opptil 100 Mbit/s. Krever en rask og stabil tilkobling.",
+        "quality_preset_custom_description": "Din egen kombinasjon av oppløsning, bildefrekvens, bithastighet og farge.",
+        "quality_data_estimate": "Opptil %@ GB per time",
+        "adjust_for_poor_network": "Tilpass for dårlige nettverksforhold",
+        "adjust_for_poor_network_description": "Lar serveren senke oppløsningen når tilkoblingen sliter, i stedet for å hakke. Gjelder fra neste strøm.",
     ]
 }

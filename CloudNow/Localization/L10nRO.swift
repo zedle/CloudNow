@@ -549,5 +549,18 @@ enum L10nRO {
         "install_to_play_storage_unavailable": "Stocarea în cloud nu este disponibilă. Verifică stocarea în Configurări, apoi încearcă din nou.",
         "install_to_play_storage_full": "Spațiu insuficient în cloud pentru acest joc. Gestionează stocarea în Configurări, apoi încearcă din nou.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Echilibrat",
+        "quality_preset_data_saver": "Economisire date",
+        "quality_preset_competitive": "Competitiv",
+        "quality_preset_cinematic": "Cinematografic",
+        "quality_preset_custom": "Personalizat",
+        "quality_preset_balanced_description": "Până la 1080p la 60 fps. Se adaptează rețelei pentru un stream fluid.",
+        "quality_preset_data_saver_description": "Până la 720p la 60 fps, cu o limită de 15 Mbps. Folosește cele mai puține date.",
+        "quality_preset_competitive_description": "Cea mai mare rată de cadre permisă de abonament și de televizor, cu culoare pe 8 biți pentru latență minimă.",
+        "quality_preset_cinematic_description": "Cea mai mare rezoluție cu HDR și culoare 4:4:4 la până la 100 Mbps. Necesită o conexiune rapidă și stabilă.",
+        "quality_preset_custom_description": "Propria combinație de rezoluție, rată de cadre, rată de biți și culoare.",
+        "quality_data_estimate": "Până la %@ GB pe oră",
+        "adjust_for_poor_network": "Ajustare pentru condiții slabe de rețea",
+        "adjust_for_poor_network_description": "Permite serverului să scadă rezoluția când conexiunea are probleme, în loc să sacadeze. Se aplică de la următorul stream.",
     ]
 }

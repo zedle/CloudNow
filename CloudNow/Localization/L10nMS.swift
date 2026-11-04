@@ -549,5 +549,18 @@ enum L10nMS {
         "install_to_play_storage_unavailable": "Storan awan tidak tersedia. Semak storan dalam Tetapan, kemudian cuba lagi.",
         "install_to_play_storage_full": "Storan awan tidak mencukupi untuk permainan ini. Urus storan dalam Tetapan, kemudian cuba lagi.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Seimbang",
+        "quality_preset_data_saver": "Penjimat Data",
+        "quality_preset_competitive": "Kompetitif",
+        "quality_preset_cinematic": "Sinematik",
+        "quality_preset_custom": "Tersuai",
+        "quality_preset_balanced_description": "Sehingga 1080p pada 60 fps. Menyesuaikan dengan rangkaian anda untuk penstriman yang lancar.",
+        "quality_preset_data_saver_description": "Sehingga 720p pada 60 fps dengan had 15 Mbps. Menggunakan data paling sedikit.",
+        "quality_preset_competitive_description": "Kadar bingkai tertinggi yang dibenarkan oleh pelan dan TV anda, dengan warna 8-bit untuk kependaman terendah.",
+        "quality_preset_cinematic_description": "Resolusi tertinggi dengan HDR dan warna 4:4:4 sehingga 100 Mbps. Memerlukan sambungan yang pantas dan stabil.",
+        "quality_preset_custom_description": "Gabungan resolusi, kadar bingkai, kadar bit dan warna anda sendiri.",
+        "quality_data_estimate": "Sehingga %@ GB sejam",
+        "adjust_for_poor_network": "Laraskan untuk keadaan rangkaian yang lemah",
+        "adjust_for_poor_network_description": "Membenarkan pelayan menurunkan resolusi apabila sambungan bermasalah, bukannya tersekat-sekat. Digunakan mulai penstriman seterusnya.",
     ]
 }

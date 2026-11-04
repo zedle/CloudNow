@@ -549,5 +549,18 @@ enum L10nPTBR {
         "install_to_play_storage_unavailable": "O armazenamento na nuvem está indisponível. Verifique o armazenamento em Ajustes e tente novamente.",
         "install_to_play_storage_full": "Não há armazenamento na nuvem suficiente para este jogo. Gerencie o armazenamento em Ajustes e tente novamente.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Equilibrado",
+        "quality_preset_data_saver": "Economia de dados",
+        "quality_preset_competitive": "Competitivo",
+        "quality_preset_cinematic": "Cinematográfico",
+        "quality_preset_custom": "Personalizado",
+        "quality_preset_balanced_description": "Até 1080p a 60 fps. Adapta-se à sua rede para um streaming fluido.",
+        "quality_preset_data_saver_description": "Até 720p a 60 fps com limite de 15 Mbps. Usa menos dados.",
+        "quality_preset_competitive_description": "A maior taxa de quadros permitida pelo seu plano e pela TV, com cor de 8 bits para a menor latência.",
+        "quality_preset_cinematic_description": "A maior resolução com HDR e cor 4:4:4 a até 100 Mbps. Requer uma conexão rápida e estável.",
+        "quality_preset_custom_description": "Sua própria combinação de resolução, taxa de quadros, taxa de bits e cor.",
+        "quality_data_estimate": "Até %@ GB por hora",
+        "adjust_for_poor_network": "Ajustar para condições de rede ruins",
+        "adjust_for_poor_network_description": "Permite que o servidor reduza a resolução quando a conexão falha, em vez de travar. Vale a partir do próximo streaming.",
     ]
 }

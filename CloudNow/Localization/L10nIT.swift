@@ -549,5 +549,18 @@ enum L10nIT {
         "install_to_play_storage_unavailable": "Lo spazio cloud non è disponibile. Controlla lo spazio nelle Impostazioni, poi riprova.",
         "install_to_play_storage_full": "Spazio cloud insufficiente per questo gioco. Gestisci lo spazio nelle Impostazioni, poi riprova.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Bilanciato",
+        "quality_preset_data_saver": "Risparmio dati",
+        "quality_preset_competitive": "Competitivo",
+        "quality_preset_cinematic": "Cinematografico",
+        "quality_preset_custom": "Personalizzato",
+        "quality_preset_balanced_description": "Fino a 1080p a 60 fps. Si adatta alla tua rete per uno streaming fluido.",
+        "quality_preset_data_saver_description": "Fino a 720p a 60 fps con un limite di 15 Mbps. Consuma meno dati.",
+        "quality_preset_competitive_description": "La frequenza fotogrammi più alta consentita dal tuo abbonamento e dalla TV, con colore a 8 bit per la latenza minima.",
+        "quality_preset_cinematic_description": "La risoluzione più alta con HDR e colore 4:4:4 fino a 100 Mbps. Richiede una connessione veloce e stabile.",
+        "quality_preset_custom_description": "La tua combinazione di risoluzione, frequenza fotogrammi, bitrate e colore.",
+        "quality_data_estimate": "Fino a %@ GB all'ora",
+        "adjust_for_poor_network": "Adatta a condizioni di rete scarse",
+        "adjust_for_poor_network_description": "Il server riduce la risoluzione quando la connessione è instabile, invece di scattare. Si applica al prossimo streaming.",
     ]
 }

@@ -549,5 +549,18 @@ enum L10nRU {
         "install_to_play_storage_unavailable": "Облачное хранилище недоступно. Проверьте хранилище в настройках и повторите попытку.",
         "install_to_play_storage_full": "Недостаточно места в облачном хранилище для этой игры. Управляйте хранилищем в настройках и повторите попытку.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Сбалансированный",
+        "quality_preset_data_saver": "Экономия трафика",
+        "quality_preset_competitive": "Соревновательный",
+        "quality_preset_cinematic": "Кинематографический",
+        "quality_preset_custom": "Пользовательский",
+        "quality_preset_balanced_description": "До 1080p при 60 кадр/с. Подстраивается под вашу сеть для плавной трансляции.",
+        "quality_preset_data_saver_description": "До 720p при 60 кадр/с с ограничением 15 Мбит/с. Расходует меньше всего трафика.",
+        "quality_preset_competitive_description": "Максимальная частота кадров, которую допускают ваша подписка и телевизор, с 8-битным цветом для минимальной задержки.",
+        "quality_preset_cinematic_description": "Максимальное разрешение с HDR и цветом 4:4:4 до 100 Мбит/с. Требуется быстрое и стабильное подключение.",
+        "quality_preset_custom_description": "Собственное сочетание разрешения, частоты кадров, битрейта и цвета.",
+        "quality_data_estimate": "До %@ ГБ в час",
+        "adjust_for_poor_network": "Адаптация к плохому соединению",
+        "adjust_for_poor_network_description": "Сервер снижает разрешение при проблемах с соединением вместо подтормаживаний. Применяется со следующей трансляции.",
     ]
 }

@@ -8,13 +8,13 @@ private enum ProvidersState {
 struct LoginView: View {
     @Environment(AuthManager.self) var authManager
     @Environment(CloudGamingProviderCoordinator.self) private var providerCoordinator
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.cloudNowAccent) private var accent
     @State private var providersState: ProvidersState = .loading
     @State private var selectedProvider: LoginProvider?
 
     var body: some View {
         ZStack {
-            adaptiveBackgroundColor.ignoresSafeArea()
+            CloudNowBackdrop(isAnimated: true)
 
             switch authManager.loginPhase {
             case .idle:
@@ -44,7 +44,7 @@ struct LoginView: View {
             case .loading:
                 ProgressView()
                     .scaleEffect(1.35)
-                    .tint(.green)
+                    .tint(accent)
                     .frame(maxWidth: .infinity)
                     .frame(height: LoginProviderPicker.railHeight)
                     .accessibilityLabel(L10n.text("sign_in_to_geforce_now"))
@@ -98,7 +98,7 @@ struct LoginView: View {
         VStack(spacing: 32) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 60))
-                .foregroundStyle(colorScheme == .dark ? .yellow : .orange)
+                .foregroundStyle(.yellow)
             Text(L10n.text("sign_in_failed"))
                 .font(.title.weight(.semibold))
                 .foregroundStyle(.primary)
@@ -111,22 +111,16 @@ struct LoginView: View {
                 Button(L10n.text("try_again")) {
                     authManager.login(with: selectedProvider)
                 }
-                .buttonStyle(.bordered)
-                .tint(.green)
+                .buttonStyle(CloudNowGlowButtonStyle())
 
                 Button(L10n.text("cancel")) {
                     authManager.cancelLogin()
                     providerCoordinator.select(nil)
                 }
-                .buttonStyle(.bordered)
-                .tint(.gray)
+                .buttonStyle(CloudNowGlowButtonStyle(isProminent: false))
             }
         }
         .padding(80)
-    }
-
-    private var adaptiveBackgroundColor: Color {
-        colorScheme == .dark ? .black : .white
     }
 }
 
@@ -134,17 +128,13 @@ struct LoginProviderPrompt<ProviderContent: View>: View {
     let onChooseAnotherService: () -> Void
     @ViewBuilder let providerContent: ProviderContent
 
-    @Environment(\.colorScheme) private var colorScheme
-
     var body: some View {
         ZStack {
-            adaptiveBackgroundColor.ignoresSafeArea()
+            CloudNowBackdrop(isAnimated: true)
 
             VStack(spacing: 36) {
                 CloudNowBrandHeader(
-                    subtitle: L10n.text("app_tagline"),
-                    primaryForegroundColor: .primary,
-                    secondaryForegroundColor: .secondary
+                    subtitle: L10n.text("app_tagline")
                 )
 
                 VStack(spacing: 18) {
@@ -174,10 +164,6 @@ struct LoginProviderPrompt<ProviderContent: View>: View {
             .padding(.horizontal, 72)
             .padding(.vertical, 48)
         }
-    }
-
-    private var adaptiveBackgroundColor: Color {
-        colorScheme == .dark ? .black : .white
     }
 }
 
@@ -246,7 +232,7 @@ private struct LoginProviderChoiceLabel: View {
     let isFocused: Bool
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.cloudNowAccent) private var accent
 
     private let cardShape = RoundedRectangle(
         cornerRadius: 20,
@@ -258,7 +244,8 @@ private struct LoginProviderChoiceLabel: View {
             HStack {
                 Image(systemName: provider.isNvidiaDirect ? "sparkles.tv.fill" : "network")
                     .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(isFocused ? .black : .green)
+                    .foregroundStyle(isFocused ? .black : accent)
+                    .shadow(color: accent.opacity(isFocused ? 0 : 0.6), radius: 10)
                     .accessibilityHidden(true)
 
                 Spacer()
@@ -270,7 +257,7 @@ private struct LoginProviderChoiceLabel: View {
                     .padding(.vertical, 4)
                     .foregroundStyle(isFocused ? .black.opacity(0.7) : .secondary)
                     .background(
-                        isFocused ? Color.black.opacity(0.08) : idleBadgeColor,
+                        isFocused ? Color.black.opacity(0.08) : CloudNowTheme.glassFill,
                         in: Capsule()
                     )
             }
@@ -291,23 +278,30 @@ private struct LoginProviderChoiceLabel: View {
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(isFocused ? .black.opacity(0.7) : .secondary)
         }
-        .foregroundStyle(isFocused ? .black : .primary)
+        .foregroundStyle(isFocused ? .black : .white)
         .padding(.horizontal, 22)
         .padding(.vertical, 16)
         .frame(width: 320, height: 184, alignment: .leading)
-        .background(
-            isFocused ? Color.green : idleBackgroundColor,
-            in: cardShape
-        )
+        .background {
+            cardShape.fill(
+                isFocused
+                    ? AnyShapeStyle(LinearGradient(
+                        colors: [accent, accent.opacity(0.75)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    : AnyShapeStyle(CloudNowTheme.glassFill)
+            )
+        }
         .overlay {
             cardShape.strokeBorder(
-                isFocused ? Color.white.opacity(0.8) : idleBorderColor,
+                isFocused ? Color.white.opacity(0.8) : CloudNowTheme.glassStroke,
                 lineWidth: isFocused ? 3 : 1
             )
         }
         .shadow(
-            color: isFocused ? Color.green.opacity(0.3) : idleShadowColor,
-            radius: isFocused ? 20 : 8,
+            color: isFocused ? accent.opacity(0.55) : .black.opacity(0.3),
+            radius: isFocused ? 28 : 8,
             y: isFocused ? 8 : 4
         )
         .scaleEffect(isFocused && !reduceMotion ? 1.04 : 1)
@@ -316,21 +310,5 @@ private struct LoginProviderChoiceLabel: View {
             value: isFocused
         )
         .contentShape(cardShape)
-    }
-
-    private var idleBackgroundColor: Color {
-        colorScheme == .dark ? .white.opacity(0.08) : .black.opacity(0.06)
-    }
-
-    private var idleBadgeColor: Color {
-        colorScheme == .dark ? .white.opacity(0.08) : .black.opacity(0.06)
-    }
-
-    private var idleBorderColor: Color {
-        colorScheme == .dark ? .white.opacity(0.2) : .black.opacity(0.16)
-    }
-
-    private var idleShadowColor: Color {
-        .black.opacity(colorScheme == .dark ? 0.2 : 0.12)
     }
 }

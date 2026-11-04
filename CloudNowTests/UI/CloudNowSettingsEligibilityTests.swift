@@ -92,7 +92,7 @@ struct CloudNowSettingsEligibilityTests {
             )
 
             #expect(eligibility == [
-                GFNFrameRateEligibility(framesPerSecond: 30, restriction: .membership),
+                GFNFrameRateEligibility(framesPerSecond: 30, restriction: nil),
                 GFNFrameRateEligibility(framesPerSecond: 60, restriction: nil),
                 GFNFrameRateEligibility(framesPerSecond: 120, restriction: .membership),
             ])
@@ -110,9 +110,29 @@ struct CloudNowSettingsEligibilityTests {
             )
 
             #expect(eligibility == [
-                GFNFrameRateEligibility(framesPerSecond: 30, restriction: .membership),
+                GFNFrameRateEligibility(framesPerSecond: 30, restriction: nil),
                 GFNFrameRateEligibility(framesPerSecond: 60, restriction: nil),
                 GFNFrameRateEligibility(framesPerSecond: 120, restriction: nil),
+            ])
+        }
+
+        @Test("A higher entitled max at 4K allows lower rates within the display limit")
+        func fourKCeilingAllowsSixtyWithinDisplayLimit() {
+            let eligibility = GFNSettingsEligibilityPolicy.frameRates(
+                entitledResolutions: [
+                    entitlement(width: 3840, height: 2160, framesPerSecond: 120),
+                ],
+                selectedResolution: "3840x2160",
+                maximumFramesPerSecond: 60
+            )
+
+            #expect(eligibility == [
+                GFNFrameRateEligibility(framesPerSecond: 30, restriction: nil),
+                GFNFrameRateEligibility(framesPerSecond: 60, restriction: nil),
+                GFNFrameRateEligibility(
+                    framesPerSecond: 120,
+                    restriction: .display(maximumFramesPerSecond: 60)
+                ),
             ])
         }
 

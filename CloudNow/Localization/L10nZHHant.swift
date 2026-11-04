@@ -549,5 +549,18 @@ enum L10nZHHant {
         "install_to_play_storage_unavailable": "雲端儲存空間無法使用。請在設定中檢查儲存空間，然後再試一次。",
         "install_to_play_storage_full": "雲端儲存空間不足，無法安裝此遊戲。請在設定中管理儲存空間，然後再試一次。",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "均衡",
+        "quality_preset_data_saver": "節省數據",
+        "quality_preset_competitive": "競技",
+        "quality_preset_cinematic": "劇院",
+        "quality_preset_custom": "自訂",
+        "quality_preset_balanced_description": "最高 1080p、60 fps。依網路自動調整，確保串流順暢。",
+        "quality_preset_data_saver_description": "最高 720p、60 fps，上限 15 Mbps。數據用量最少。",
+        "quality_preset_competitive_description": "你的會員方案與電視所允許的最高影格率，搭配 8 位元色彩以達到最低延遲。",
+        "quality_preset_cinematic_description": "最高解析度，支援 HDR 與 4:4:4 色彩，最高 100 Mbps。需要快速穩定的網路連線。",
+        "quality_preset_custom_description": "自行組合解析度、影格率、位元率與色彩。",
+        "quality_data_estimate": "每小時最多 %@ GB",
+        "adjust_for_poor_network": "網路不佳時自動調整",
+        "adjust_for_poor_network_description": "連線不穩時由伺服器降低解析度，而不是卡頓。從下一次串流開始生效。",
     ]
 }

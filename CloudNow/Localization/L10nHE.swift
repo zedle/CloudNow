@@ -549,5 +549,18 @@ enum L10nHE {
         "install_to_play_storage_unavailable": "האחסון בענן אינו זמין. בדקו את האחסון בהגדרות ונסו שוב.",
         "install_to_play_storage_full": "אין מספיק אחסון בענן למשחק הזה. נהלו את האחסון בהגדרות ונסו שוב.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "מאוזן",
+        "quality_preset_data_saver": "חיסכון בנתונים",
+        "quality_preset_competitive": "תחרותי",
+        "quality_preset_cinematic": "קולנועי",
+        "quality_preset_custom": "מותאם אישית",
+        "quality_preset_balanced_description": "עד 1080p ב-60 fps. מסתגל לרשת שלך לשידור חלק.",
+        "quality_preset_data_saver_description": "עד 720p ב-60 fps עם תקרה של 15 Mbps. צורך הכי מעט נתונים.",
+        "quality_preset_competitive_description": "קצב הפריימים הגבוה ביותר שהמנוי והטלוויזיה מאפשרים, עם צבע 8 סיביות לשיהוי הנמוך ביותר.",
+        "quality_preset_cinematic_description": "הרזולוציה הגבוהה ביותר עם HDR וצבע 4:4:4 עד 100 Mbps. דורש חיבור מהיר ויציב.",
+        "quality_preset_custom_description": "שילוב משלך של רזולוציה, קצב פריימים, קצב נתונים וצבע.",
+        "quality_data_estimate": "עד %@ GB לשעה",
+        "adjust_for_poor_network": "התאמה לתנאי רשת חלשים",
+        "adjust_for_poor_network_description": "מאפשר לשרת להוריד רזולוציה כשהחיבור מתקשה, במקום גמגום. חל מהשידור הבא.",
     ]
 }

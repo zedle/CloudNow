@@ -549,5 +549,18 @@ enum L10nJA {
         "install_to_play_storage_unavailable": "クラウドストレージを利用できません。設定でストレージを確認してから、もう一度お試しください。",
         "install_to_play_storage_full": "このゲームに必要なクラウドストレージの容量が不足しています。設定でストレージを管理してから、もう一度お試しください。",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "バランス",
+        "quality_preset_data_saver": "データセーバー",
+        "quality_preset_competitive": "競技",
+        "quality_preset_cinematic": "シネマティック",
+        "quality_preset_custom": "カスタム",
+        "quality_preset_balanced_description": "最大 1080p・60 fps。ネットワークに合わせてスムーズにストリーミングします。",
+        "quality_preset_data_saver_description": "最大 720p・60 fps、上限 15 Mbps。データ使用量を最小限に抑えます。",
+        "quality_preset_competitive_description": "プランとテレビで許可される最高フレームレート。8 ビットカラーで遅延を最小限にします。",
+        "quality_preset_cinematic_description": "HDR と 4:4:4 カラーで最高解像度、最大 100 Mbps。高速で安定した接続が必要です。",
+        "quality_preset_custom_description": "解像度、フレームレート、ビットレート、カラーを自由に組み合わせます。",
+        "quality_data_estimate": "1 時間あたり最大 %@ GB",
+        "adjust_for_poor_network": "ネットワーク状況が悪いときに調整",
+        "adjust_for_poor_network_description": "接続が不安定なとき、カクつく代わりにサーバーが解像度を下げます。次回のストリームから適用されます。",
     ]
 }

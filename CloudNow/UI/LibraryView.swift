@@ -192,7 +192,7 @@ struct GameCardLabel: View {
                     title: L10n.text("in_library"),
                     systemImage: nil,
                     foregroundColor: .black,
-                    backgroundColor: .green.opacity(0.85),
+                    backgroundColor: CloudNowTheme.geForceNowGreen.opacity(0.9),
                     isProminent: true
                 )
                 : nil,

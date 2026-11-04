@@ -549,5 +549,18 @@ enum L10nSV {
         "install_to_play_storage_unavailable": "Molnlagringen är inte tillgänglig. Kontrollera lagringen i Inställningar och försök igen.",
         "install_to_play_storage_full": "Det finns inte tillräckligt med molnlagring för det här spelet. Hantera lagringen i Inställningar och försök igen.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Balanserad",
+        "quality_preset_data_saver": "Datasparläge",
+        "quality_preset_competitive": "Tävling",
+        "quality_preset_cinematic": "Filmisk",
+        "quality_preset_custom": "Anpassad",
+        "quality_preset_balanced_description": "Upp till 1080p i 60 fps. Anpassar sig efter ditt nätverk för en jämn ström.",
+        "quality_preset_data_saver_description": "Upp till 720p i 60 fps med ett tak på 15 Mbit/s. Använder minst data.",
+        "quality_preset_competitive_description": "Den högsta bildfrekvens som ditt abonnemang och din tv tillåter, med 8-bitars färg för lägsta latens.",
+        "quality_preset_cinematic_description": "Den högsta upplösningen med HDR och 4:4:4-färg upp till 100 Mbit/s. Kräver en snabb och stabil anslutning.",
+        "quality_preset_custom_description": "Din egen kombination av upplösning, bildfrekvens, bithastighet och färg.",
+        "quality_data_estimate": "Upp till %@ GB per timme",
+        "adjust_for_poor_network": "Anpassa efter dåliga nätverksförhållanden",
+        "adjust_for_poor_network_description": "Låter servern sänka upplösningen när anslutningen sviktar i stället för att hacka. Gäller från nästa ström.",
     ]
 }

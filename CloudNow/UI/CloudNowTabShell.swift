@@ -407,6 +407,8 @@ struct CloudNowTabShell<Selection: CloudNowTabSelection, Content: TabContent<Sel
 
     var body: some View {
         ZStack(alignment: .topLeading) {
+            CloudNowBackdrop()
+
             TabView(selection: $selection) {
                 content
             }

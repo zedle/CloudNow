@@ -1187,6 +1187,37 @@ final class CloudNowUITests: XCTestCase {
     }
 
     @MainActor
+    func testStreamQualityPresetAppliesAndManualBitrateEditSwitchesToCustom() {
+        let app = makeApp()
+        app.launch()
+        openSettings(in: app)
+        XCTAssertTrue(element("settings-screen", in: app).waitForExistence(timeout: 3))
+
+        let focusedPreset = app.buttons.matching(NSPredicate(
+            format: "hasFocus == true AND identifier BEGINSWITH %@",
+            "settings.stream-quality.preset."
+        )).firstMatch
+        for _ in 0 ..< 8 where !focusedPreset.exists {
+            XCUIRemote.shared.press(.down)
+        }
+        XCTAssertTrue(focusedPreset.waitForExistence(timeout: 3))
+
+        let dataSaver = app.buttons["settings.stream-quality.preset.dataSaver"]
+        focusAndSelect(dataSaver, directions: [.right, .left], pressesPerDirection: 5)
+        let summary = element("settings.stream-quality.preset.summary", in: app)
+        XCTAssertTrue(waitForAccessibilityText("15 Mbps", in: summary))
+        XCTAssertTrue(dataSaver.isSelected)
+        attachScreenshot(of: app, named: "GFN stream quality Data Saver preset")
+
+        let increase = app.buttons["settings.stream-quality.bitrate.increase"]
+        focusAndSelect(increase, directions: [.down], pressesPerDirection: 12)
+        XCTAssertTrue(waitForAccessibilityText("20 Mbps", in: summary))
+        XCTAssertTrue(app.buttons["settings.stream-quality.preset.custom"].isSelected)
+        XCTAssertFalse(dataSaver.isSelected)
+        attachScreenshot(of: app, named: "GFN stream quality custom bitrate")
+    }
+
+    @MainActor
     func testStoreConnectionsShowCapabilitiesAndCancelAuthorization() {
         let app = makeApp()
         app.launch()

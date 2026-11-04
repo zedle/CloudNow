@@ -549,5 +549,18 @@ enum L10nHU {
         "install_to_play_storage_unavailable": "A felhőtárhely nem érhető el. Ellenőrizd a tárhelyet a Beállításokban, majd próbáld újra.",
         "install_to_play_storage_full": "Nincs elég felhőtárhely ehhez a játékhoz. Kezeld a tárhelyet a Beállításokban, majd próbáld újra.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Kiegyensúlyozott",
+        "quality_preset_data_saver": "Adattakarékos",
+        "quality_preset_competitive": "Versenyző",
+        "quality_preset_cinematic": "Filmszerű",
+        "quality_preset_custom": "Egyéni",
+        "quality_preset_balanced_description": "Legfeljebb 1080p 60 fps-sel. Alkalmazkodik a hálózathoz a gördülékeny streamért.",
+        "quality_preset_data_saver_description": "Legfeljebb 720p 60 fps-sel, 15 Mbps-os felső határral. A legkevesebb adatot használja.",
+        "quality_preset_competitive_description": "Az előfizetésed és a tévéd által engedett legmagasabb képkockasebesség, 8 bites színekkel a legkisebb késleltetésért.",
+        "quality_preset_cinematic_description": "A legmagasabb felbontás HDR-rel és 4:4:4 színekkel, legfeljebb 100 Mbps-mal. Gyors, stabil kapcsolatot igényel.",
+        "quality_preset_custom_description": "A felbontás, képkockasebesség, bitráta és színek saját kombinációja.",
+        "quality_data_estimate": "Legfeljebb %@ GB óránként",
+        "adjust_for_poor_network": "Alkalmazkodás gyenge hálózati körülményekhez",
+        "adjust_for_poor_network_description": "A szerver akadozás helyett csökkenti a felbontást, ha a kapcsolat gyengül. A következő streamtől érvényes.",
     ]
 }

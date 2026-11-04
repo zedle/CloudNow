@@ -167,6 +167,7 @@ final class VideoSurfaceView: UIView {
     private var activeRemoteTouch: UITouch?
     private var lastRemoteTouchLocation: CGPoint?
     private var remoteSelectMouseDown = false
+    private var displayLink: CADisplayLink?
 
     private static let remoteTouchSensitivity: CGFloat = 1.0
 
@@ -243,6 +244,7 @@ final class VideoSurfaceView: UIView {
     func prepareForDismantle() {
         resignFirstResponder()
         cancelRemoteMouseTracking()
+        stopDisplayLink()
         videoTrack = nil
         renderer.teardown()
         notificationTokens.forEach(NotificationCenter.default.removeObserver)
@@ -296,6 +298,7 @@ final class VideoSurfaceView: UIView {
 
     isolated deinit {
         notificationTokens.forEach(NotificationCenter.default.removeObserver)
+        displayLink?.invalidate()
     }
 
     /// Become first responder as soon as the view enters a window so hardware
@@ -304,7 +307,32 @@ final class VideoSurfaceView: UIView {
         super.didMoveToWindow()
         if window != nil {
             becomeFirstResponder()
+            startDisplayLink()
+        } else {
+            stopDisplayLink()
         }
+    }
+
+    // MARK: - Display Refresh
+
+    private func startDisplayLink() {
+        guard displayLink == nil else { return }
+        let target = DisplayLinkTarget()
+        target.owner = self
+        let link = CADisplayLink(target: target, selector: #selector(DisplayLinkTarget.displayLinkDidFire(_:)))
+        link.add(to: .main, forMode: .common)
+        displayLink = link
+    }
+
+    private func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+
+    fileprivate func displayDidRefresh(_ link: CADisplayLink) {
+        let interval = link.targetTimestamp - link.timestamp
+        guard interval > 0 else { return }
+        renderer.displayDidRefresh(refreshRate: Int((1 / interval).rounded()))
     }
 
     // MARK: - First Responder / Keyboard
@@ -464,6 +492,15 @@ final class VideoSurfaceView: UIView {
     }
 }
 
+/// CADisplayLink retains its target, so the view is held weakly to avoid a cycle.
+private final class DisplayLinkTarget: NSObject {
+    weak var owner: VideoSurfaceView?
+
+    @objc func displayLinkDidFire(_ link: CADisplayLink) {
+        owner?.displayDidRefresh(link)
+    }
+}
+
 // MARK: - WebRTC Video Renderer
 
 /// Implements LKRTCVideoRenderer to receive decoded WebRTC frames and feed them
@@ -494,6 +531,7 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
         var pacer: AdaptiveFramePacer?
         var pacingSize: CGSize?
         var pendingDeadline: TimeInterval?
+        var displayLockedQueue: DisplayLockedFrameQueue<PendingFrame>?
     }
 
     var sampleBufferRenderer: AVSampleBufferVideoRenderer?
@@ -543,6 +581,10 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
         let pendingFrame = PendingFrame(frame: frame, trace: trace, arrivalTime: Self.now)
         let submission = state.withLock { state -> (PendingFrame?, UInt64?) in
             guard !state.isFlushing else { return (pendingFrame, nil) }
+            if state.displayLockedQueue != nil {
+                guard !state.mailbox.isTerminated else { return (pendingFrame, nil) }
+                return (state.displayLockedQueue?.push(pendingFrame), nil)
+            }
             if state.pacer?.observe(
                 timestamp: UInt32(bitPattern: frame.timeStamp),
                 arrivalTime: pendingFrame.arrivalTime
@@ -567,8 +609,60 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
         }
     }
 
+    /// Called once per display refresh. At or below this rate a refresh lasts long enough
+    /// for network jitter to land two frames in it, so frames wait for their own refresh.
+    func displayDidRefresh(refreshRate: Int) {
+        let locksPresentation = refreshRate <= Self.displayLockedMaximumRefreshRate
+        let needsWork = state.withLock { locksPresentation || $0.displayLockedQueue != nil }
+        guard needsWork else { return }
+        renderQueue.async { [weak self] in
+            self?.presentDisplayLockedFrame(refreshRate: refreshRate, locksPresentation: locksPresentation)
+        }
+    }
+
+    private static let displayLockedMaximumRefreshRate = 30
+
     private static var now: TimeInterval {
         Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000_000
+    }
+
+    private func presentDisplayLockedFrame(refreshRate: Int, locksPresentation: Bool) {
+        guard let sampleBufferRenderer else { return }
+        if sampleBufferRenderer.status == .failed || sampleBufferRenderer.requiresFlushToResumeDecoding {
+            recoverAfterFailure()
+            return
+        }
+        let release = state.withLock { state -> (PendingFrame?, [PendingFrame], UInt64) in
+            guard locksPresentation else {
+                var queued = state.displayLockedQueue?.removeAll() ?? []
+                state.displayLockedQueue = nil
+                guard !state.isFlushing, let newest = queued.popLast() else {
+                    return (nil, queued, state.generation)
+                }
+                return (newest, queued, state.generation)
+            }
+            if state.displayLockedQueue == nil {
+                var queue = DisplayLockedFrameQueue<PendingFrame>(backlogTrimRefreshes: refreshRate)
+                if let pending = state.mailbox.take() {
+                    _ = queue.push(pending)
+                }
+                state.displayLockedQueue = queue
+                state.drainSchedule.finish()
+                state.pacer?.reset()
+                state.pendingDeadline = nil
+                state.pacingSize = nil
+            }
+            guard !state.isFlushing, let release = state.displayLockedQueue?.releaseForRefresh() else {
+                return (nil, [], state.generation)
+            }
+            return (release.presented, release.trimmed.map { [$0] } ?? [], state.generation)
+        }
+        for dropped in release.1 {
+            diagnostics.recordDrop(dropped.trace)
+        }
+        if let frame = release.0 {
+            process(frame, generation: release.2, renderer: sampleBufferRenderer)
+        }
     }
 
     private func scheduleDrain(_ identifier: UInt64, deadline: TimeInterval? = nil) {
@@ -759,8 +853,10 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
     }
 
     func teardown() {
-        let result = state.withLock { state -> (VideoRendererFlushRequest?, PendingFrame?) in
-            guard !state.mailbox.isTerminated else { return (nil, nil) }
+        let result = state.withLock { state -> (VideoRendererFlushRequest?, PendingFrame?, [PendingFrame]) in
+            guard !state.mailbox.isTerminated else { return (nil, nil, []) }
+            let queued = state.displayLockedQueue?.removeAll() ?? []
+            state.displayLockedQueue = nil
             state.generation &+= 1
             state.isFlushing = true
             state.inspectionCache.reset()
@@ -777,9 +873,12 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
                 request,
                 activeEnqueues: state.activeEnqueues
             )
-            return (requestToRun, state.mailbox.teardown())
+            return (requestToRun, state.mailbox.teardown(), queued)
         }
         if let dropped = result.1 {
+            diagnostics.recordDrop(dropped.trace)
+        }
+        for dropped in result.2 {
             diagnostics.recordDrop(dropped.trace)
         }
         if let requestToRun = result.0 {
@@ -829,10 +928,11 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
 
     private func flush(preservingDisplayedImage: Bool, recordFailure: Bool) {
         guard sampleBufferRenderer != nil else { return }
-        let result = state.withLock { state -> (Bool, VideoRendererFlushRequest?, PendingFrame?) in
+        let result = state.withLock { state -> (Bool, VideoRendererFlushRequest?, PendingFrame?, [PendingFrame]) in
             guard !state.isFlushing, !state.mailbox.isTerminated else {
-                return (false, nil, nil)
+                return (false, nil, nil, [])
             }
+            let queued = state.displayLockedQueue?.removeAll() ?? []
             state.isFlushing = true
             state.generation &+= 1
             state.inspectionCache.reset()
@@ -850,11 +950,14 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
                 request,
                 activeEnqueues: state.activeEnqueues
             )
-            return (true, requestToRun, dropped)
+            return (true, requestToRun, dropped, queued)
         }
         guard result.0 else { return }
 
         if let dropped = result.2 {
+            diagnostics.recordDrop(dropped.trace)
+        }
+        for dropped in result.3 {
             diagnostics.recordDrop(dropped.trace)
         }
 

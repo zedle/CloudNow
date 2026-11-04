@@ -107,7 +107,7 @@ struct CloudNowApp: App {
         #endif
 
         BGTaskScheduler.shared.register(
-            forTaskWithIdentifier: "com.owenselles.CloudNow.tokenRefresh",
+            forTaskWithIdentifier: "com.zedle.CloudNow.tokenRefresh",
             using: nil
         ) { [authManager, providerCoordinator] task in
             Task { @MainActor in
@@ -141,6 +141,9 @@ struct CloudNowApp: App {
                     productionRoot
                 #endif
             }
+            .cloudNowTheme(
+                accent: (providerCoordinator.selectedProvider ?? .geForceNow).themeAccent
+            )
             .environment(cloudSessionCoordinator)
             .environment(
                 \.layoutDirection,
@@ -212,6 +215,7 @@ struct CloudNowApp: App {
         .environment(authManager)
         .environment(providerCoordinator)
         .environment(xboxAuthManager)
+        .preferredColorScheme(.dark)
         .task {
             await restoreInitialProviderState()
         }
@@ -363,7 +367,7 @@ private struct ProviderActivationIdentity: Hashable {
 private struct AuthRestorationView: View {
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            CloudNowBackdrop()
             ProgressView()
                 .tint(.secondary)
         }

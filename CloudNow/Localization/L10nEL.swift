@@ -549,5 +549,18 @@ enum L10nEL {
         "install_to_play_storage_unavailable": "Ο χώρος στο cloud δεν είναι διαθέσιμος. Ελέγξτε τον χώρο στις Ρυθμίσεις και δοκιμάστε ξανά.",
         "install_to_play_storage_full": "Δεν υπάρχει αρκετός χώρος στο cloud για αυτό το παιχνίδι. Διαχειριστείτε τον χώρο στις Ρυθμίσεις και δοκιμάστε ξανά.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Ισορροπημένο",
+        "quality_preset_data_saver": "Εξοικονόμηση δεδομένων",
+        "quality_preset_competitive": "Ανταγωνιστικό",
+        "quality_preset_cinematic": "Κινηματογραφικό",
+        "quality_preset_custom": "Προσαρμοσμένο",
+        "quality_preset_balanced_description": "Έως 1080p στα 60 fps. Προσαρμόζεται στο δίκτυό σας για ομαλή ροή.",
+        "quality_preset_data_saver_description": "Έως 720p στα 60 fps με όριο 15 Mbps. Χρησιμοποιεί τα λιγότερα δεδομένα.",
+        "quality_preset_competitive_description": "Ο υψηλότερος ρυθμός καρέ που επιτρέπουν η συνδρομή και η τηλεόρασή σας, με χρώμα 8 bit για τη χαμηλότερη καθυστέρηση.",
+        "quality_preset_cinematic_description": "Η υψηλότερη ανάλυση με HDR και χρώμα 4:4:4 έως 100 Mbps. Απαιτεί γρήγορη και σταθερή σύνδεση.",
+        "quality_preset_custom_description": "Ο δικός σας συνδυασμός ανάλυσης, ρυθμού καρέ, ρυθμού bit και χρώματος.",
+        "quality_data_estimate": "Έως %@ GB ανά ώρα",
+        "adjust_for_poor_network": "Προσαρμογή σε κακές συνθήκες δικτύου",
+        "adjust_for_poor_network_description": "Ο διακομιστής μειώνει την ανάλυση όταν η σύνδεση δυσκολεύεται, αντί για κολλήματα. Ισχύει από την επόμενη ροή.",
     ]
 }

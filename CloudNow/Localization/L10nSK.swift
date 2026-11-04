@@ -549,5 +549,18 @@ enum L10nSK {
         "install_to_play_storage_unavailable": "Cloudové úložisko nie je dostupné. Skontrolujte úložisko v Nastaveniach a skúste to znova.",
         "install_to_play_storage_full": "Pre túto hru nie je v cloude dosť miesta. Spravujte úložisko v Nastaveniach a skúste to znova.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Vyvážený",
+        "quality_preset_data_saver": "Úspora dát",
+        "quality_preset_competitive": "Súťažný",
+        "quality_preset_cinematic": "Filmový",
+        "quality_preset_custom": "Vlastný",
+        "quality_preset_balanced_description": "Až 1080p pri 60 fps. Prispôsobí sa vašej sieti pre plynulý stream.",
+        "quality_preset_data_saver_description": "Až 720p pri 60 fps s limitom 15 Mb/s. Spotrebuje najmenej dát.",
+        "quality_preset_competitive_description": "Najvyššia snímková frekvencia, ktorú povoľuje vaše predplatné a televízor, s 8-bitovou farbou pre najnižšiu latenciu.",
+        "quality_preset_cinematic_description": "Najvyššie rozlíšenie s HDR a farbou 4:4:4 až do 100 Mb/s. Vyžaduje rýchle a stabilné pripojenie.",
+        "quality_preset_custom_description": "Vlastná kombinácia rozlíšenia, snímkovej frekvencie, dátového toku a farieb.",
+        "quality_data_estimate": "Až %@ GB za hodinu",
+        "adjust_for_poor_network": "Prispôsobiť zlým podmienkam siete",
+        "adjust_for_poor_network_description": "Server zníži rozlíšenie, keď pripojenie slabne, namiesto sekania. Platí od ďalšieho streamu.",
     ]
 }

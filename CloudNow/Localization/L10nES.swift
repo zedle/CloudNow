@@ -549,5 +549,18 @@ enum L10nES {
         "install_to_play_storage_unavailable": "El almacenamiento en la nube no está disponible. Revisa el almacenamiento en Ajustes e inténtalo de nuevo.",
         "install_to_play_storage_full": "No hay suficiente almacenamiento en la nube para este juego. Gestiona el almacenamiento en Ajustes e inténtalo de nuevo.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Equilibrado",
+        "quality_preset_data_saver": "Ahorro de datos",
+        "quality_preset_competitive": "Competitivo",
+        "quality_preset_cinematic": "Cinematográfico",
+        "quality_preset_custom": "Personalizado",
+        "quality_preset_balanced_description": "Hasta 1080p a 60 fps. Se adapta a tu red para una transmisión fluida.",
+        "quality_preset_data_saver_description": "Hasta 720p a 60 fps con un límite de 15 Mbps. Usa la menor cantidad de datos.",
+        "quality_preset_competitive_description": "La mayor tasa de fotogramas que permiten tu plan y tu TV, con color de 8 bits para la menor latencia.",
+        "quality_preset_cinematic_description": "La máxima resolución con HDR y color 4:4:4 hasta 100 Mbps. Requiere una conexión rápida y estable.",
+        "quality_preset_custom_description": "Tu propia combinación de resolución, tasa de fotogramas, tasa de bits y color.",
+        "quality_data_estimate": "Hasta %@ GB por hora",
+        "adjust_for_poor_network": "Ajustar a malas condiciones de red",
+        "adjust_for_poor_network_description": "Permite que el servidor reduzca la resolución cuando la conexión falla, en lugar de entrecortarse. Se aplica en la próxima transmisión.",
     ]
 }

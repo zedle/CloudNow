@@ -8,6 +8,7 @@ struct HomeView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(CloudSessionCoordinator.self) private var cloudSessionCoordinator
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.cloudNowAccent) private var accent
     @State private var carouselRequest: CarouselRequest?
     @State private var carouselSourceFocus: HomeGameFocus?
     @State private var restoreScrollTarget: HomeGameFocus?
@@ -305,7 +306,7 @@ struct HomeView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(32)
-        .background(.thinMaterial, in: .rect(cornerRadius: 20))
+        .cloudNowGlass(cornerRadius: 20)
         .padding(.horizontal, 60)
         .padding(.bottom, 32)
         .accessibilityIdentifier("home.session-status")
@@ -414,16 +415,15 @@ struct HomeView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 10) {
-                Text(title)
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(.white)
+                CloudNowSectionTitle(title: title)
                 if let badge {
                     Text(badge)
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.black)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(.green, in: Capsule())
+                        .background(accent, in: Capsule())
+                        .shadow(color: accent.opacity(0.7), radius: 8)
                 }
             }
             .padding(.horizontal, 60)

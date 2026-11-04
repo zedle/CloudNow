@@ -549,5 +549,18 @@ enum L10nEN {
         "install_to_play_storage_unavailable": "Cloud storage is unavailable. Check storage in Settings, then try again.",
         "install_to_play_storage_full": "Not enough cloud storage for this game. Manage storage in Settings, then try again.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Balanced",
+        "quality_preset_data_saver": "Data Saver",
+        "quality_preset_competitive": "Competitive",
+        "quality_preset_cinematic": "Cinematic",
+        "quality_preset_custom": "Custom",
+        "quality_preset_balanced_description": "Up to 1080p at 60 fps. Adapts to your network for a smooth stream.",
+        "quality_preset_data_saver_description": "Up to 720p at 60 fps with a 15 Mbps ceiling. Uses the least data.",
+        "quality_preset_competitive_description": "The highest frame rate your plan and TV allow, with 8-bit color for the lowest latency.",
+        "quality_preset_cinematic_description": "The highest resolution with HDR and 4:4:4 color at up to 100 Mbps. Needs a fast, stable connection.",
+        "quality_preset_custom_description": "Your own mix of resolution, frame rate, bitrate, and color.",
+        "quality_data_estimate": "Up to %@ GB per hour",
+        "adjust_for_poor_network": "Adjust for Poor Network Conditions",
+        "adjust_for_poor_network_description": "Lets the server lower resolution when your connection struggles instead of stuttering. Applies to the next stream.",
     ]
 }

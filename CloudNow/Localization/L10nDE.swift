@@ -549,5 +549,18 @@ enum L10nDE {
         "install_to_play_storage_unavailable": "Cloud-Speicher ist nicht verfügbar. Prüfe den Speicher in den Einstellungen und versuche es erneut.",
         "install_to_play_storage_full": "Nicht genügend Cloud-Speicher für dieses Spiel. Verwalte den Speicher in den Einstellungen und versuche es erneut.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Ausgewogen",
+        "quality_preset_data_saver": "Datensparmodus",
+        "quality_preset_competitive": "Kompetitiv",
+        "quality_preset_cinematic": "Kinoqualität",
+        "quality_preset_custom": "Benutzerdefiniert",
+        "quality_preset_balanced_description": "Bis zu 1080p bei 60 fps. Passt sich deinem Netzwerk für einen flüssigen Stream an.",
+        "quality_preset_data_saver_description": "Bis zu 720p bei 60 fps mit maximal 15 Mbit/s. Verbraucht am wenigsten Daten.",
+        "quality_preset_competitive_description": "Die höchste Bildrate, die dein Abo und dein TV erlauben, mit 8-Bit-Farbe für minimale Latenz.",
+        "quality_preset_cinematic_description": "Die höchste Auflösung mit HDR und 4:4:4-Farbe bei bis zu 100 Mbit/s. Erfordert eine schnelle, stabile Verbindung.",
+        "quality_preset_custom_description": "Deine eigene Kombination aus Auflösung, Bildrate, Bitrate und Farbe.",
+        "quality_data_estimate": "Bis zu %@ GB pro Stunde",
+        "adjust_for_poor_network": "An schlechte Netzwerkbedingungen anpassen",
+        "adjust_for_poor_network_description": "Der Server senkt die Auflösung bei Verbindungsproblemen, statt zu ruckeln. Gilt ab dem nächsten Stream.",
     ]
 }

@@ -549,5 +549,18 @@ enum L10nNL {
         "install_to_play_storage_unavailable": "Cloudopslag is niet beschikbaar. Controleer de opslag in Instellingen en probeer het opnieuw.",
         "install_to_play_storage_full": "Onvoldoende cloudopslag voor deze game. Beheer de opslag in Instellingen en probeer het opnieuw.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Gebalanceerd",
+        "quality_preset_data_saver": "Databesparing",
+        "quality_preset_competitive": "Competitief",
+        "quality_preset_cinematic": "Filmisch",
+        "quality_preset_custom": "Aangepast",
+        "quality_preset_balanced_description": "Tot 1080p bij 60 fps. Past zich aan je netwerk aan voor een vloeiende stream.",
+        "quality_preset_data_saver_description": "Tot 720p bij 60 fps met een maximum van 15 Mbps. Verbruikt de minste data.",
+        "quality_preset_competitive_description": "De hoogste framerate die je abonnement en tv toestaan, met 8-bits kleur voor de laagste latentie.",
+        "quality_preset_cinematic_description": "De hoogste resolutie met HDR en 4:4:4-kleur tot 100 Mbps. Vereist een snelle, stabiele verbinding.",
+        "quality_preset_custom_description": "Je eigen combinatie van resolutie, framerate, bitrate en kleur.",
+        "quality_data_estimate": "Tot %@ GB per uur",
+        "adjust_for_poor_network": "Aanpassen aan slechte netwerkomstandigheden",
+        "adjust_for_poor_network_description": "De server verlaagt de resolutie als je verbinding hapert, in plaats van te stotteren. Geldt vanaf de volgende stream.",
     ]
 }

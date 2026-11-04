@@ -549,5 +549,18 @@ enum L10nCA {
         "install_to_play_storage_unavailable": "L’emmagatzematge al núvol no està disponible. Comprova l’emmagatzematge a Configuració i torna-ho a provar.",
         "install_to_play_storage_full": "No hi ha prou emmagatzematge al núvol per a aquest joc. Gestiona l’emmagatzematge a Configuració i torna-ho a provar.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Equilibrat",
+        "quality_preset_data_saver": "Estalvi de dades",
+        "quality_preset_competitive": "Competitiu",
+        "quality_preset_cinematic": "Cinematogràfic",
+        "quality_preset_custom": "Personalitzat",
+        "quality_preset_balanced_description": "Fins a 1080p a 60 fps. S'adapta a la xarxa per a un streaming fluid.",
+        "quality_preset_data_saver_description": "Fins a 720p a 60 fps amb un límit de 15 Mbps. Fa servir menys dades.",
+        "quality_preset_competitive_description": "La freqüència de fotogrames més alta que permeten el pla i el televisor, amb color de 8 bits per a la latència mínima.",
+        "quality_preset_cinematic_description": "La resolució més alta amb HDR i color 4:4:4 fins a 100 Mbps. Requereix una connexió ràpida i estable.",
+        "quality_preset_custom_description": "La teva pròpia combinació de resolució, freqüència de fotogrames, taxa de bits i color.",
+        "quality_data_estimate": "Fins a %@ GB per hora",
+        "adjust_for_poor_network": "Ajusta a males condicions de xarxa",
+        "adjust_for_poor_network_description": "Permet que el servidor redueixi la resolució quan la connexió falla, en lloc de fer salts. S'aplica a la propera emissió.",
     ]
 }

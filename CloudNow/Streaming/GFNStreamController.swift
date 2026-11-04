@@ -253,6 +253,10 @@ private nonisolated let maximumInputLatencySamples = 4096
 /// while the lock makes the ownership boundary visible to Swift's strict-concurrency checker.
 private nonisolated struct InputSendState {
     var reliableChannel: LKRTCDataChannel?
+    /// Bifrost PR gamepad path (`input_channel_partially_reliable`). Used for
+    /// replaceable stick/trigger snapshots so latest analog state can supersede
+    /// stale samples instead of queuing behind reliable delivery.
+    var partiallyReliableChannel: LKRTCDataChannel?
     var rumbleSink: (@Sendable (Int, UInt16, UInt16) -> Void)?
     var generated: UInt64 = 0
     var submitted: UInt64 = 0
@@ -697,6 +701,7 @@ final class GFNStreamController: NSObject {
         let pending = inputSendQueue.sync {
             inputSendState.withLock { state in
                 state.reliableChannel = nil
+                state.partiallyReliableChannel = nil
                 state.rumbleSink = nil
                 if disableLatencySampling {
                     state.latencySamplingEnabled = false
@@ -1132,6 +1137,8 @@ final class GFNStreamController: NSObject {
         prConfig.isNegotiated = false
         if let dc = pc.dataChannel(forLabel: "input_channel_partially_reliable", configuration: prConfig) {
             partiallyReliableDataChannel = dc
+            inputSendState.withLock { $0.partiallyReliableChannel = dc }
+            dc.delegate = self
         }
 
         // Server performance stats (game FPS, server RTD) arrive as binary messages
@@ -1394,7 +1401,7 @@ final class GFNStreamController: NSObject {
             "a=msid:fbc-video-0",
             "a=vqos.fec.rateDropWindow:10",
             "a=vqos.fec.repairPercent:5",
-            "a=vqos.drc.enable:0",
+            "a=vqos.drc.enable:\(settings.adjustForPoorNetwork ? 1 : 0)",
             "a=vqos.dfc.enable:0",
             "a=video.enableRtpNack:1",
             "a=video.packetSize:1140",
@@ -2271,12 +2278,18 @@ extension GFNStreamController: LKRTCDataChannelDelegate {
     }
 
     nonisolated func dataChannel(_ dataChannel: LKRTCDataChannel, didChangeBufferedAmount amount: UInt64) {
-        guard dataChannel.label == "input_channel_v1" else { return }
+        let isInputTransportChannel = dataChannel.label == "input_channel_v1"
+            || dataChannel.label == "input_channel_partially_reliable"
+        guard isInputTransportChannel else { return }
         inputSendQueue.async { [weak self] in
             guard let self else { return }
             let isCurrentChannel = inputSendState.withLock { state -> Bool in
-                guard state.reliableChannel === dataChannel else { return false }
-                state.bufferedBytes = amount
+                let matchesReliable = state.reliableChannel === dataChannel
+                let matchesPartiallyReliable = state.partiallyReliableChannel === dataChannel
+                guard matchesReliable || matchesPartiallyReliable else { return false }
+                if matchesReliable {
+                    state.bufferedBytes = amount
+                }
                 return true
             }
             guard isCurrentChannel else { return }
@@ -2494,12 +2507,21 @@ extension GFNStreamController: DataChannelSender {
             }
             let completed = inputSendState.withLock { state -> [CompletedInputSend] in
                 state.generated &+= 1
-                guard let dataChannel = state.reliableChannel,
-                      dataChannel.readyState == .open
+                guard let reliableChannel = state.reliableChannel,
+                      reliableChannel.readyState == .open
                 else {
                     state.dropped &+= 1
                     return [CompletedInputSend(completion: completion, disposition: .channelUnavailable)]
                 }
+
+                // Official Bifrost routes replaceable gamepad samples onto the
+                // partially-reliable channel when it is open. Fall back to reliable
+                // for non-replaceable releases, buttons, and when PR is unavailable.
+                let preferPartiallyReliable = packet.isReplaceableGamepadSnapshot
+                    && state.partiallyReliableChannel?.readyState == .open
+                let dataChannel = preferPartiallyReliable
+                    ? (state.partiallyReliableChannel ?? reliableChannel)
+                    : reliableChannel
 
                 var completed: [CompletedInputSend] = []
                 if let slot = packet.gamepadSlot {

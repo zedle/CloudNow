@@ -549,5 +549,18 @@ enum L10nUK {
         "install_to_play_storage_unavailable": "Хмарне сховище недоступне. Перевірте сховище в налаштуваннях і спробуйте ще раз.",
         "install_to_play_storage_full": "Недостатньо місця у хмарному сховищі для цієї гри. Керуйте сховищем у налаштуваннях і спробуйте ще раз.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Збалансований",
+        "quality_preset_data_saver": "Економія трафіку",
+        "quality_preset_competitive": "Змагальний",
+        "quality_preset_cinematic": "Кінематографічний",
+        "quality_preset_custom": "Власний",
+        "quality_preset_balanced_description": "До 1080p при 60 кадр/с. Підлаштовується під вашу мережу для плавної трансляції.",
+        "quality_preset_data_saver_description": "До 720p при 60 кадр/с з обмеженням 15 Мбіт/с. Витрачає найменше трафіку.",
+        "quality_preset_competitive_description": "Найвища частота кадрів, яку дозволяють ваша підписка й телевізор, з 8-бітним кольором для найменшої затримки.",
+        "quality_preset_cinematic_description": "Найвища роздільна здатність з HDR і кольором 4:4:4 до 100 Мбіт/с. Потрібне швидке та стабільне з'єднання.",
+        "quality_preset_custom_description": "Власне поєднання роздільної здатності, частоти кадрів, бітрейту й кольору.",
+        "quality_data_estimate": "До %@ ГБ на годину",
+        "adjust_for_poor_network": "Адаптація до поганого з'єднання",
+        "adjust_for_poor_network_description": "Сервер знижує роздільну здатність, коли з'єднання слабшає, замість підвисань. Діє з наступної трансляції.",
     ]
 }

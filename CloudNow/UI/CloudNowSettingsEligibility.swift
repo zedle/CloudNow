@@ -47,15 +47,16 @@ nonisolated enum GFNSettingsEligibilityPolicy {
         let applicableEntitlements = matchingEntitlements.isEmpty
             ? entitledResolutions
             : matchingEntitlements
-        let membershipFrameRates = Set(
-            applicableEntitlements.map(\.framesPerSecond)
-        )
+        // MES often lists only the max fps per resolution (e.g. 4K@120). Treat that
+        // as a ceiling so lower rates like 60 remain membership-allowed.
+        let membershipMaximumFramesPerSecond =
+            applicableEntitlements.map(\.framesPerSecond).max() ?? 0
         let candidateFrameRates = Set(
             fallbackFrameRates + entitledResolutions.map(\.framesPerSecond)
         )
 
         return candidateFrameRates.sorted().map { framesPerSecond in
-            let membershipAllows = membershipFrameRates.contains(framesPerSecond)
+            let membershipAllows = framesPerSecond <= membershipMaximumFramesPerSecond
             let displayAllows = framesPerSecond <= displayMaximum
             let restriction: GFNFrameRateEligibility.Restriction? = switch (
                 membershipAllows,

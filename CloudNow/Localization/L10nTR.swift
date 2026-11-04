@@ -549,5 +549,18 @@ enum L10nTR {
         "install_to_play_storage_unavailable": "Bulut depolama kullanılamıyor. Ayarlar’dan depolamayı kontrol edip tekrar deneyin.",
         "install_to_play_storage_full": "Bu oyun için yeterli bulut depolama alanı yok. Ayarlar’dan depolamayı yönetip tekrar deneyin.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Dengeli",
+        "quality_preset_data_saver": "Veri Tasarrufu",
+        "quality_preset_competitive": "Rekabetçi",
+        "quality_preset_cinematic": "Sinematik",
+        "quality_preset_custom": "Özel",
+        "quality_preset_balanced_description": "60 fps'de 1080p'ye kadar. Akıcı bir yayın için ağınıza uyum sağlar.",
+        "quality_preset_data_saver_description": "60 fps'de 720p'ye kadar, 15 Mbps sınırıyla. En az veriyi kullanır.",
+        "quality_preset_competitive_description": "Planınızın ve TV'nizin izin verdiği en yüksek kare hızı, en düşük gecikme için 8 bit renk ile.",
+        "quality_preset_cinematic_description": "HDR ve 4:4:4 renkle en yüksek çözünürlük, 100 Mbps'ye kadar. Hızlı ve kararlı bir bağlantı gerektirir.",
+        "quality_preset_custom_description": "Çözünürlük, kare hızı, bit hızı ve rengin kendi birleşiminiz.",
+        "quality_data_estimate": "Saatte en fazla %@ GB",
+        "adjust_for_poor_network": "Zayıf ağ koşullarına uyum sağla",
+        "adjust_for_poor_network_description": "Bağlantı zorlandığında takılmak yerine sunucunun çözünürlüğü düşürmesine izin verir. Sonraki yayında geçerli olur.",
     ]
 }

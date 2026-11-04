@@ -549,5 +549,18 @@ enum L10nID {
         "install_to_play_storage_unavailable": "Penyimpanan cloud tidak tersedia. Periksa penyimpanan di Pengaturan, lalu coba lagi.",
         "install_to_play_storage_full": "Penyimpanan cloud tidak cukup untuk game ini. Kelola penyimpanan di Pengaturan, lalu coba lagi.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Seimbang",
+        "quality_preset_data_saver": "Hemat Data",
+        "quality_preset_competitive": "Kompetitif",
+        "quality_preset_cinematic": "Sinematik",
+        "quality_preset_custom": "Kustom",
+        "quality_preset_balanced_description": "Hingga 1080p pada 60 fps. Menyesuaikan dengan jaringan Anda untuk streaming yang lancar.",
+        "quality_preset_data_saver_description": "Hingga 720p pada 60 fps dengan batas 15 Mbps. Menggunakan data paling sedikit.",
+        "quality_preset_competitive_description": "Kecepatan bingkai tertinggi yang diizinkan paket dan TV Anda, dengan warna 8-bit untuk latensi terendah.",
+        "quality_preset_cinematic_description": "Resolusi tertinggi dengan HDR dan warna 4:4:4 hingga 100 Mbps. Memerlukan koneksi yang cepat dan stabil.",
+        "quality_preset_custom_description": "Kombinasi resolusi, kecepatan bingkai, bitrate, dan warna pilihan Anda sendiri.",
+        "quality_data_estimate": "Hingga %@ GB per jam",
+        "adjust_for_poor_network": "Sesuaikan dengan kondisi jaringan buruk",
+        "adjust_for_poor_network_description": "Server menurunkan resolusi saat koneksi bermasalah, alih-alih tersendat. Berlaku mulai streaming berikutnya.",
     ]
 }

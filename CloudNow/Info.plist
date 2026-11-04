@@ -13,7 +13,7 @@
 	<string>CloudNow does not use the camera. This string is required because a linked SDK references camera APIs.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.owenselles.CloudNow.tokenRefresh</string>
+		<string>com.zedle.CloudNow.tokenRefresh</string>
 	</array>
 	<key>GCSupportedGameControllers</key>
 	<array>

@@ -549,5 +549,18 @@ enum L10nPL {
         "install_to_play_storage_unavailable": "Miejsce w chmurze jest niedostępne. Sprawdź miejsce w Ustawieniach i spróbuj ponownie.",
         "install_to_play_storage_full": "Za mało miejsca w chmurze na tę grę. Zarządzaj miejscem w Ustawieniach i spróbuj ponownie.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Zrównoważony",
+        "quality_preset_data_saver": "Oszczędzanie danych",
+        "quality_preset_competitive": "Rywalizacja",
+        "quality_preset_cinematic": "Kinowy",
+        "quality_preset_custom": "Niestandardowy",
+        "quality_preset_balanced_description": "Do 1080p przy 60 kl./s. Dostosowuje się do sieci, zapewniając płynny stream.",
+        "quality_preset_data_saver_description": "Do 720p przy 60 kl./s z limitem 15 Mb/s. Zużywa najmniej danych.",
+        "quality_preset_competitive_description": "Najwyższa liczba klatek, na jaką pozwala Twój plan i telewizor, z 8-bitowym kolorem dla najniższych opóźnień.",
+        "quality_preset_cinematic_description": "Najwyższa rozdzielczość z HDR i kolorem 4:4:4 do 100 Mb/s. Wymaga szybkiego, stabilnego połączenia.",
+        "quality_preset_custom_description": "Własne połączenie rozdzielczości, liczby klatek, przepływności i koloru.",
+        "quality_data_estimate": "Do %@ GB na godzinę",
+        "adjust_for_poor_network": "Dostosuj do słabych warunków sieciowych",
+        "adjust_for_poor_network_description": "Serwer obniża rozdzielczość, gdy połączenie słabnie, zamiast się zacinać. Dotyczy następnego streamu.",
     ]
 }

@@ -549,5 +549,18 @@ enum L10nHR {
         "install_to_play_storage_unavailable": "Pohrana u oblaku nije dostupna. Provjerite pohranu u Postavkama i pokušajte ponovno.",
         "install_to_play_storage_full": "Nema dovoljno pohrane u oblaku za ovu igru. Upravljajte pohranom u Postavkama i pokušajte ponovno.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Uravnoteženo",
+        "quality_preset_data_saver": "Štednja podataka",
+        "quality_preset_competitive": "Natjecateljski",
+        "quality_preset_cinematic": "Filmski",
+        "quality_preset_custom": "Prilagođeno",
+        "quality_preset_balanced_description": "Do 1080p pri 60 fps. Prilagođava se vašoj mreži za glatko strujanje.",
+        "quality_preset_data_saver_description": "Do 720p pri 60 fps s ograničenjem od 15 Mbit/s. Troši najmanje podataka.",
+        "quality_preset_competitive_description": "Najveća brzina sličica koju dopuštaju vaša pretplata i TV, s 8-bitnom bojom za najmanje kašnjenje.",
+        "quality_preset_cinematic_description": "Najveća razlučivost s HDR-om i bojom 4:4:4 do 100 Mbit/s. Zahtijeva brzu i stabilnu vezu.",
+        "quality_preset_custom_description": "Vaša vlastita kombinacija razlučivosti, brzine sličica, brzine prijenosa i boje.",
+        "quality_data_estimate": "Do %@ GB na sat",
+        "adjust_for_poor_network": "Prilagodi lošim mrežnim uvjetima",
+        "adjust_for_poor_network_description": "Poslužitelj smanjuje razlučivost kad veza slabi umjesto da slika zapinje. Primjenjuje se od sljedećeg strujanja.",
     ]
 }

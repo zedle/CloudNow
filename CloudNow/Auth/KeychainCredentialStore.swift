@@ -27,7 +27,7 @@ nonisolated struct KeychainCredentialStore: SecureCredentialStore {
 }
 
 nonisolated enum KeychainService {
-    private static let service = "com.owenselles.CloudNow"
+    private static let service = "com.zedle.CloudNow"
 
     static func save(
         _ data: Data,

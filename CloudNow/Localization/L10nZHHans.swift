@@ -549,5 +549,18 @@ enum L10nZHHans {
         "install_to_play_storage_unavailable": "云存储空间不可用。请在设置中检查存储空间，然后重试。",
         "install_to_play_storage_full": "云存储空间不足，无法安装此游戏。请在设置中管理存储空间，然后重试。",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "均衡",
+        "quality_preset_data_saver": "节省流量",
+        "quality_preset_competitive": "竞技",
+        "quality_preset_cinematic": "影院",
+        "quality_preset_custom": "自定义",
+        "quality_preset_balanced_description": "最高 1080p、60 fps。根据网络自动调整，确保串流流畅。",
+        "quality_preset_data_saver_description": "最高 720p、60 fps，上限 15 Mbps。流量消耗最少。",
+        "quality_preset_competitive_description": "你的会员方案和电视所允许的最高帧率，搭配 8 位色彩以实现最低延迟。",
+        "quality_preset_cinematic_description": "最高分辨率，支持 HDR 和 4:4:4 色彩，最高 100 Mbps。需要快速稳定的网络连接。",
+        "quality_preset_custom_description": "自行组合分辨率、帧率、码率和色彩。",
+        "quality_data_estimate": "每小时最多 %@ GB",
+        "adjust_for_poor_network": "网络较差时自动调整",
+        "adjust_for_poor_network_description": "连接不稳定时由服务器降低分辨率，而不是卡顿。从下一次串流开始生效。",
     ]
 }

@@ -151,7 +151,7 @@ final class AuthManager {
     private var isCredentialMutationInProgress = false
     @ObservationIgnored private var sessionRestoreWaiters: [CheckedContinuation<Void, Never>] = []
 
-    private static let bgTaskID = "com.owenselles.CloudNow.tokenRefresh"
+    private static let bgTaskID = "com.zedle.CloudNow.tokenRefresh"
 
     init(
         api: (any NVIDIAAuthAPIClient)? = nil,

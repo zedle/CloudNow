@@ -549,5 +549,18 @@ enum L10nKO {
         "install_to_play_storage_unavailable": "클라우드 저장 공간을 이용할 수 없습니다. 설정에서 저장 공간을 확인한 다음 다시 시도하세요.",
         "install_to_play_storage_full": "이 게임에 필요한 클라우드 저장 공간이 부족합니다. 설정에서 저장 공간을 관리한 다음 다시 시도하세요.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "균형",
+        "quality_preset_data_saver": "데이터 절약",
+        "quality_preset_competitive": "경쟁",
+        "quality_preset_cinematic": "시네마틱",
+        "quality_preset_custom": "사용자 지정",
+        "quality_preset_balanced_description": "최대 1080p, 60fps. 네트워크에 맞춰 부드럽게 스트리밍합니다.",
+        "quality_preset_data_saver_description": "최대 720p, 60fps, 15Mbps 제한. 데이터를 가장 적게 사용합니다.",
+        "quality_preset_competitive_description": "요금제와 TV가 허용하는 최고 프레임 레이트, 가장 낮은 지연을 위한 8비트 색상.",
+        "quality_preset_cinematic_description": "HDR과 4:4:4 색상의 최고 해상도, 최대 100Mbps. 빠르고 안정적인 연결이 필요합니다.",
+        "quality_preset_custom_description": "해상도, 프레임 레이트, 비트레이트, 색상을 직접 조합합니다.",
+        "quality_data_estimate": "시간당 최대 %@GB",
+        "adjust_for_poor_network": "네트워크 상태가 나쁠 때 조정",
+        "adjust_for_poor_network_description": "연결이 불안정하면 끊기는 대신 서버가 해상도를 낮춥니다. 다음 스트림부터 적용됩니다.",
     ]
 }

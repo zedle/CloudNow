@@ -428,9 +428,8 @@ nonisolated enum XboxCloudOverlayGestureAction: Equatable, Sendable {
     case replayMenuTap
 }
 
-/// Provider-neutral gesture semantics expressed in Xbox input terms. This
-/// matches GFN's default Start/Menu behavior: keep the remote button neutral
-/// while deciding between a short tap and a local 1.8-second overlay hold.
+/// Xbox Start/Menu overlay gesture: keep the remote button neutral while
+/// deciding between a short tap and a local 1.8-second overlay hold.
 nonisolated struct XboxCloudOverlayGestureState: Equatable, Sendable {
     static let longPressDurationNanoseconds = UInt64(216 * 8_333_333)
 

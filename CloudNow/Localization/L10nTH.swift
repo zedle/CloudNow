@@ -549,5 +549,18 @@ enum L10nTH {
         "install_to_play_storage_unavailable": "พื้นที่จัดเก็บบนคลาวด์ไม่พร้อมใช้งาน ตรวจสอบพื้นที่จัดเก็บในการตั้งค่าแล้วลองอีกครั้ง",
         "install_to_play_storage_full": "พื้นที่จัดเก็บบนคลาวด์ไม่เพียงพอสำหรับเกมนี้ จัดการพื้นที่จัดเก็บในการตั้งค่าแล้วลองอีกครั้ง",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "สมดุล",
+        "quality_preset_data_saver": "ประหยัดข้อมูล",
+        "quality_preset_competitive": "แข่งขัน",
+        "quality_preset_cinematic": "ภาพยนตร์",
+        "quality_preset_custom": "กำหนดเอง",
+        "quality_preset_balanced_description": "สูงสุด 1080p ที่ 60 fps ปรับตามเครือข่ายของคุณเพื่อการสตรีมที่ลื่นไหล",
+        "quality_preset_data_saver_description": "สูงสุด 720p ที่ 60 fps จำกัดที่ 15 Mbps ใช้ข้อมูลน้อยที่สุด",
+        "quality_preset_competitive_description": "อัตราเฟรมสูงสุดที่แพ็กเกจและทีวีของคุณรองรับ พร้อมสี 8 บิตเพื่อความหน่วงต่ำที่สุด",
+        "quality_preset_cinematic_description": "ความละเอียดสูงสุดพร้อม HDR และสี 4:4:4 สูงสุด 100 Mbps ต้องใช้การเชื่อมต่อที่เร็วและเสถียร",
+        "quality_preset_custom_description": "การผสมผสานความละเอียด อัตราเฟรม บิตเรต และสีในแบบของคุณ",
+        "quality_data_estimate": "สูงสุด %@ GB ต่อชั่วโมง",
+        "adjust_for_poor_network": "ปรับตามสภาพเครือข่ายที่ไม่ดี",
+        "adjust_for_poor_network_description": "ให้เซิร์ฟเวอร์ลดความละเอียดเมื่อการเชื่อมต่อมีปัญหาแทนการกระตุก มีผลกับการสตรีมครั้งถัดไป",
     ]
 }

@@ -32,6 +32,7 @@ struct CloudCatalogCardLabel: View {
     var networkCachePolicy: ArtworkNetworkCachePolicy = .shared
 
     @Environment(\.isFocused) private var isFocused
+    @Environment(\.cloudNowAccent) private var accent
     @ScaledMetric(relativeTo: .caption2) private var badgeFontSize = 16
     @ScaledMetric(relativeTo: .caption2) private var prominentBadgeFontSize = 20
 
@@ -102,6 +103,13 @@ struct CloudCatalogCardLabel: View {
                 )
             }
         }
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(accent, lineWidth: 3)
+                .shadow(color: accent.opacity(0.85), radius: 16)
+                .opacity(isFocused ? 1 : 0)
+                .animation(.easeOut(duration: 0.16), value: isFocused)
+        }
         .prefetchHeroArtOnFocus(heroArtworkURL)
     }
 
@@ -133,6 +141,8 @@ struct CloudResumableSessionBanner: View {
     var onEnd: (() -> Void)?
     var statusTitle: String?
 
+    @Environment(\.cloudNowAccent) private var accent
+
     var body: some View {
         CloudHeroBannerSurface(artworkURL: artworkURL) {
             HStack(alignment: .bottom) {
@@ -148,7 +158,8 @@ struct CloudResumableSessionBanner: View {
                             .foregroundStyle(.black)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
-                            .background(.green, in: Capsule())
+                            .background(accent, in: Capsule())
+                            .shadow(color: accent.opacity(0.7), radius: 10)
                             .fixedSize()
                     }
                     if let expiresAt {
@@ -161,8 +172,7 @@ struct CloudResumableSessionBanner: View {
                                 systemImage: "arrow.counterclockwise"
                             )
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.green)
+                        .buttonStyle(CloudNowGlowButtonStyle())
                         .disabled(!isResumeEnabled)
 
                         if let onEnd {
@@ -372,11 +382,14 @@ struct CloudCatalogHomeEmptyState: View {
         self.actionFocus = actionFocus
     }
 
+    @Environment(\.cloudNowAccent) private var accent
+
     var body: some View {
         VStack(spacing: 24) {
-            Image(systemName: "gamecontroller")
-                .font(.system(size: 60))
-                .foregroundStyle(.secondary)
+            Image(systemName: "gamecontroller.fill")
+                .font(.system(size: 64))
+                .foregroundStyle(accent)
+                .shadow(color: accent.opacity(0.7), radius: 24)
             Text(L10n.text("nothing_here_yet"))
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(.primary)
@@ -388,11 +401,11 @@ struct CloudCatalogHomeEmptyState: View {
             if let actionTitle, let action {
                 if let actionFocus {
                     Button(actionTitle, action: action)
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(CloudNowGlowButtonStyle())
                         .focused(actionFocus)
                 } else {
                     Button(actionTitle, action: action)
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(CloudNowGlowButtonStyle())
                 }
             }
         }
@@ -408,7 +421,8 @@ struct CloudCatalogHeroBanner: View {
     let actionTitle: String
     let actionSystemImage: String
     var isActionEnabled = true
-    var actionTint: Color = .green
+    /// Overrides the environment accent, e.g. gray for a locked title.
+    var actionTint: Color?
     var actionFocus: FocusState<Bool>.Binding?
     let action: () -> Void
 
@@ -438,8 +452,7 @@ struct CloudCatalogHeroBanner: View {
                     prefetchArtworkURL ?? artworkURL
                 )
         }
-        .buttonStyle(.borderedProminent)
-        .tint(actionTint)
+        .buttonStyle(CloudNowGlowButtonStyle(accentOverride: actionTint))
         .disabled(!isActionEnabled)
     }
 }
@@ -451,7 +464,10 @@ private struct CloudHeroBannerSurface<Content: View>: View {
     var artworkAlignment: Alignment = .center
     @ViewBuilder let content: Content
 
+    @Environment(\.cloudNowAccent) private var accent
+
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
         ZStack(alignment: .bottom) {
             SharedArtworkImage(
                 urlString: artworkURL,
@@ -469,13 +485,31 @@ private struct CloudHeroBannerSurface<Content: View>: View {
                 endPoint: UnitPoint(x: 0.5, y: 0.55)
             )
 
+            RadialGradient(
+                colors: [accent.opacity(0.28), .clear],
+                center: .bottomLeading,
+                startRadius: 0,
+                endRadius: 620
+            )
+
             content
                 .padding(.horizontal, 40)
                 .padding(.vertical, 28)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 420)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .clipShape(shape)
+        .overlay {
+            shape.strokeBorder(
+                LinearGradient(
+                    colors: [accent.opacity(0.7), .white.opacity(0.1), .white.opacity(0.04)],
+                    startPoint: .bottomLeading,
+                    endPoint: .topTrailing
+                ),
+                lineWidth: 1.5
+            )
+        }
+        .shadow(color: accent.opacity(0.18), radius: 40, y: 12)
         .padding(.horizontal, 60)
         .focusSection()
     }

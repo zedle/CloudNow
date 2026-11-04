@@ -48,4 +48,22 @@ struct GFNStreamControllerTests {
         #expect(sdp.contains("a=general.icePassword:fixture-password\r\n"))
         #expect(sdp.contains("a=general.dtlsFingerprint:fixture-fingerprint\r\n"))
     }
+
+    @Test("NVST dynamic resolution control follows Adjust for Poor Network Conditions", arguments: [false, true])
+    func nvstDynamicResolutionControl(adjustForPoorNetwork: Bool) {
+        var settings = StreamSettings()
+        settings.adjustForPoorNetwork = adjustForPoorNetwork
+        let controller = GFNStreamController()
+
+        let sdp = controller.buildNvstSdp(
+            settings: settings,
+            iceUfrag: "fixture-user",
+            icePwd: "fixture-password",
+            dtlsFingerprint: "fixture-fingerprint",
+            microphoneEnabled: false
+        )
+
+        #expect(sdp.contains("a=vqos.drc.enable:\(adjustForPoorNetwork ? 1 : 0)\r\n"))
+        #expect(sdp.contains("a=vqos.dfc.enable:0\r\n"))
+    }
 }

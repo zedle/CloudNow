@@ -549,5 +549,18 @@ enum L10nCS {
         "install_to_play_storage_unavailable": "Cloudové úložiště není dostupné. Zkontrolujte úložiště v Nastavení a zkuste to znovu.",
         "install_to_play_storage_full": "Pro tuto hru není v cloudu dostatek místa. Spravujte úložiště v Nastavení a zkuste to znovu.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Vyvážený",
+        "quality_preset_data_saver": "Úspora dat",
+        "quality_preset_competitive": "Soutěžní",
+        "quality_preset_cinematic": "Filmový",
+        "quality_preset_custom": "Vlastní",
+        "quality_preset_balanced_description": "Až 1080p při 60 fps. Přizpůsobí se vaší síti pro plynulý stream.",
+        "quality_preset_data_saver_description": "Až 720p při 60 fps s limitem 15 Mb/s. Spotřebuje nejméně dat.",
+        "quality_preset_competitive_description": "Nejvyšší snímková frekvence, kterou povoluje vaše předplatné a televize, s 8bitovou barvou pro nejnižší latenci.",
+        "quality_preset_cinematic_description": "Nejvyšší rozlišení s HDR a barvou 4:4:4 až do 100 Mb/s. Vyžaduje rychlé a stabilní připojení.",
+        "quality_preset_custom_description": "Vlastní kombinace rozlišení, snímkové frekvence, datového toku a barev.",
+        "quality_data_estimate": "Až %@ GB za hodinu",
+        "adjust_for_poor_network": "Přizpůsobit špatným podmínkám sítě",
+        "adjust_for_poor_network_description": "Server sníží rozlišení, když připojení slábne, místo aby se obraz trhal. Platí od dalšího streamu.",
     ]
 }

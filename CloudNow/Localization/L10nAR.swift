@@ -549,5 +549,18 @@ enum L10nAR {
         "install_to_play_storage_unavailable": "التخزين السحابي غير متاح. تحقق من التخزين في الإعدادات، ثم حاول مجددًا.",
         "install_to_play_storage_full": "مساحة التخزين السحابي غير كافية لهذه اللعبة. أدر التخزين في الإعدادات، ثم حاول مجددًا.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "متوازن",
+        "quality_preset_data_saver": "توفير البيانات",
+        "quality_preset_competitive": "تنافسي",
+        "quality_preset_cinematic": "سينمائي",
+        "quality_preset_custom": "مخصص",
+        "quality_preset_balanced_description": "حتى 1080p بمعدل 60 إطارًا/ث. يتكيّف مع شبكتك لبث سلس.",
+        "quality_preset_data_saver_description": "حتى 720p بمعدل 60 إطارًا/ث بحد أقصى 15 ميغابت/ث. يستهلك أقل قدر من البيانات.",
+        "quality_preset_competitive_description": "أعلى معدل إطارات تسمح به خطتك وتلفازك، مع ألوان 8 بت لأقل زمن استجابة.",
+        "quality_preset_cinematic_description": "أعلى دقة مع HDR وألوان 4:4:4 حتى 100 ميغابت/ث. يتطلب اتصالًا سريعًا ومستقرًا.",
+        "quality_preset_custom_description": "مزيجك الخاص من الدقة ومعدل الإطارات ومعدل البت والألوان.",
+        "quality_data_estimate": "حتى %@ غيغابايت في الساعة",
+        "adjust_for_poor_network": "التكيّف مع ظروف الشبكة الضعيفة",
+        "adjust_for_poor_network_description": "يسمح للخادم بخفض الدقة عند ضعف الاتصال بدلًا من التقطّع. يُطبّق على البث التالي.",
     ]
 }

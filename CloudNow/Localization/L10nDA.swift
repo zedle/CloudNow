@@ -549,5 +549,18 @@ enum L10nDA {
         "install_to_play_storage_unavailable": "Cloudlageret er utilgængeligt. Kontrollér lageret i Indstillinger, og prøv igen.",
         "install_to_play_storage_full": "Der er ikke nok cloudlager til dette spil. Administrer lageret i Indstillinger, og prøv igen.",
         "install_to_play": "Install-to-Play",
+        "quality_preset_balanced": "Balanceret",
+        "quality_preset_data_saver": "Datasparer",
+        "quality_preset_competitive": "Konkurrence",
+        "quality_preset_cinematic": "Filmisk",
+        "quality_preset_custom": "Tilpasset",
+        "quality_preset_balanced_description": "Op til 1080p ved 60 fps. Tilpasser sig dit netværk for en jævn stream.",
+        "quality_preset_data_saver_description": "Op til 720p ved 60 fps med et loft på 15 Mbit/s. Bruger mindst data.",
+        "quality_preset_competitive_description": "Den højeste billedhastighed dit abonnement og dit tv tillader, med 8-bit farve for lavest latens.",
+        "quality_preset_cinematic_description": "Den højeste opløsning med HDR og 4:4:4-farve op til 100 Mbit/s. Kræver en hurtig, stabil forbindelse.",
+        "quality_preset_custom_description": "Din egen kombination af opløsning, billedhastighed, bithastighed og farve.",
+        "quality_data_estimate": "Op til %@ GB i timen",
+        "adjust_for_poor_network": "Tilpas til dårlige netværksforhold",
+        "adjust_for_poor_network_description": "Lader serveren sænke opløsningen, når forbindelsen svigter, i stedet for at hakke. Gælder fra næste stream.",
     ]
 }

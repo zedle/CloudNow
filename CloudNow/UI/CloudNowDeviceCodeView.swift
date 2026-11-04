@@ -7,11 +7,12 @@ struct CloudNowDeviceCodeView: View {
     let code: String
     let verificationURL: String
     let verificationURLComplete: String
-    var accentColor: Color = .green
     var accessibilityIdentifier = "device-code-login"
     var primaryForegroundColor: Color = .white
     var secondaryForegroundColor: Color = .secondary
     let onCancel: () -> Void
+
+    @Environment(\.cloudNowAccent) private var accentColor
 
     var body: some View {
         VStack(spacing: 40) {
@@ -23,6 +24,8 @@ struct CloudNowDeviceCodeView: View {
             QRCodeView(payload: verificationURLComplete)
                 .frame(width: 280, height: 280)
                 .clipShape(.rect(cornerRadius: 16))
+                .padding(10)
+                .cloudNowGlass(cornerRadius: 26, isHighlighted: true)
                 .accessibilityLabel(L10n.text("scan_qr_or_go_to"))
                 .accessibilityValue(verificationURLComplete)
                 .accessibilityIdentifier("\(accessibilityIdentifier).qr")
@@ -43,6 +46,7 @@ struct CloudNowDeviceCodeView: View {
             Text(formattedCode)
                 .font(.system(size: 72, weight: .bold, design: .monospaced))
                 .foregroundStyle(accentColor)
+                .shadow(color: accentColor.opacity(0.75), radius: 22)
                 .tracking(8)
                 .accessibilityIdentifier("\(accessibilityIdentifier).code")
 
@@ -55,8 +59,7 @@ struct CloudNowDeviceCodeView: View {
             }
 
             Button(L10n.text("cancel"), action: onCancel)
-                .buttonStyle(.bordered)
-                .tint(.gray)
+                .buttonStyle(CloudNowGlowButtonStyle(isProminent: false))
                 .accessibilityIdentifier("\(accessibilityIdentifier).cancel")
         }
         .padding(60)
