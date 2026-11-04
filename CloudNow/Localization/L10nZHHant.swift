@@ -351,6 +351,7 @@ enum L10nZHHant {
         "all": "全部",
         "add_to_favorites": "加入收藏",
         "av1_color_path_warning": "AV1 在硬體解碼可用時使用硬體解碼，否則使用軟體解碼。目前僅支援 SDR 8 位元 BT.709。",
+        "hdr_needs_hdr_output": "Apple TV 目前輸出 SDR，HDR 畫面會偏白或過亮。請在 Apple TV 設定中開啟「符合動態範圍」，或選擇 HDR 影片格式。",
         "rtc_event_log_active": "RTC 事件記錄已啟用",
         "fallback": "回退",
         "session_ending_soon": "工作階段即將結束",

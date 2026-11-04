@@ -152,6 +152,7 @@ enum L10nFI {
         "input_buffer": "Syöttöpuskuri",
         "ice_path": "ICE-polku",
         "av1_color_path_warning": "AV1 käyttää laitteistopurkua, jos se on käytettävissä, muuten ohjelmistopurkua. Tällä hetkellä rajoitettu 8-bittiseen SDR BT.709 -muotoon.",
+        "hdr_needs_hdr_output": "Apple TV lähettää SDR-kuvaa, joten HDR näyttää haalealta tai liian kirkkaalta. Ota Apple TV:n asetuksista käyttöön dynaamisen alueen sovitus tai valitse HDR-videomuoto.",
         "keyboard_layout": "Näppäimistöasettelu",
         "game_language": "Pelin kieli",
         "game_language_description": "Jotkin Xbox/Game Pass -pelit edellyttävät myös vastaavaa näppäimistöasettelua. Valitse näppäimistöasettelu, joka vastaa valitsemaasi pelin kieltä, ja aloita sitten uusi istunto, jotta muutos tulee voimaan.",

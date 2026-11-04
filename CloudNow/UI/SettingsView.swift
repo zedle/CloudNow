@@ -969,10 +969,8 @@ struct SettingsView: View {
 
                     CloudNowSettingSelectionRow(
                         L10n.text("color_mode"),
-                        description: vm.streamSettings.codec == .av1
-                            ? L10n.text("av1_color_path_warning")
-                            : vm.streamSettings.colorPreference.description,
-                        descriptionIsWarning: vm.streamSettings.codec == .av1,
+                        description: colorModeWarning ?? vm.streamSettings.colorPreference.description,
+                        descriptionIsWarning: colorModeWarning != nil,
                         selection: presetTrackingBinding(\.colorPreference),
                         accessibilityIdentifier: "settings.stream-quality.color-mode",
                         options: ColorModePreference.allCases.map {
@@ -1706,6 +1704,18 @@ struct SettingsView: View {
         ResolutionEntry(res: "3840x2160", badge: "4K", symbol: "4k.tv"),
         ResolutionEntry(res: "5120x2880", badge: "5K", symbol: "tv"),
     ]
+
+    private var colorModeWarning: String? {
+        if viewModel.streamSettings.codec == .av1 {
+            return L10n.text("av1_color_path_warning")
+        }
+        if viewModel.streamSettings.colorPreference == .preferHDR,
+           !LocalVideoCapabilities.detect(codec: .h265).displayHDROutputAvailable
+        {
+            return L10n.text("hdr_needs_hdr_output")
+        }
+        return nil
+    }
 
     /// Binding for a value a quality preset controls. Editing it directly selects Custom.
     private func presetTrackingBinding<Value: Equatable>(

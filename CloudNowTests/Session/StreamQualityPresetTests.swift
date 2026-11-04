@@ -137,7 +137,7 @@ struct StreamQualityPresetTests {
         #expect(display120.colorPreference == .forceSDR8)
     }
 
-    @Test("Cinematic picks the highest 16:9 resolution with HDR and 4:4:4")
+    @Test("Cinematic picks the highest 16:9 resolution with automatic HDR and 4:4:4")
     func cinematic() {
         let settings = StreamQualityPresetPolicy.apply(.cinematic, to: StreamSettings(), context: Self.ultimateContext)
 
@@ -145,7 +145,7 @@ struct StreamQualityPresetTests {
         #expect(settings.fps == 60)
         #expect(settings.maxBitrateKbps == StreamSettings.maxSelectableBitrateKbps)
         #expect(settings.codec == .h265)
-        #expect(settings.colorPreference == .preferHDR)
+        #expect(settings.colorPreference == .automatic)
         #expect(settings.chromaFormat == .yuv444)
         #expect(settings.networkAdjustment == .optimalQuality)
         #expect(settings.prefilterMode == .auto)

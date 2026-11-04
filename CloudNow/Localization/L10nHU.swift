@@ -156,6 +156,7 @@ enum L10nHU {
         "input_buffer": "Bemeneti puffer",
         "ice_path": "ICE útvonal",
         "av1_color_path_warning": "Az AV1 hardveres dekódolást használ, ha elérhető, egyébként szoftvereset. Jelenleg 8 bites SDR BT.709-re korlátozott.",
+        "hdr_needs_hdr_output": "Az Apple TV SDR-t küld, ezért a HDR fakónak vagy túl világosnak fog tűnni. Kapcsold be a dinamikatartomány egyeztetését az Apple TV beállításaiban, vagy válassz HDR videoformátumot.",
         "keyboard_layout": "Billentyűzetkiosztás",
         "game_language": "Játék nyelve",
         "game_language_description": "Egyes Xbox/Game Pass-játékokhoz megfelelő billentyűzetkiosztás is szükséges. Válassz a játék kiválasztott nyelvének megfelelő billentyűzetkiosztást, majd indíts új munkamenetet a módosítás érvényesítéséhez.",

@@ -321,6 +321,7 @@ enum L10nDE {
         "all": "Alle",
         "add_to_favorites": "Zu Favoriten hinzufügen",
         "av1_color_path_warning": "AV1 nutzt Hardwaredecodierung, wenn verfügbar, sonst Software. Derzeit auf 8-Bit-SDR BT.709 beschränkt.",
+        "hdr_needs_hdr_output": "Apple TV gibt SDR aus, daher wirkt HDR blass oder zu hell. Aktiviere in den Apple TV-Einstellungen „Dynamikumfang anpassen“ oder wähle ein HDR-Videoformat.",
         "rtc_event_log_active": "RTC-Ereignisprotokoll aktiv",
         "fallback": "Fallback",
         "session_ending_soon": "Sitzung endet bald",

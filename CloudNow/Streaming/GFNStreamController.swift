@@ -433,7 +433,14 @@ final class GFNStreamController: NSObject {
         let localCapabilities = LocalVideoCapabilities.detect(codec: settings.codec.resolvedCodec)
         let colorRequest = settings.colorRequest(localCapabilities: localCapabilities, accountAllowsHDR: accountAllowsHDR)
         gfnLog.info("connect: starting, serverIp=\(session.serverIp), signalingUrl=\(session.signalingUrl)")
-        videoColorLog.info("request preference=\(settings.colorPreference.rawValue) requested=\(colorRequest.mode.rawValue) bitDepth=\(colorRequest.bitDepth) hdr=\(colorRequest.hdrRequested) codec=\(settings.codec.rawValue) decoder10Bit=\(localCapabilities.supportsHardware10BitDecode) hdrPipeline=\(localCapabilities.supportsHDRRendering) displayHDR=\(localCapabilities.displaySupportsHDR)")
+        videoColorLog.info("request preference=\(settings.colorPreference.rawValue) requested=\(colorRequest.mode.rawValue) bitDepth=\(colorRequest.bitDepth) hdr=\(colorRequest.hdrRequested) codec=\(settings.codec.rawValue) decoder10Bit=\(localCapabilities.supportsHardware10BitDecode) hdrPipeline=\(localCapabilities.supportsHDRRendering) displayHDR=\(localCapabilities.displaySupportsHDR) hdrOutput=\(localCapabilities.displayHDROutputAvailable) matchContent=\(DisplayDynamicRangeRequest.isMatchingEnabled)")
+        let resolutionParts = settings.resolution.split(separator: "x")
+        DisplayDynamicRangeRequest.update(
+            hdr10: colorRequest.mode == .hdr10,
+            width: Int(resolutionParts.first ?? "1920") ?? 1920,
+            height: Int(resolutionParts.last ?? "1080") ?? 1080,
+            frameRate: settings.fps
+        )
         videoColorLog.info("chroma selected=\(settings.chromaFormat.rawValue, privacy: .public) requested=\(settings.effectiveChromaFormat.rawValue, privacy: .public) nvst=\(colorRequest.chromaFormat ?? 0)")
         state = .connecting
         serverStopped = false
@@ -758,6 +765,7 @@ final class GFNStreamController: NSObject {
         reconnectTask = nil
         connectionGeneration &+= 1
         onReconnectNeeded = nil
+        DisplayDynamicRangeRequest.clear()
         stopRtcEventLog()
         stopStatsTimer()
         wasStreaming = false

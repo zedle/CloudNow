@@ -182,6 +182,7 @@ enum L10nVI {
         "input_buffer": "Bộ đệm đầu vào",
         "ice_path": "Đường ICE",
         "av1_color_path_warning": "AV1 dùng giải mã phần cứng khi có hỗ trợ, nếu không sẽ dùng phần mềm. Hiện giới hạn ở SDR 8-bit BT.709.",
+        "hdr_needs_hdr_output": "Apple TV đang xuất SDR nên HDR sẽ trông nhạt hoặc quá sáng. Hãy bật Khớp dải động trong Cài đặt Apple TV hoặc chọn định dạng video HDR.",
         "keyboard_layout": "Bố cục bàn phím",
         "game_language": "Ngôn ngữ trò chơi",
         "game_language_description": "Một số trò chơi Xbox/Game Pass cũng yêu cầu bố cục bàn phím tương ứng. Chọn bố cục bàn phím phù hợp với ngôn ngữ trò chơi bạn đã chọn, rồi bắt đầu phiên mới để thay đổi có hiệu lực.",

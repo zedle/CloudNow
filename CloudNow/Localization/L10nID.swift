@@ -156,6 +156,7 @@ enum L10nID {
         "input_buffer": "Buffer masukan",
         "ice_path": "Jalur ICE",
         "av1_color_path_warning": "AV1 memakai dekode perangkat keras jika tersedia, jika tidak memakai perangkat lunak. Saat ini terbatas pada SDR 8-bit BT.709.",
+        "hdr_needs_hdr_output": "Apple TV mengeluarkan SDR, jadi HDR akan terlihat pudar atau terlalu terang. Aktifkan Cocokkan Rentang Dinamis di Pengaturan Apple TV, atau pilih format video HDR.",
         "keyboard_layout": "Tata letak keyboard",
         "game_language": "Bahasa game",
         "game_language_description": "Beberapa game Xbox/Game Pass juga memerlukan tata letak keyboard yang sesuai. Pilih tata letak keyboard yang sesuai dengan bahasa game pilihan Anda, lalu mulai sesi baru agar perubahan diterapkan.",

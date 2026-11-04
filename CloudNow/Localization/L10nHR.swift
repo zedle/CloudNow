@@ -156,6 +156,7 @@ enum L10nHR {
         "input_buffer": "Ulazni međuspremnik",
         "ice_path": "ICE putanja",
         "av1_color_path_warning": "AV1 koristi hardversko dekodiranje kada je dostupno, inače softversko. Trenutno je ograničen na SDR 8-bit BT.709.",
+        "hdr_needs_hdr_output": "Apple TV šalje SDR, pa će HDR izgledati isprano ili presvijetlo. Uključite usklađivanje dinamičkog raspona u postavkama Apple TV-a ili odaberite HDR videoformat.",
         "keyboard_layout": "Raspored tipkovnice",
         "game_language": "Jezik igre",
         "game_language_description": "Neke igre za Xbox/Game Pass zahtijevaju i odgovarajući raspored tipkovnice. Odaberite raspored tipkovnice koji odgovara odabranom jeziku igre, a zatim pokrenite novu sesiju da bi promjena stupila na snagu.",

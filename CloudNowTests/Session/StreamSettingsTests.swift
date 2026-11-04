@@ -420,6 +420,33 @@ struct StreamSettingsTests {
         }
     }
 
+    @Test(
+        "Automatic only picks HDR when the output can show it; Prefer HDR still overrides",
+        arguments: [
+            (ColorModePreference.automatic, true, StreamColorMode.hdr10),
+            (.automatic, false, .sdr10),
+            (.preferHDR, true, .hdr10),
+            (.preferHDR, false, .hdr10),
+        ]
+    )
+    func hdrOutputGatesAutomatic(
+        preference: ColorModePreference,
+        outputAvailable: Bool,
+        expected: StreamColorMode
+    ) {
+        let capabilities = StreamColorCapabilities(
+            gameHDRSupport: .supported,
+            accountAllowsHDR: true,
+            serverAllowsHDR: true,
+            decoderSupports10Bit: true,
+            hdrRenderPipelineAvailable: true,
+            displaySupportsHDR: true,
+            displayHDROutputAvailable: outputAvailable
+        )
+
+        #expect(StreamColorRequest.resolveColorMode(preference: preference, capabilities: capabilities) == expected)
+    }
+
     private func decodeFixture(_ name: String) throws -> StreamSettings {
         try JSONDecoder().decode(
             StreamSettings.self,

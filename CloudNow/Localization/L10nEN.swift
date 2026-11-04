@@ -182,6 +182,7 @@ enum L10nEN {
         "input_buffer": "Input buffer",
         "ice_path": "ICE path",
         "av1_color_path_warning": "AV1 uses hardware decoding when available, otherwise software. Currently limited to SDR 8-bit BT.709.",
+        "hdr_needs_hdr_output": "Apple TV is outputting SDR, so HDR will look washed out or too bright. Turn on Match Dynamic Range in Apple TV Settings, or set an HDR video format.",
         "keyboard_layout": "Keyboard Layout",
         "game_language": "Game Language",
         "game_language_description": "Some Xbox/Game Pass games also require a matching Keyboard Layout. Select a keyboard layout that matches your chosen game language, then start a new session for the change to take effect.",

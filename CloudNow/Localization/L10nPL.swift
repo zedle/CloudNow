@@ -182,6 +182,7 @@ enum L10nPL {
         "input_buffer": "Bufor wejścia",
         "ice_path": "Ścieżka ICE",
         "av1_color_path_warning": "AV1 używa dekodowania sprzętowego, jeśli jest dostępne, w przeciwnym razie programowego. Obecnie ograniczone do 8-bitowego SDR BT.709.",
+        "hdr_needs_hdr_output": "Apple TV wysyła obraz SDR, więc HDR będzie wyglądać na wyblakły lub zbyt jasny. Włącz dopasowanie zakresu dynamicznego w ustawieniach Apple TV lub wybierz format wideo HDR.",
         "keyboard_layout": "Układ klawiatury",
         "game_language": "Język gry",
         "game_language_description": "Niektóre gry Xbox/Game Pass wymagają również zgodnego układu klawiatury. Wybierz układ klawiatury zgodny z wybranym językiem gry, a następnie rozpocznij nową sesję, aby zmiana zaczęła obowiązywać.",

@@ -182,6 +182,7 @@ enum L10nTR {
         "input_buffer": "Giriş arabelleği",
         "ice_path": "ICE yolu",
         "av1_color_path_warning": "AV1, kullanılabiliyorsa donanım çözme, aksi halde yazılım çözme kullanır. Şu anda SDR 8 bit BT.709 ile sınırlıdır.",
+        "hdr_needs_hdr_output": "Apple TV SDR çıkışı veriyor, bu yüzden HDR soluk veya fazla parlak görünecek. Apple TV Ayarları'nda Dinamik Aralığı Eşleştir'i açın ya da bir HDR video formatı seçin.",
         "keyboard_layout": "Klavye düzeni",
         "game_language": "Oyun dili",
         "game_language_description": "Bazı Xbox/Game Pass oyunları için eşleşen bir klavye düzeni de gerekir. Seçtiğiniz oyun diliyle eşleşen bir klavye düzeni seçin, ardından değişikliğin geçerli olması için yeni bir oturum başlatın.",

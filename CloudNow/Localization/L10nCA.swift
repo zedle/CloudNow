@@ -152,6 +152,7 @@ enum L10nCA {
         "input_buffer": "Buffer d'entrada",
         "ice_path": "Ruta ICE",
         "av1_color_path_warning": "AV1 utilitza descodificació per maquinari quan està disponible; si no, per programari. Actualment es limita a SDR BT.709 de 8 bits.",
+        "hdr_needs_hdr_output": "L'Apple TV emet en SDR, així que l'HDR es veurà apagat o massa brillant. Activa Ajustar el rang dinàmic a la configuració de l'Apple TV o tria un format de vídeo HDR.",
         "keyboard_layout": "Disposició del teclat",
         "game_language": "Llengua del joc",
         "game_language_description": "Alguns jocs d'Xbox/Game Pass també requereixen una disposició del teclat que coincideixi amb la llengua. Selecciona una disposició del teclat que coincideixi amb la llengua triada per al joc i inicia una sessió nova perquè el canvi tingui efecte.",

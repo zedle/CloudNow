@@ -321,6 +321,7 @@ enum L10nES {
         "all": "Todos",
         "add_to_favorites": "Añadir a favoritos",
         "av1_color_path_warning": "AV1 usa decodificación por hardware cuando está disponible; de lo contrario, por software. Actualmente limitado a SDR BT.709 de 8 bits.",
+        "hdr_needs_hdr_output": "El Apple TV está emitiendo en SDR, así que el HDR se verá apagado o demasiado brillante. Activa Ajustar rango dinámico en los ajustes del Apple TV o elige un formato de vídeo HDR.",
         "rtc_event_log_active": "Registro RTC activo",
         "fallback": "Reserva",
         "session_ending_soon": "La sesión terminará pronto",

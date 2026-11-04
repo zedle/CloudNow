@@ -152,6 +152,7 @@ enum L10nDA {
         "input_buffer": "Inputbuffer",
         "ice_path": "ICE-sti",
         "av1_color_path_warning": "AV1 bruger hardwareafkodning, når den er tilgængelig, ellers software. Aktuelt begrænset til 8-bit SDR BT.709.",
+        "hdr_needs_hdr_output": "Apple TV sender SDR, så HDR vil se udvasket eller for lyst ud. Slå Tilpas dynamisk område til i indstillingerne på Apple TV, eller vælg et HDR-videoformat.",
         "keyboard_layout": "Tastaturlayout",
         "game_language": "Spilsprog",
         "game_language_description": "Nogle Xbox/Game Pass-spil kræver også et tilsvarende tastaturlayout. Vælg et tastaturlayout, der matcher dit valgte spilsprog, og start derefter en ny session, så ændringen træder i kraft.",

@@ -152,6 +152,7 @@ enum L10nCS {
         "input_buffer": "Vstupní buffer",
         "ice_path": "Cesta ICE",
         "av1_color_path_warning": "AV1 používá hardwarové dekódování, je-li dostupné, jinak softwarové. Aktuálně je omezeno na 8bitové SDR BT.709.",
+        "hdr_needs_hdr_output": "Apple TV vysílá SDR, takže HDR bude vypadat vybledle nebo příliš jasně. Zapněte v nastavení Apple TV Přizpůsobit dynamický rozsah nebo nastavte formát videa HDR.",
         "keyboard_layout": "Rozložení klávesnice",
         "game_language": "Jazyk hry",
         "game_language_description": "Některé hry pro Xbox/Game Pass také vyžadují odpovídající rozložení klávesnice. Vyberte rozložení klávesnice odpovídající zvolenému jazyku hry a poté spusťte novou relaci, aby se změna projevila.",

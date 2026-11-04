@@ -182,6 +182,7 @@ enum L10nPTPT {
         "input_buffer": "Buffer de entrada",
         "ice_path": "Caminho ICE",
         "av1_color_path_warning": "O AV1 usa descodificação por hardware quando disponível, caso contrário, por software. Atualmente limitado a SDR BT.709 de 8 bits.",
+        "hdr_needs_hdr_output": "A Apple TV está a emitir em SDR, por isso o HDR vai parecer desbotado ou demasiado claro. Ative Ajustar gama dinâmica nas Definições da Apple TV ou escolha um formato de vídeo HDR.",
         "keyboard_layout": "Disposição do teclado",
         "game_language": "Idioma do jogo",
         "game_language_description": "Alguns jogos Xbox/Game Pass também exigem uma disposição do teclado correspondente. Selecione uma disposição do teclado que corresponda ao idioma escolhido para o jogo e inicie uma nova sessão para que a alteração tenha efeito.",

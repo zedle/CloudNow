@@ -678,6 +678,9 @@ nonisolated struct StreamColorCapabilities {
     let decoderSupports10Bit: Bool
     let hdrRenderPipelineAvailable: Bool
     let displaySupportsHDR: Bool
+    /// Automatic only picks HDR when the output can actually show it; an explicit Prefer HDR
+    /// still requests it on an HDR-capable TV (for example an Apple TV set to an HDR format).
+    var displayHDROutputAvailable = true
 }
 
 nonisolated struct HDRDisplayCapabilities: Codable, Equatable {
@@ -743,6 +746,7 @@ nonisolated struct StreamColorRequest: Codable, Equatable {
                capabilities.decoderSupports10Bit,
                capabilities.hdrRenderPipelineAvailable,
                capabilities.displaySupportsHDR,
+               capabilities.displayHDROutputAvailable,
                capabilities.accountAllowsHDR == true,
                capabilities.serverAllowsHDR != false
             {
@@ -768,7 +772,8 @@ extension StreamSettings {
             // from the 10-bit decode path, so either forces an 8-bit SDR downgrade.
             decoderSupports10Bit: localCapabilities.supportsHardware10BitDecode && codec.resolvedCodec == .h265,
             hdrRenderPipelineAvailable: localCapabilities.supportsHDRRendering,
-            displaySupportsHDR: localCapabilities.displaySupportsHDR
+            displaySupportsHDR: localCapabilities.displaySupportsHDR,
+            displayHDROutputAvailable: localCapabilities.displayHDROutputAvailable
         )
         return StreamColorRequest.resolve(
             preference: colorPreference,

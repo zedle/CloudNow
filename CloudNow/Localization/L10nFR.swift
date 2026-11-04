@@ -321,6 +321,7 @@ enum L10nFR {
         "all": "Tous",
         "add_to_favorites": "Ajouter aux favoris",
         "av1_color_path_warning": "AV1 utilise le décodage matériel s’il est disponible, sinon logiciel. Actuellement limité au SDR 8 bits BT.709.",
+        "hdr_needs_hdr_output": "L'Apple TV émet en SDR, l'HDR paraîtra donc délavé ou trop lumineux. Activez Ajuster la plage dynamique dans les réglages de l'Apple TV ou choisissez un format vidéo HDR.",
         "rtc_event_log_active": "Journal RTC actif",
         "fallback": "Solution de repli",
         "session_ending_soon": "La session se termine bientôt",

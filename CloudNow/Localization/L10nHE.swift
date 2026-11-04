@@ -152,6 +152,7 @@ enum L10nHE {
         "input_buffer": "חוצץ קלט",
         "ice_path": "נתיב ICE",
         "av1_color_path_warning": "AV1 משתמש בפענוח חומרה כשזמין, ואחרת בפענוח תוכנה. מוגבל כרגע ל-SDR 8-bit BT.709.",
+        "hdr_needs_hdr_output": "Apple TV מוציא תמונת SDR, ולכן HDR ייראה דהוי או בהיר מדי. הפעל התאמת טווח דינמי בהגדרות Apple TV או בחר פורמט וידאו HDR.",
         "keyboard_layout": "פריסת מקלדת",
         "game_language": "שפת המשחק",
         "game_language_description": "משחקי Xbox/Game Pass מסוימים דורשים גם פריסת מקלדת תואמת. יש לבחור פריסת מקלדת שתואמת לשפת המשחק שנבחרה, ולאחר מכן להתחיל הפעלה חדשה כדי שהשינוי ייכנס לתוקף.",

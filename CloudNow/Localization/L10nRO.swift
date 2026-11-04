@@ -182,6 +182,7 @@ enum L10nRO {
         "input_buffer": "Buffer de intrare",
         "ice_path": "Cale ICE",
         "av1_color_path_warning": "AV1 folosește decodarea hardware când este disponibilă, altfel pe cea software. Momentan este limitat la SDR BT.709 pe 8 biți.",
+        "hdr_needs_hdr_output": "Apple TV transmite SDR, așa că HDR va părea spălăcit sau prea luminos. Activează potrivirea gamei dinamice în Configurările Apple TV sau alege un format video HDR.",
         "keyboard_layout": "Aspectul tastaturii",
         "game_language": "Limba jocului",
         "game_language_description": "Unele jocuri Xbox/Game Pass necesită și un aspect al tastaturii corespunzător. Selectează un aspect al tastaturii care corespunde limbii alese pentru joc, apoi începe o sesiune nouă pentru ca modificarea să aibă efect.",

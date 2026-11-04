@@ -351,6 +351,7 @@ enum L10nZHHans {
         "all": "全部",
         "add_to_favorites": "添加到收藏",
         "av1_color_path_warning": "AV1 在硬件解码可用时使用硬件解码，否则使用软件解码。目前仅支持 SDR 8 位 BT.709。",
+        "hdr_needs_hdr_output": "Apple TV 当前输出 SDR，HDR 画面会发白或过亮。请在 Apple TV 设置中打开“匹配动态范围”，或选择 HDR 视频格式。",
         "rtc_event_log_active": "RTC 事件日志已启用",
         "fallback": "回退",
         "session_ending_soon": "会话即将结束",

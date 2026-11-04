@@ -132,7 +132,7 @@ nonisolated enum StreamQualityPresetPolicy {
                 frameRate: .fixed(60),
                 maxBitrateKbps: StreamSettings.maxSelectableBitrateKbps,
                 codec: .h265,
-                colorPreference: .preferHDR,
+                colorPreference: .automatic,
                 chromaFormat: .yuv444,
                 networkAdjustment: .optimalQuality,
                 prefilterMode: .auto,

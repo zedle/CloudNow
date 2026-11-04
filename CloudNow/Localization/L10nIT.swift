@@ -325,6 +325,7 @@ enum L10nIT {
         "all": "Tutti",
         "add_to_favorites": "Aggiungi ai preferiti",
         "av1_color_path_warning": "AV1 usa la decodifica hardware quando disponibile, altrimenti software. Attualmente limitato a SDR BT.709 a 8 bit.",
+        "hdr_needs_hdr_output": "Apple TV sta trasmettendo in SDR, quindi l'HDR apparirà slavato o troppo luminoso. Attiva Adatta gamma dinamica nelle impostazioni di Apple TV oppure scegli un formato video HDR.",
         "rtc_event_log_active": "Registro eventi RTC attivo",
         "fallback": "Ripiego",
         "session_ending_soon": "La sessione termina a breve",

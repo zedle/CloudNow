@@ -182,6 +182,7 @@ enum L10nMS {
         "input_buffer": "Penimbal input",
         "ice_path": "Laluan ICE",
         "av1_color_path_warning": "AV1 menggunakan penyahkodan perkakasan apabila tersedia, jika tidak menggunakan perisian. Kini terhad kepada SDR 8-bit BT.709.",
+        "hdr_needs_hdr_output": "Apple TV mengeluarkan SDR, jadi HDR akan kelihatan pudar atau terlalu terang. Hidupkan Padankan Julat Dinamik dalam Tetapan Apple TV, atau pilih format video HDR.",
         "keyboard_layout": "Susun atur papan kekunci",
         "game_language": "Bahasa permainan",
         "game_language_description": "Sesetengah permainan Xbox/Game Pass juga memerlukan susun atur papan kekunci yang sepadan. Pilih susun atur papan kekunci yang sepadan dengan bahasa permainan pilihan anda, kemudian mulakan sesi baharu supaya perubahan berkuat kuasa.",

@@ -182,6 +182,7 @@ enum L10nSV {
         "input_buffer": "Inmatningsbuffert",
         "ice_path": "ICE-väg",
         "av1_color_path_warning": "AV1 använder hårdvaruavkodning när det är tillgängligt, annars programvara. För närvarande begränsat till 8-bitars SDR BT.709.",
+        "hdr_needs_hdr_output": "Apple TV skickar SDR, så HDR ser blekt eller för ljust ut. Slå på Matcha dynamiskt omfång i inställningarna för Apple TV eller välj ett HDR-videoformat.",
         "keyboard_layout": "Tangentbordslayout",
         "game_language": "Spelspråk",
         "game_language_description": "Vissa Xbox/Game Pass-spel kräver också en matchande tangentbordslayout. Välj en tangentbordslayout som matchar ditt valda spelspråk och starta sedan en ny session för att ändringen ska träda i kraft.",

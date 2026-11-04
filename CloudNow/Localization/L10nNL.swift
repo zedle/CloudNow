@@ -182,6 +182,7 @@ enum L10nNL {
         "input_buffer": "Invoerbuffer",
         "ice_path": "ICE-pad",
         "av1_color_path_warning": "AV1 gebruikt hardwaredecodering indien beschikbaar, anders software. Momenteel beperkt tot 8-bits SDR BT.709.",
+        "hdr_needs_hdr_output": "Apple TV geeft SDR weer, dus HDR ziet er flets of te fel uit. Zet Pas dynamisch bereik aan in de instellingen van Apple TV of kies een HDR-videoformaat.",
         "keyboard_layout": "Toetsenbordindeling",
         "game_language": "Speltaal",
         "game_language_description": "Sommige Xbox/Game Pass-games vereisen ook een bijpassende toetsenbordindeling. Kies een toetsenbordindeling die overeenkomt met je gekozen speltaal en start vervolgens een nieuwe sessie om de wijziging toe te passen.",

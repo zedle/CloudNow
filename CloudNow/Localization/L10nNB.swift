@@ -182,6 +182,7 @@ enum L10nNB {
         "input_buffer": "Inndatabuffer",
         "ice_path": "ICE-bane",
         "av1_color_path_warning": "AV1 bruker maskinvaredekoding når tilgjengelig, ellers programvare. Foreløpig begrenset til 8-bits SDR BT.709.",
+        "hdr_needs_hdr_output": "Apple TV sender SDR, så HDR vil se utvasket eller for lyst ut. Slå på Tilpass dynamisk område i innstillingene på Apple TV, eller velg et HDR-videoformat.",
         "keyboard_layout": "Tastaturoppsett",
         "game_language": "Spillspråk",
         "game_language_description": "Noen Xbox/Game Pass-spill krever også et samsvarende tastaturoppsett. Velg et tastaturoppsett som samsvarer med det valgte spillspråket, og start deretter en ny økt for at endringen skal tre i kraft.",

@@ -325,6 +325,7 @@ enum L10nJA {
         "all": "すべて",
         "add_to_favorites": "お気に入りに追加",
         "av1_color_path_warning": "AV1 はハードウェアデコードが利用可能な場合はそれを使用し、それ以外はソフトウェアでデコードします。現在は SDR 8 ビット BT.709 に限定されます。",
+        "hdr_needs_hdr_output": "Apple TV は SDR で出力しているため、HDR は白っぽく、または明るすぎて見えます。Apple TV の設定でダイナミックレンジを一致させるをオンにするか、HDR ビデオフォーマットを選択してください。",
         "rtc_event_log_active": "RTC ログ有効",
         "fallback": "フォールバック",
         "session_ending_soon": "セッション終了間近",

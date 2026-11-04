@@ -304,7 +304,7 @@ struct StreamView: View {
         let tier = (viewModel.subscription?.membershipTier ?? "").uppercased()
         let tierPremium = tier.contains("ULTIMATE") || tier.contains("PERFORMANCE") || tier.contains("PRIORITY")
         let caps = LocalVideoCapabilities.detect(codec: .h265)
-        let hdrUsable = caps.supportsHardware10BitDecode && caps.displaySupportsHDR && tierPremium
+        let hdrUsable = caps.supportsHardware10BitDecode && caps.displayHDROutputAvailable && tierPremium
         var badges: [GameFeature] = []
         if supported.contains(.rtx), tierPremium {
             badges.append(.rtx)

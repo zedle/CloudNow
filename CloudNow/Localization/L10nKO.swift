@@ -325,6 +325,7 @@ enum L10nKO {
         "all": "전체",
         "add_to_favorites": "즐겨찾기에 추가",
         "av1_color_path_warning": "AV1은 하드웨어 디코딩이 가능하면 사용하고, 그렇지 않으면 소프트웨어를 사용합니다. 현재 SDR 8비트 BT.709로 제한됩니다.",
+        "hdr_needs_hdr_output": "Apple TV가 SDR로 출력 중이므로 HDR이 흐리거나 지나치게 밝게 보입니다. Apple TV 설정에서 다이내믹 레인지 일치를 켜거나 HDR 비디오 포맷을 선택하세요.",
         "rtc_event_log_active": "RTC 이벤트 로그 활성화됨",
         "fallback": "대체",
         "session_ending_soon": "세션이 곧 종료됩니다",
