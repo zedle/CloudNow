@@ -1,4 +1,5 @@
 @testable import CloudNow
+import Foundation
 import Testing
 
 @Suite("Display-locked frame queue")
@@ -80,5 +81,23 @@ struct DisplayLockedFrameQueueTests {
 
         #expect(removed == [4, 5])
         #expect(afterRemoval.presented == nil)
+    }
+
+    @Test("Release lands at mid-refresh, away from the vsync sample point")
+    func releaseDelayTargetsMidRefresh() {
+        let halfRefresh: TimeInterval = 1.0 / 60
+        func delay(at now: TimeInterval) -> TimeInterval {
+            DisplayLockedReleasePhase.releaseDelay(refreshTimestamp: 100, refreshInterval: 1.0 / 30, now: now)
+        }
+
+        #expect(abs(delay(at: 100.001) - (halfRefresh - 0.001)) < 0.000_001)
+        #expect(abs(delay(at: 100.010) - (halfRefresh - 0.010)) < 0.000_001)
+        #expect(delay(at: 100.020) == 0)
+        #expect(abs(delay(at: 99.990) - halfRefresh) < 0.000_001)
+    }
+
+    @Test("A non-positive refresh interval releases immediately")
+    func releaseDelayWithoutInterval() {
+        #expect(DisplayLockedReleasePhase.releaseDelay(refreshTimestamp: 100, refreshInterval: 0, now: 100) == 0)
     }
 }

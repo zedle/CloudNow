@@ -167,7 +167,7 @@ final class VideoSurfaceView: UIView {
     private var activeRemoteTouch: UITouch?
     private var lastRemoteTouchLocation: CGPoint?
     private var remoteSelectMouseDown = false
-    private var displayLink: CADisplayLink?
+    private var displayRefresh: DisplayRefreshThread?
 
     private static let remoteTouchSensitivity: CGFloat = 1.0
 
@@ -302,7 +302,7 @@ final class VideoSurfaceView: UIView {
 
     isolated deinit {
         notificationTokens.forEach(NotificationCenter.default.removeObserver)
-        displayLink?.invalidate()
+        displayRefresh?.stop()
     }
 
     /// Become first responder as soon as the view enters a window so hardware
@@ -320,23 +320,23 @@ final class VideoSurfaceView: UIView {
     // MARK: - Display Refresh
 
     private func startDisplayLink() {
-        guard displayLink == nil else { return }
-        let target = DisplayLinkTarget()
-        target.owner = self
-        let link = CADisplayLink(target: target, selector: #selector(DisplayLinkTarget.displayLinkDidFire(_:)))
-        link.add(to: .main, forMode: .common)
-        displayLink = link
+        guard displayRefresh == nil else { return }
+        let renderer = renderer
+        displayRefresh = DisplayRefreshThread { link in
+            let interval = link.targetTimestamp - link.timestamp
+            guard interval > 0 else { return }
+            let releaseDelay = DisplayLockedReleasePhase.releaseDelay(
+                refreshTimestamp: link.timestamp,
+                refreshInterval: interval,
+                now: CACurrentMediaTime()
+            )
+            renderer.displayDidRefresh(refreshRate: Int((1 / interval).rounded()), releaseDelay: releaseDelay)
+        }
     }
 
     private func stopDisplayLink() {
-        displayLink?.invalidate()
-        displayLink = nil
-    }
-
-    fileprivate func displayDidRefresh(_ link: CADisplayLink) {
-        let interval = link.targetTimestamp - link.timestamp
-        guard interval > 0 else { return }
-        renderer.displayDidRefresh(refreshRate: Int((1 / interval).rounded()))
+        displayRefresh?.stop()
+        displayRefresh = nil
     }
 
     // MARK: - First Responder / Keyboard
@@ -496,15 +496,6 @@ final class VideoSurfaceView: UIView {
     }
 }
 
-/// CADisplayLink retains its target, so the view is held weakly to avoid a cycle.
-private final class DisplayLinkTarget: NSObject {
-    weak var owner: VideoSurfaceView?
-
-    @objc func displayLinkDidFire(_ link: CADisplayLink) {
-        owner?.displayDidRefresh(link)
-    }
-}
-
 // MARK: - WebRTC Video Renderer
 
 /// Implements LKRTCVideoRenderer to receive decoded WebRTC frames and feed them
@@ -636,12 +627,17 @@ private final nonisolated class WebRTCFrameRenderer: NSObject, LKRTCVideoRendere
 
     /// Called once per display refresh. At or below this rate a refresh lasts long enough
     /// for network jitter to land two frames in it, so frames wait for their own refresh.
-    func displayDidRefresh(refreshRate: Int) {
+    func displayDidRefresh(refreshRate: Int, releaseDelay: TimeInterval) {
         let locksPresentation = refreshRate <= Self.displayLockedMaximumRefreshRate
         let needsWork = state.withLock { locksPresentation || $0.displayLockedQueue != nil }
         guard needsWork else { return }
-        renderQueue.async { [weak self] in
+        let work: @Sendable () -> Void = { [weak self] in
             self?.presentDisplayLockedFrame(refreshRate: refreshRate, locksPresentation: locksPresentation)
+        }
+        if locksPresentation, releaseDelay > 0 {
+            renderQueue.asyncAfter(deadline: .now() + releaseDelay, execute: work)
+        } else {
+            renderQueue.async(execute: work)
         }
     }
 
