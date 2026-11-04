@@ -433,7 +433,7 @@ final class GFNStreamController: NSObject {
         let localCapabilities = LocalVideoCapabilities.detect(codec: settings.codec.resolvedCodec)
         let colorRequest = settings.colorRequest(localCapabilities: localCapabilities, accountAllowsHDR: accountAllowsHDR)
         gfnLog.info("connect: starting, serverIp=\(session.serverIp), signalingUrl=\(session.signalingUrl)")
-        videoColorLog.info("request preference=\(settings.colorPreference.rawValue) requested=\(colorRequest.mode.rawValue) bitDepth=\(colorRequest.bitDepth) hdr=\(colorRequest.hdrRequested) codec=\(settings.codec.rawValue) decoder10Bit=\(localCapabilities.supportsHardware10BitDecode) hdrPipeline=\(localCapabilities.supportsHDRRendering) displayHDR=\(localCapabilities.displaySupportsHDR) hdrOutput=\(localCapabilities.displayHDROutputAvailable) matchContent=\(DisplayDynamicRangeRequest.isMatchingEnabled)")
+        videoColorLog.info("request preference=\(settings.colorPreference.rawValue) requested=\(colorRequest.mode.rawValue) bitDepth=\(colorRequest.bitDepth) hdr=\(colorRequest.hdrRequested) codec=\(settings.codec.rawValue) decoder10Bit=\(localCapabilities.supportsHardware10BitDecode) hdrPipeline=\(localCapabilities.supportsHDRRendering) displayHDR=\(localCapabilities.displaySupportsHDR) hdrOutput=\(localCapabilities.displayHDROutputAvailable) \(LocalVideoCapabilities.hdrSignalSummary(), privacy: .public)")
         let resolutionParts = settings.resolution.split(separator: "x")
         DisplayDynamicRangeRequest.update(
             hdr10: colorRequest.mode == .hdr10,

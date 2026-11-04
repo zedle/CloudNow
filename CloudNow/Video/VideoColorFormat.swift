@@ -12,7 +12,7 @@ nonisolated struct LocalVideoCapabilities: Equatable {
     let supportedPixelFormats: Set<OSType>
     let supportedCodecs: Set<VideoCodec>
     /// True when HDR frames can actually reach the TV as HDR: the TV is HDR-capable and either
-    /// tvOS can switch it into HDR (Match Content) or the output already has EDR headroom.
+    /// the output is already HDR or tvOS can switch it into HDR (Match Content).
     /// `displaySupportsHDR` alone only says the TV could do HDR; with an SDR output format and
     /// matching off, HDR10 frames are tone-mapped to SDR and look washed out or overbright.
     var displayHDROutputAvailable = true
@@ -33,7 +33,7 @@ nonisolated struct LocalVideoCapabilities: Equatable {
         // (empty == SDR-only), which is the correct signal on tvOS.
         let displaySupportsHDR = AVPlayer.eligibleForHDRPlayback || displayEDRHeadroom > 1.0
         let displayHDROutputAvailable = displaySupportsHDR
-            && (DisplayDynamicRangeRequest.isMatchingEnabled || displayEDRHeadroom > 1.0)
+            && (DisplayDynamicRangeRequest.outputIsHDR || DisplayDynamicRangeRequest.isMatchingEnabled)
         var codecs: Set<VideoCodec> = [.h264]
         if hevcHardwareDecode {
             codecs.insert(.h265)
@@ -53,6 +53,15 @@ nonisolated struct LocalVideoCapabilities: Equatable {
             supportedCodecs: codecs,
             displayHDROutputAvailable: displayHDROutputAvailable
         )
+    }
+
+    /// The display signals behind the HDR output gate, for on-device diagnosis.
+    @MainActor static func hdrSignalSummary() -> String {
+        [
+            "eligibleForHDRPlayback=\(AVPlayer.eligibleForHDRPlayback)",
+            "outputHDRMode=\(DisplayDynamicRangeRequest.outputHDRMode ?? "unknown")",
+            "matchContent=\(DisplayDynamicRangeRequest.isMatchingEnabled)",
+        ].joined(separator: " ")
     }
 }
 
