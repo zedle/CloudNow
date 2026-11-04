@@ -83,17 +83,18 @@ struct DisplayLockedFrameQueueTests {
         #expect(afterRemoval.presented == nil)
     }
 
-    @Test("Release lands at mid-refresh, away from the vsync sample point")
-    func releaseDelayTargetsMidRefresh() {
-        let halfRefresh: TimeInterval = 1.0 / 60
+    @Test("Release lands a quarter refresh before the next vsync sample point")
+    func releaseDelayTargetsLateRefresh() {
+        let releaseOffset: TimeInterval = 0.025
         func delay(at now: TimeInterval) -> TimeInterval {
             DisplayLockedReleasePhase.releaseDelay(refreshTimestamp: 100, refreshInterval: 1.0 / 30, now: now)
         }
 
-        #expect(abs(delay(at: 100.001) - (halfRefresh - 0.001)) < 0.000_001)
-        #expect(abs(delay(at: 100.010) - (halfRefresh - 0.010)) < 0.000_001)
-        #expect(delay(at: 100.020) == 0)
-        #expect(abs(delay(at: 99.990) - halfRefresh) < 0.000_001)
+        #expect(abs(delay(at: 100.001) - (releaseOffset - 0.001)) < 0.000_001)
+        #expect(abs(delay(at: 100.010) - (releaseOffset - 0.010)) < 0.000_001)
+        #expect(abs(delay(at: 100.020) - (releaseOffset - 0.020)) < 0.000_001)
+        #expect(delay(at: 100.030) == 0)
+        #expect(abs(delay(at: 99.990) - releaseOffset) < 0.000_001)
     }
 
     @Test("A non-positive refresh interval releases immediately")

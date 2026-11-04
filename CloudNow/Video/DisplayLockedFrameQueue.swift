@@ -2,13 +2,14 @@ import Foundation
 
 /// The image queue samples at vsync, the same instant `CADisplayLink` fires. Enqueuing on the
 /// tick leaves about 1 ms of margin, so scheduling jitter lands two frames in one sample window
-/// and the older one is evicted. Releasing at mid-refresh keeps half a refresh of margin on both
-/// sides and halves the time a frame waits for the next sample.
+/// and the older one is evicted. Releasing three quarters into the refresh keeps a quarter refresh
+/// (about 8 ms at 30 Hz) of margin before the next sample, far above the measured ~2 ms release
+/// jitter, while letting frames that arrive later in the refresh still make that sample.
 nonisolated enum DisplayLockedReleasePhase {
-    static let fraction = 0.5
+    static let fraction = 0.75
 
-    /// Delay from `now` until mid-refresh of the vsync at `refreshTimestamp`. A tick that runs
-    /// past mid-refresh releases immediately.
+    /// Delay from `now` until `fraction` of the way through the refresh that began at
+    /// `refreshTimestamp`. A tick that runs past that point releases immediately.
     static func releaseDelay(
         refreshTimestamp: TimeInterval,
         refreshInterval: TimeInterval,
