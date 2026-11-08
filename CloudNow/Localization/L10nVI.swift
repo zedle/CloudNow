@@ -211,6 +211,8 @@ enum L10nVI {
         "controller_rumble_description": "Rung tay cầm được hỗ trợ trong khi truyền phát. Áp dụng từ phiên tiếp theo.",
         "controller_rumble_intensity": "Cường độ rung",
         "controller_rumble_intensity_description": "Tăng cường độ rung. Không đặt quá cao — rung liên tục ở cường độ rất mạnh có thể làm mòn hoặc hỏng mô-tơ của tay cầm. Áp dụng từ phiên tiếp theo.",
+        "nintendo_button_swap": "Hoán đổi A/B và X/Y của Nintendo",
+        "nintendo_button_swap_description": "Gửi nút dưới cùng thành A trên tay cầm Switch. Tắt nếu các nút của tay cầm bên thứ ba bị đảo.",
         "overlay_button": "Nút overlay",
         "overlay_button_description": "Nhấn giữ nút này trong khi chơi để mở overlay của ứng dụng. Thay đổi nếu nó xung đột với hành động trong game.",
         "text_input_buttons": "Nút nhập văn bản",

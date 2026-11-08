@@ -273,6 +273,8 @@ private struct CloudNowAdjustableControllerRow: View {
 }
 
 struct CloudNowControllerSettingsSection<AdditionalContent: View>: View {
+    // Device-wide: it describes the physical pad on this Apple TV, not a cloud provider.
+    @AppStorage(ControllerFaceButtons.swapSettingKey) private var swapNintendoFaceButtons = true
     @Binding var rumbleEnabled: Bool
     @Binding var rumbleIntensity: Double
     @Binding var controllerDeadzone: Double
@@ -328,6 +330,14 @@ struct CloudNowControllerSettingsSection<AdditionalContent: View>: View {
                 policy: policy,
                 valueKind: .deadzone
             )
+
+            Toggle(isOn: $swapNintendoFaceButtons) {
+                CloudNowSettingLabel(
+                    title: L10n.text("nintendo_button_swap"),
+                    description: L10n.text("nintendo_button_swap_description")
+                )
+            }
+            .accessibilityIdentifier("settings.nintendo-button-swap")
 
             additionalContent
         } header: {

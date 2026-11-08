@@ -211,6 +211,8 @@ enum L10nRO {
         "controller_rumble_description": "Activează vibrația controlerelor compatibile în timpul redării. Se aplică din sesiunea următoare.",
         "controller_rumble_intensity": "Intensitatea vibrației",
         "controller_rumble_intensity_description": "Mărește intensitatea vibrației. Nu o setați prea sus — vibrațiile continue foarte puternice pot uza sau deteriora motoarele controlerului. Se aplică din sesiunea următoare.",
+        "nintendo_button_swap": "Inversează A/B și X/Y Nintendo",
+        "nintendo_button_swap_description": "Trimite butonul de jos ca A pe controlerele Switch. Dezactivează dacă butoanele unui controler terț apar inversate.",
         "overlay_button": "Buton overlay",
         "overlay_button_description": "Apăsați lung acest buton în timpul jocului pentru a deschide overlayul aplicației. Schimbați-l dacă intră în conflict cu o acțiune din joc.",
         "text_input_buttons": "Butoane pentru introducerea textului",

@@ -207,6 +207,8 @@ enum L10nPTBR {
         "controller_rumble_description": "Faz os controles compatíveis vibrarem durante as transmissões. Aplica-se à próxima sessão.",
         "controller_rumble_intensity": "Intensidade da vibração",
         "controller_rumble_intensity_description": "Aumenta a intensidade da vibração. Não defina um valor muito alto — uma vibração contínua muito forte pode desgastar ou danificar os motores do controle. Aplica-se à próxima sessão.",
+        "nintendo_button_swap": "Trocar A/B e X/Y da Nintendo",
+        "nintendo_button_swap_description": "Envia o botão inferior como A em controles do Switch. Desative se os botões de um controle de terceiros ficarem trocados.",
         "overlay_button": "Botão de sobreposição",
         "overlay_button_description": "Pressione e segure este botão durante o jogo para abrir a sobreposição do app. Troque se isso conflitar com uma ação do jogo.",
         "text_input_buttons": "Botões de entrada de texto",

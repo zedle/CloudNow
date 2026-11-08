@@ -181,6 +181,8 @@ enum L10nCS {
         "controller_rumble_description": "Vibrovat podporovanými ovladači během streamování. Platí od příští relace.",
         "controller_rumble_intensity": "Síla vibrací",
         "controller_rumble_intensity_description": "Zvyšuje sílu vibrací. Nenastavujte příliš vysokou hodnotu – velmi silné nepřetržité vibrace mohou opotřebit nebo poškodit motory ovladače. Platí od příští relace.",
+        "nintendo_button_swap": "Prohodit A/B a X/Y Nintendo",
+        "nintendo_button_swap_description": "Odesílá spodní tlačítko jako A na ovladačích Switch. Vypněte, pokud jsou tlačítka ovladače jiného výrobce prohozená.",
         "overlay_button": "Tlačítko překryvu",
         "overlay_button_description": "Dlouze podržte během hraní pro otevření překryvu aplikace. Změňte, pokud koliduje s akcí ve hře.",
         "text_input_buttons": "Tlačítka pro zadávání textu",

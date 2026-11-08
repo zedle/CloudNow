@@ -211,6 +211,8 @@ enum L10nPL {
         "controller_rumble_description": "Włącza wibracje obsługiwanych kontrolerów podczas transmisji. Zmiana obowiązuje od następnej sesji.",
         "controller_rumble_intensity": "Siła wibracji",
         "controller_rumble_intensity_description": "Zwiększa siłę wibracji. Nie ustawiaj jej zbyt wysoko — bardzo silne, ciągłe wibracje mogą zużyć lub uszkodzić silniki kontrolera. Zmiana obowiązuje od następnej sesji.",
+        "nintendo_button_swap": "Zamień A/B i X/Y Nintendo",
+        "nintendo_button_swap_description": "Wysyła dolny przycisk jako A na kontrolerach Switch. Wyłącz, jeśli przyciski kontrolera innej firmy są zamienione.",
         "overlay_button": "Przycisk nakładki",
         "overlay_button_description": "Przytrzymaj ten przycisk podczas gry, aby otworzyć nakładkę aplikacji. Zmień, jeśli koliduje z akcją w grze.",
         "text_input_buttons": "Przyciski wprowadzania tekstu",

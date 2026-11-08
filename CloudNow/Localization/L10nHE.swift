@@ -181,6 +181,8 @@ enum L10nHE {
         "controller_rumble_description": "הפעל רטט בבקרים נתמכים במהלך הזרמה. יחול מהסשן הבא.",
         "controller_rumble_intensity": "עוצמת רטט",
         "controller_rumble_intensity_description": "מגביר את עוצמת הרטט. אין להגדיר עוצמה גבוהה מדי — רטט חזק ומתמשך עלול לשחוק או לפגוע במנועי הבקר. יחול מהסשן הבא.",
+        "nintendo_button_swap": "החלפת A/B ו-X/Y של Nintendo",
+        "nintendo_button_swap_description": "שולח את הכפתור התחתון כ-A בבקרי Switch. כבו אם הכפתורים של בקר צד שלישי מתחלפים.",
         "overlay_button": "כפתור שכבת-על",
         "overlay_button_description": "לחץ לחיצה ארוכה על כפתור זה במהלך המשחק כדי לפתוח את שכבת-העל של האפליקציה. שנה אם יש התנגשות עם פעולה בתוך המשחק.",
         "text_input_buttons": "לחצני קלט טקסט",

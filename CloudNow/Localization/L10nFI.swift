@@ -181,6 +181,8 @@ enum L10nFI {
         "controller_rumble_description": "Värisytä tuettuja ohjaimia suoratoiston aikana. Asetus tulee voimaan seuraavassa istunnossa.",
         "controller_rumble_intensity": "Värinän voimakkuus",
         "controller_rumble_intensity_description": "Voimistaa värinää. Älä aseta sitä liian suureksi – erittäin voimakas jatkuva värinä voi kuluttaa tai vaurioittaa ohjaimen moottoreita. Asetus tulee voimaan seuraavassa istunnossa.",
+        "nintendo_button_swap": "Vaihda Nintendon A/B ja X/Y",
+        "nintendo_button_swap_description": "Lähettää alimman painikkeen A-painikkeena Switch-ohjaimissa. Poista käytöstä, jos kolmannen osapuolen ohjaimen painikkeet menevät ristiin.",
         "overlay_button": "Peittopainike",
         "overlay_button_description": "Paina pitkään pelin aikana avataksesi sovelluksen peiton. Vaihda, jos se on ristiriidassa pelinsisäisen toiminnon kanssa.",
         "text_input_buttons": "Tekstinsyöttöpainikkeet",

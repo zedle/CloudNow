@@ -2104,6 +2104,7 @@ final nonisolated class InputSender: @unchecked Sendable {
                   let slot = firstFreeSlot else { return }
             let category = controller.productCategory
             let labelSwap = ControllerFaceButtons.usesNintendoLabels(productCategory: category)
+                && ControllerFaceButtons.swapEnabled()
             inputLog.info(
                 "Controller attached category=\(category, privacy: .public) vendor=\(controller.vendorName ?? "nil", privacy: .public) nintendoLabelSwap=\(labelSwap, privacy: .public)"
             )

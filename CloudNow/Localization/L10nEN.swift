@@ -209,6 +209,8 @@ enum L10nEN {
         "controller_rumble_description": "Vibrate supported controllers during streams. Applies to the next session.",
         "controller_rumble_intensity": "Rumble Power",
         "controller_rumble_intensity_description": "Boosts vibration strength. Don't set it too high — very strong sustained rumble can wear out or damage a controller's motors. Applies to the next session.",
+        "nintendo_button_swap": "Swap Nintendo A/B and X/Y",
+        "nintendo_button_swap_description": "Sends the bottom button as A on Switch controllers. Turn off if a third-party pad's buttons come out swapped.",
         "overlay_button": "Overlay Button",
         "overlay_button_description": "Long-press this button during play to open the app overlay. Switch if it conflicts with an in-game action.",
         "text_input_buttons": "Text Input Buttons",

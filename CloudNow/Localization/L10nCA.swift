@@ -181,6 +181,8 @@ enum L10nCA {
         "controller_rumble_description": "Fes vibrar els comandaments compatibles durant les sessions de joc. S'aplica a la sessió següent.",
         "controller_rumble_intensity": "Intensitat de la vibració",
         "controller_rumble_intensity_description": "Augmenta la intensitat de la vibració. No la configuris massa alta: una vibració contínua molt forta pot desgastar o danyar els motors del comandament. S'aplica a la sessió següent.",
+        "nintendo_button_swap": "Intercanvia A/B i X/Y de Nintendo",
+        "nintendo_button_swap_description": "Envia el botó inferior com a A als comandaments de Switch. Desactiva-ho si els botons d'un comandament de tercers surten intercanviats.",
         "overlay_button": "Botó de superposició",
         "overlay_button_description": "Mantén-lo premut durant el joc per obrir la superposició de l'app. Canvia'l si entra en conflicte amb una acció del joc.",
         "text_input_buttons": "Botons d’introducció de text",

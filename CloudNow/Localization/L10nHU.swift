@@ -185,6 +185,8 @@ enum L10nHU {
         "controller_rumble_description": "A támogatott kontrollerek rezegtetése streamelés közben. A következő munkamenettől érvényes.",
         "controller_rumble_intensity": "Rezgés erőssége",
         "controller_rumble_intensity_description": "Növeli a rezgés erősségét. Ne állítsd túl magasra — a nagyon erős, tartós rezgés elkoptathatja vagy károsíthatja a kontroller motorjait. A következő munkamenettől érvényes.",
+        "nintendo_button_swap": "Nintendo A/B és X/Y felcserélése",
+        "nintendo_button_swap_description": "Switch-kontrollereken az alsó gombot A-ként küldi. Kapcsolja ki, ha egy külső gyártó kontrollerén a gombok fel vannak cserélve.",
         "overlay_button": "Átfedés gomb",
         "overlay_button_description": "Tartsa lenyomva ezt a gombot játék közben az alkalmazás átfedésének megnyitásához. Módosítsa, ha ütközik egy játékbeli művelettel.",
         "text_input_buttons": "Szövegbeviteli gombok",

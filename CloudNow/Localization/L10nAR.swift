@@ -181,6 +181,8 @@ enum L10nAR {
         "controller_rumble_description": "اهتزاز وحدات التحكم المدعومة أثناء البث. يُطبّق في الجلسة التالية.",
         "controller_rumble_intensity": "قوة الاهتزاز",
         "controller_rumble_intensity_description": "يعزز قوة الاهتزاز. لا تضبطها على مستوى عالٍ جدًا — فقد يؤدي الاهتزاز القوي والمستمر إلى تآكل محركات وحدة التحكم أو تلفها. يُطبّق في الجلسة التالية.",
+        "nintendo_button_swap": "تبديل A/B وX/Y في Nintendo",
+        "nintendo_button_swap_description": "يرسل الزر السفلي كزر A في وحدات تحكم Switch. أوقفه إذا ظهرت أزرار وحدة تحكم من جهة خارجية مبدّلة.",
         "overlay_button": "زر التراكب",
         "overlay_button_description": "اضغط مطولًا على هذا الزر أثناء اللعب لفتح تراكب التطبيق. غيّره إذا كان يتعارض مع إجراء داخل اللعبة.",
         "text_input_buttons": "أزرار إدخال النص",

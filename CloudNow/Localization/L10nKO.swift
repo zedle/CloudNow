@@ -181,6 +181,8 @@ enum L10nKO {
         "controller_rumble_description": "스트리밍 중 지원되는 컨트롤러를 진동시킵니다. 다음 세션부터 적용됩니다.",
         "controller_rumble_intensity": "진동 강도",
         "controller_rumble_intensity_description": "진동 강도를 높입니다. 너무 높게 설정하지 마세요. 매우 강한 진동이 계속되면 컨트롤러 모터가 마모되거나 손상될 수 있습니다. 다음 세션부터 적용됩니다.",
+        "nintendo_button_swap": "Nintendo A/B 및 X/Y 바꾸기",
+        "nintendo_button_swap_description": "Switch 컨트롤러의 아래쪽 버튼을 A로 보냅니다. 타사 컨트롤러의 버튼이 바뀌어 나오면 끄세요.",
         "overlay_button": "오버레이 버튼",
         "overlay_button_description": "게임 중 이 버튼을 길게 눌러 앱 오버레이를 엽니다. 게임 내 동작과 충돌하면 변경하세요.",
         "text_input_buttons": "텍스트 입력 버튼",

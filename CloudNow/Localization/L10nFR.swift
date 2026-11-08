@@ -177,6 +177,8 @@ enum L10nFR {
         "controller_rumble_description": "Fait vibrer les manettes compatibles pendant les sessions de jeu. S’applique à la prochaine session.",
         "controller_rumble_intensity": "Intensité des vibrations",
         "controller_rumble_intensity_description": "Augmente l’intensité des vibrations. Ne la réglez pas trop haut : des vibrations continues très fortes peuvent user ou endommager les moteurs de la manette. S’applique à la prochaine session.",
+        "nintendo_button_swap": "Inverser A/B et X/Y Nintendo",
+        "nintendo_button_swap_description": "Envoie le bouton du bas comme A sur les manettes Switch. Désactivez si les boutons d'une manette tierce sont inversés.",
         "overlay_button": "Bouton de superposition",
         "overlay_button_description": "Appui long sur ce bouton pendant le jeu pour ouvrir la superposition de l'application. Modifiez-le s'il entre en conflit avec une action du jeu.",
         "text_input_buttons": "Boutons de saisie de texte",

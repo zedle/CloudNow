@@ -211,6 +211,8 @@ enum L10nNL {
         "controller_rumble_description": "Laat ondersteunde controllers trillen tijdens het streamen. Geldt vanaf de volgende sessie.",
         "controller_rumble_intensity": "Trillingssterkte",
         "controller_rumble_intensity_description": "Verhoogt de trillingssterkte. Stel deze niet te hoog in: zeer sterke aanhoudende trillingen kunnen de motoren van de controller verslijten of beschadigen. Geldt vanaf de volgende sessie.",
+        "nintendo_button_swap": "Nintendo A/B en X/Y omwisselen",
+        "nintendo_button_swap_description": "Verstuurt de onderste knop als A op Switch-controllers. Zet uit als de knoppen van een controller van derden verwisseld zijn.",
         "overlay_button": "Overlayknop",
         "overlay_button_description": "Houd deze knop tijdens het spelen lang ingedrukt om de app-overlay te openen. Verander dit als het botst met een actie in de game.",
         "text_input_buttons": "Knoppen voor tekstinvoer",

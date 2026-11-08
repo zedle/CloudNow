@@ -207,6 +207,8 @@ enum L10nZHHans {
         "controller_rumble_description": "在串流期间使支持的控制器振动。下一次会话生效。",
         "controller_rumble_intensity": "振动强度",
         "controller_rumble_intensity_description": "增强振动强度。请勿设置得过高——持续的强烈振动可能会磨损或损坏控制器的马达。下一次会话生效。",
+        "nintendo_button_swap": "交换 Nintendo A/B 和 X/Y",
+        "nintendo_button_swap_description": "在 Switch 手柄上将下方按钮作为 A 发送。如果第三方手柄的按钮被调换，请关闭此选项。",
         "overlay_button": "覆盖按钮",
         "overlay_button_description": "在游戏中长按此按钮可打开应用覆盖层。如果与游戏内操作冲突，请更改。",
         "text_input_buttons": "文本输入按钮",

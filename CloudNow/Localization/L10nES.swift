@@ -177,6 +177,8 @@ enum L10nES {
         "controller_rumble_description": "Hace vibrar los mandos compatibles durante las sesiones de juego. Se aplica a la siguiente sesión.",
         "controller_rumble_intensity": "Intensidad de vibración",
         "controller_rumble_intensity_description": "Aumenta la intensidad de la vibración. No la configures demasiado alta: una vibración continua muy fuerte puede desgastar o dañar los motores del mando. Se aplica a la siguiente sesión.",
+        "nintendo_button_swap": "Intercambiar A/B y X/Y de Nintendo",
+        "nintendo_button_swap_description": "Envía el botón inferior como A en los mandos de Switch. Desactívalo si los botones de un mando de terceros salen intercambiados.",
         "overlay_button": "Botón de superposición",
         "overlay_button_description": "Mantén pulsado este botón durante el juego para abrir la superposición de la app. Cámbialo si entra en conflicto con una acción del juego.",
         "text_input_buttons": "Botones de entrada de texto",

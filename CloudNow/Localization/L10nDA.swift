@@ -181,6 +181,8 @@ enum L10nDA {
         "controller_rumble_description": "Få understøttede controllere til at vibrere under streaming. Gælder fra næste session.",
         "controller_rumble_intensity": "Vibrationsstyrke",
         "controller_rumble_intensity_description": "Forstærker vibrationens styrke. Indstil den ikke for højt – meget kraftig vedvarende vibration kan slide på eller beskadige controllerens motorer. Gælder fra næste session.",
+        "nintendo_button_swap": "Byt Nintendo A/B og X/Y",
+        "nintendo_button_swap_description": "Sender den nederste knap som A på Switch-controllere. Slå fra, hvis knapperne på en controller fra tredjepart bliver byttet om.",
         "overlay_button": "Overlay-knap",
         "overlay_button_description": "Hold denne knap nede under spil for at åbne app-overlayet. Skift den, hvis den konflikter med en handling i spillet.",
         "text_input_buttons": "Knapper til tekstindtastning",

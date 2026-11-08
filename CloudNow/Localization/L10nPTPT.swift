@@ -211,6 +211,8 @@ enum L10nPTPT {
         "controller_rumble_description": "Faz vibrar os comandos compatíveis durante as transmissões. Aplica-se à sessão seguinte.",
         "controller_rumble_intensity": "Intensidade da vibração",
         "controller_rumble_intensity_description": "Aumenta a intensidade da vibração. Não defina um valor demasiado alto — uma vibração contínua muito forte pode desgastar ou danificar os motores do comando. Aplica-se à sessão seguinte.",
+        "nintendo_button_swap": "Trocar A/B e X/Y da Nintendo",
+        "nintendo_button_swap_description": "Envia o botão inferior como A em comandos Switch. Desative se os botões de um comando de terceiros ficarem trocados.",
         "overlay_button": "Botão de sobreposição",
         "overlay_button_description": "Prima longamente este botão durante o jogo para abrir a sobreposição da app. Altere se entrar em conflito com uma ação no jogo.",
         "text_input_buttons": "Botões de introdução de texto",

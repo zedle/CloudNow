@@ -211,6 +211,8 @@ enum L10nSV {
         "controller_rumble_description": "Låt kompatibla handkontroller vibrera under strömning. Gäller från nästa session.",
         "controller_rumble_intensity": "Vibrationsstyrka",
         "controller_rumble_intensity_description": "Ökar vibrationsstyrkan. Ställ inte in den för högt – mycket kraftig ihållande vibration kan slita ut eller skada handkontrollens motorer. Gäller från nästa session.",
+        "nintendo_button_swap": "Byt Nintendo A/B och X/Y",
+        "nintendo_button_swap_description": "Skickar den nedre knappen som A på Switch-handkontroller. Stäng av om knapparna på en handkontroll från tredje part blir omkastade.",
         "overlay_button": "Overlay-knapp",
         "overlay_button_description": "Håll ned denna knapp under spel för att öppna appens overlay. Byt om den krockar med en åtgärd i spelet.",
         "text_input_buttons": "Knappar för textinmatning",

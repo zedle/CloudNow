@@ -211,6 +211,8 @@ enum L10nTH {
         "controller_rumble_description": "สั่นคอนโทรลเลอร์ที่รองรับระหว่างการสตรีม มีผลในเซสชันถัดไป",
         "controller_rumble_intensity": "ความแรงของการสั่น",
         "controller_rumble_intensity_description": "เพิ่มความแรงของการสั่น อย่าตั้งค่าสูงเกินไป เพราะการสั่นต่อเนื่องที่แรงมากอาจทำให้มอเตอร์ของคอนโทรลเลอร์สึกหรอหรือเสียหาย มีผลในเซสชันถัดไป",
+        "nintendo_button_swap": "สลับ A/B และ X/Y ของ Nintendo",
+        "nintendo_button_swap_description": "ส่งปุ่มล่างเป็น A บนคอนโทรลเลอร์ Switch ปิดไว้หากปุ่มของคอนโทรลเลอร์จากผู้ผลิตอื่นสลับกัน",
         "overlay_button": "ปุ่มโอเวอร์เลย์",
         "overlay_button_description": "กดปุ่มนี้ค้างระหว่างเล่นเพื่อเปิดโอเวอร์เลย์ของแอป เปลี่ยนหากชนกับการกระทำในเกม",
         "text_input_buttons": "ปุ่มป้อนข้อความ",

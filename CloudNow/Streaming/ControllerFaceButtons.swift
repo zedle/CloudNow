@@ -8,16 +8,19 @@ import Foundation
 /// positions, so Nintendo pads swap A/B and X/Y to keep the bottom button as the game's A.
 ///
 /// Only the product category decides: label naming comes from Apple's Nintendo driver, which sets
-/// a Switch category. Generic pads arrive as HID/MFi with positional names, even when their
-/// `vendorName` says "Pro Controller" or "Nintendo".
+/// a Switch category. Some generic Pro-style pads spoof Nintendo's vendor and product IDs, get the
+/// same "Switch Pro Controller" category, and still need no swap, so the swap is a device-wide
+/// Settings toggle (on by default).
 nonisolated struct ControllerFaceButtons {
     let a: GCControllerButtonInput
     let b: GCControllerButtonInput
     let x: GCControllerButtonInput
     let y: GCControllerButtonInput
 
-    init(_ pad: GCExtendedGamepad) {
-        if Self.usesNintendoLabels(productCategory: pad.controller?.productCategory) {
+    static let swapSettingKey = "controller.swapNintendoFaceButtons"
+
+    init(_ pad: GCExtendedGamepad, swapEnabled: Bool = Self.swapEnabled()) {
+        if swapEnabled, Self.usesNintendoLabels(productCategory: pad.controller?.productCategory) {
             a = pad.buttonB
             b = pad.buttonA
             x = pad.buttonY
@@ -28,6 +31,10 @@ nonisolated struct ControllerFaceButtons {
             x = pad.buttonX
             y = pad.buttonY
         }
+    }
+
+    static func swapEnabled(in defaults: UserDefaults = .standard) -> Bool {
+        defaults.object(forKey: swapSettingKey) as? Bool ?? true
     }
 
     static func usesNintendoLabels(productCategory: String?) -> Bool {

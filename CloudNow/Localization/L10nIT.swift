@@ -181,6 +181,8 @@ enum L10nIT {
         "controller_rumble_description": "Fa vibrare i controller supportati durante le sessioni di gioco. Si applica dalla sessione successiva.",
         "controller_rumble_intensity": "Intensità vibrazione",
         "controller_rumble_intensity_description": "Aumenta l'intensità della vibrazione. Non impostarla troppo alta: una vibrazione continua molto forte può usurare o danneggiare i motori del controller. Si applica dalla sessione successiva.",
+        "nintendo_button_swap": "Scambia A/B e X/Y Nintendo",
+        "nintendo_button_swap_description": "Invia il pulsante in basso come A sui controller Switch. Disattiva se i pulsanti di un controller di terze parti risultano scambiati.",
         "overlay_button": "Pulsante overlay",
         "overlay_button_description": "Tieni premuto questo pulsante durante il gioco per aprire l'overlay dell'app. Cambialo se entra in conflitto con un'azione di gioco.",
         "text_input_buttons": "Pulsanti di immissione testo",

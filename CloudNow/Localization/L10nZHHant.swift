@@ -207,6 +207,8 @@ enum L10nZHHant {
         "controller_rumble_description": "在串流期間讓支援的控制器震動。下次工作階段生效。",
         "controller_rumble_intensity": "震動強度",
         "controller_rumble_intensity_description": "提高震動強度。請勿設定得過高——持續的強烈震動可能會磨損或損壞控制器的馬達。下次工作階段生效。",
+        "nintendo_button_swap": "交換 Nintendo A/B 與 X/Y",
+        "nintendo_button_swap_description": "在 Switch 控制器上將下方按鈕當作 A 送出。如果第三方控制器的按鈕被對調，請關閉此選項。",
         "overlay_button": "覆蓋按鈕",
         "overlay_button_description": "在遊戲中長按此按鈕即可開啟應用程式覆蓋層。如果與遊戲內動作衝突，請變更。",
         "text_input_buttons": "文字輸入按鈕",

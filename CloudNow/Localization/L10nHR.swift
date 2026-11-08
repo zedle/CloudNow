@@ -185,6 +185,8 @@ enum L10nHR {
         "controller_rumble_description": "Vibriraj podržane kontrolere tijekom streamanja. Primjenjuje se od sljedeće sesije.",
         "controller_rumble_intensity": "Jačina vibracije",
         "controller_rumble_intensity_description": "Pojačava vibraciju. Nemojte postaviti previsoko — vrlo snažna neprekidna vibracija može istrošiti ili oštetiti motore kontrolera. Primjenjuje se od sljedeće sesije.",
+        "nintendo_button_swap": "Zamijeni Nintendo A/B i X/Y",
+        "nintendo_button_swap_description": "Šalje donju tipku kao A na Switch kontrolerima. Isključite ako su tipke kontrolera drugog proizvođača zamijenjene.",
         "overlay_button": "Tipka prekrivanja",
         "overlay_button_description": "Dugo pritisnite ovu tipku tijekom igre da biste otvorili prekrivanje aplikacije. Promijenite ako je u sukobu s nekom radnjom u igri.",
         "text_input_buttons": "Gumbi za unos teksta",

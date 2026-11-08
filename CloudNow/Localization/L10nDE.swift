@@ -177,6 +177,8 @@ enum L10nDE {
         "controller_rumble_description": "Unterstützte Controller während des Streamings vibrieren lassen. Gilt ab der nächsten Sitzung.",
         "controller_rumble_intensity": "Vibrationsstärke",
         "controller_rumble_intensity_description": "Verstärkt die Vibration. Nicht zu hoch einstellen – eine dauerhaft sehr starke Vibration kann die Motoren des Controllers abnutzen oder beschädigen. Gilt ab der nächsten Sitzung.",
+        "nintendo_button_swap": "Nintendo A/B und X/Y tauschen",
+        "nintendo_button_swap_description": "Sendet die untere Taste bei Switch-Controllern als A. Deaktivieren, wenn die Tasten eines Drittanbieter-Controllers vertauscht sind.",
         "overlay_button": "Overlay-Taste",
         "overlay_button_description": "Lange drücken während des Spiels, um das App-Overlay zu öffnen. Ändern, wenn es mit einer In-Game-Aktion kollidiert.",
         "text_input_buttons": "Tasten für Texteingabe",

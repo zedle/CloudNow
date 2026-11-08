@@ -181,6 +181,8 @@ enum L10nHI {
         "controller_rumble_description": "स्ट्रीम के दौरान समर्थित कंट्रोलर में कंपन चालू करें। यह अगले सेशन से लागू होगा।",
         "controller_rumble_intensity": "कंपन की शक्ति",
         "controller_rumble_intensity_description": "कंपन की शक्ति बढ़ाता है। इसे बहुत अधिक न रखें—बहुत तेज़ लगातार कंपन कंट्रोलर की मोटर को घिस या नुकसान पहुंचा सकता है। यह अगले सेशन से लागू होगा।",
+        "nintendo_button_swap": "Nintendo A/B और X/Y बदलें",
+        "nintendo_button_swap_description": "Switch कंट्रोलर पर नीचे वाले बटन को A के रूप में भेजता है। अगर किसी थर्ड-पार्टी कंट्रोलर के बटन उलटे आते हैं तो इसे बंद करें।",
         "overlay_button": "ओवरले बटन",
         "overlay_button_description": "ऐप ओवरले खोलने के लिए खेल के दौरान इस बटन को लंबे समय तक दबाएं। अगर यह इन-गेम action से टकराता है तो बदलें।",
         "text_input_buttons": "टेक्स्ट इनपुट बटन",

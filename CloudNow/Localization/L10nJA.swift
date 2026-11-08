@@ -181,6 +181,8 @@ enum L10nJA {
         "controller_rumble_description": "ストリーミング中に対応コントローラーを振動させます。次回のセッションから適用されます。",
         "controller_rumble_intensity": "振動の強さ",
         "controller_rumble_intensity_description": "振動を強くします。強くしすぎないでください。非常に強い振動が続くと、コントローラーのモーターが摩耗または損傷する可能性があります。次回のセッションから適用されます。",
+        "nintendo_button_swap": "Nintendo の A/B と X/Y を入れ替え",
+        "nintendo_button_swap_description": "Switch コントローラーの下ボタンを A として送信します。他社製コントローラーのボタンが入れ替わる場合はオフにしてください。",
         "overlay_button": "オーバーレイボタン",
         "overlay_button_description": "プレイ中にこのボタンを長押しするとアプリのオーバーレイが開きます。ゲーム内操作と競合する場合は変更してください。",
         "text_input_buttons": "テキスト入力ボタン",

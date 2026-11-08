@@ -211,6 +211,8 @@ enum L10nSK {
         "controller_rumble_description": "Vibrovať podporovanými ovládačmi počas streamovania. Platí od nasledujúcej relácie.",
         "controller_rumble_intensity": "Sila vibrácií",
         "controller_rumble_intensity_description": "Zvyšuje silu vibrácií. Nenastavujte príliš vysokú hodnotu — veľmi silné nepretržité vibrácie môžu opotrebovať alebo poškodiť motory ovládača. Platí od nasledujúcej relácie.",
+        "nintendo_button_swap": "Vymeniť A/B a X/Y Nintendo",
+        "nintendo_button_swap_description": "Odosiela spodné tlačidlo ako A na ovládačoch Switch. Vypnite, ak sú tlačidlá ovládača iného výrobcu vymenené.",
         "overlay_button": "Tlačidlo prekrytia",
         "overlay_button_description": "Dlho stlačte toto tlačidlo počas hry, aby ste otvorili prekrytie aplikácie. Zmeňte, ak koliduje s akciou v hre.",
         "text_input_buttons": "Tlačidlá na zadávanie textu",

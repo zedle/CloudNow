@@ -211,6 +211,8 @@ enum L10nMS {
         "controller_rumble_description": "Getarkan pengawal yang disokong semasa penstriman. Digunakan pada sesi seterusnya.",
         "controller_rumble_intensity": "Kekuatan Getaran",
         "controller_rumble_intensity_description": "Meningkatkan kekuatan getaran. Jangan tetapkan terlalu tinggi — getaran berterusan yang sangat kuat boleh menyebabkan motor pengawal haus atau rosak. Digunakan pada sesi seterusnya.",
+        "nintendo_button_swap": "Tukar A/B dan X/Y Nintendo",
+        "nintendo_button_swap_description": "Menghantar butang bawah sebagai A pada pengawal Switch. Matikan jika butang pengawal pihak ketiga tertukar.",
         "overlay_button": "Butang tindanan",
         "overlay_button_description": "Tekan lama butang ini semasa bermain untuk membuka tindanan aplikasi. Tukar jika ia bercanggah dengan tindakan dalam permainan.",
         "text_input_buttons": "Butang Input Teks",

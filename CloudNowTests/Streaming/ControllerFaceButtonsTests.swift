@@ -10,7 +10,6 @@ struct ControllerFaceButtonsTests {
             ("Switch Pro Controller", true),
             ("Nintendo Switch Joy-Con (L/R)", true),
             ("Nintendo Switch Joy-Con (L)", true),
-            // Generic "Pro Controller" pads come through the HID/MFi path with positional names.
             ("HID", false),
             ("MFi", false),
             ("Xbox One", false),
@@ -30,5 +29,15 @@ struct ControllerFaceButtonsTests {
         #expect(face.b === pad.buttonB)
         #expect(face.x === pad.buttonX)
         #expect(face.y === pad.buttonY)
+    }
+
+    @Test("The Nintendo swap setting defaults on and can be turned off")
+    func swapSetting() throws {
+        let suite = "ControllerFaceButtonsTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        #expect(ControllerFaceButtons.swapEnabled(in: defaults))
+        defaults.set(false, forKey: ControllerFaceButtons.swapSettingKey)
+        #expect(!ControllerFaceButtons.swapEnabled(in: defaults))
     }
 }

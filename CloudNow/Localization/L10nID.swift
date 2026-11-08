@@ -185,6 +185,8 @@ enum L10nID {
         "controller_rumble_description": "Getarkan kontroler yang didukung selama streaming. Berlaku pada sesi berikutnya.",
         "controller_rumble_intensity": "Kekuatan Getaran",
         "controller_rumble_intensity_description": "Meningkatkan kekuatan getaran. Jangan atur terlalu tinggi—getaran berkelanjutan yang sangat kuat dapat membuat motor kontroler aus atau rusak. Berlaku pada sesi berikutnya.",
+        "nintendo_button_swap": "Tukar A/B dan X/Y Nintendo",
+        "nintendo_button_swap_description": "Mengirim tombol bawah sebagai A pada kontroler Switch. Matikan jika tombol kontroler pihak ketiga tertukar.",
         "overlay_button": "Tombol overlay",
         "overlay_button_description": "Tekan lama tombol ini saat bermain untuk membuka overlay aplikasi. Ubah jika bertabrakan dengan aksi dalam game.",
         "text_input_buttons": "Tombol Input Teks",
