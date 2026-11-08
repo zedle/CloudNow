@@ -2102,6 +2102,11 @@ final nonisolated class InputSender: @unchecked Sendable {
         if let pad = controller.extendedGamepad {
             guard !extendedControllers.contains(where: { $0 === controller }),
                   let slot = firstFreeSlot else { return }
+            let category = controller.productCategory
+            let labelSwap = ControllerFaceButtons.usesNintendoLabels(productCategory: category)
+            inputLog.info(
+                "Controller attached category=\(category, privacy: .public) vendor=\(controller.vendorName ?? "nil", privacy: .public) nintendoLabelSwap=\(labelSwap, privacy: .public)"
+            )
             extendedControllers.append(controller)
             controllerSlots[ObjectIdentifier(controller)] = slot
             controller.playerIndex = playerIndex(for: slot)

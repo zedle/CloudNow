@@ -5,28 +5,25 @@ import Testing
 @Suite("Controller face buttons")
 struct ControllerFaceButtonsTests {
     @Test(
-        "Nintendo controllers are detected by product category or vendor name",
+        "Only Apple's Nintendo product categories use label-based face buttons",
         arguments: [
-            ("Switch Pro Controller", "Pro Controller", true),
-            ("Nintendo Switch Joy-Con (L/R)", "Joy-Con (L/R)", true),
-            ("HID", "Nintendo Switch 2 Pro Controller", true),
-            ("Xbox One", "Xbox Wireless Controller", false),
-            ("DualSense", "DualSense Wireless Controller", false),
-            ("MFi", "8BitDo SN30 Pro", false),
+            ("Switch Pro Controller", true),
+            ("Nintendo Switch Joy-Con (L/R)", true),
+            ("Nintendo Switch Joy-Con (L)", true),
+            // Generic "Pro Controller" pads come through the HID/MFi path with positional names.
+            ("HID", false),
+            ("MFi", false),
+            ("Xbox One", false),
+            ("DualSense", false),
         ]
     )
-    func nintendoDetection(productCategory: String, vendorName: String, expected: Bool) {
-        #expect(
-            ControllerFaceButtons.usesNintendoLabels(
-                productCategory: productCategory,
-                vendorName: vendorName
-            ) == expected
-        )
+    func nintendoDetection(productCategory: String, expected: Bool) {
+        #expect(ControllerFaceButtons.usesNintendoLabels(productCategory: productCategory) == expected)
     }
 
     @Test("Unknown controllers keep GameController's positions")
     func unknownControllerPassthrough() throws {
-        #expect(!ControllerFaceButtons.usesNintendoLabels(productCategory: nil, vendorName: nil))
+        #expect(!ControllerFaceButtons.usesNintendoLabels(productCategory: nil))
         let pad = try #require(GCController.withExtendedGamepad().extendedGamepad)
         let face = ControllerFaceButtons(pad)
         #expect(face.a === pad.buttonA)
