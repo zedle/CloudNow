@@ -2028,6 +2028,20 @@ struct GamesViewModelTests {
         return manager
     }
 
+    @Test("Only a fresh session left for the background resumes automatically")
+    func backgroundLeftSessionAutoResumes() {
+        let game = makeGame(id: "game", title: "Game")
+        let session = makeSession(id: "session")
+        #expect(ResumableSession(game: game, session: session, leftAt: Date(), resumesOnReturn: true).shouldAutoResume)
+        #expect(!ResumableSession(game: game, session: session, leftAt: Date()).shouldAutoResume)
+        #expect(!ResumableSession(
+            game: game,
+            session: session,
+            leftAt: Date().addingTimeInterval(-ResumableSession.gracePeriod - 1),
+            resumesOnReturn: true
+        ).shouldAutoResume)
+    }
+
     private func makeGame(
         id: String,
         title: String,

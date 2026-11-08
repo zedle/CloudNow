@@ -298,6 +298,13 @@ enum L10n {
         }
     }
 
+    static func streamBackgroundBehaviorLabel(_ behavior: StreamBackgroundBehavior) -> String {
+        switch behavior {
+        case .resumeOnReturn: text("background_resume_on_return")
+        case .keepStreaming: text("background_keep_streaming")
+        }
+    }
+
     static func overlayTriggerButtonLabel(_ button: OverlayTriggerButton) -> String {
         switch button {
         case .start: text("start_(≡)")

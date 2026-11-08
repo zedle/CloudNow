@@ -75,6 +75,12 @@ struct MainTabView: View {
             }
             guard phase == .active, loadsRemoteData else { return }
             viewModel.startForegroundLibraryRefresh(authManager: authManager)
+            if gameToPlay == nil, let rs = viewModel.resumableSession, rs.shouldAutoResume {
+                viewModel.resumableSession?.resumesOnReturn = false
+                directSessionToResume = rs.session
+                sessionToResume = nil
+                gameToPlay = rs.game
+            }
         }
         .onDisappear {
             viewModel.cancelForegroundLibraryRefresh()
@@ -99,11 +105,12 @@ struct MainTabView: View {
                     gameToPlay = nil
                     sessionToResume = nil
                 },
-                onLeave: { leftGame, session in
+                onLeave: { leftGame, session, resumesOnReturn in
                     viewModel.resumableSession = ResumableSession(
                         game: leftGame,
                         session: session,
-                        leftAt: Date()
+                        leftAt: Date(),
+                        resumesOnReturn: resumesOnReturn
                     )
                 }
             )

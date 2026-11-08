@@ -50,9 +50,11 @@ struct StreamView: View {
     var directSession: SessionInfo?
     let onDismiss: () -> Void
     /// Called when the user leaves without ending the session so the caller can offer a resume.
-    var onLeave: ((GameInfo, SessionInfo) -> Void)?
+    /// The Bool is true when the app left for the background and should resume on return.
+    var onLeave: ((GameInfo, SessionInfo, Bool) -> Void)?
 
     @Environment(AuthManager.self) var authManager
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(GamesViewModel.self) var viewModel
     @Environment(CloudSessionCoordinator.self) private var cloudSessionCoordinator
     @Environment(\.colorScheme) private var colorScheme
@@ -103,7 +105,7 @@ struct StreamView: View {
         existingSession: ActiveSessionInfo? = nil,
         directSession: SessionInfo? = nil,
         onDismiss: @escaping () -> Void,
-        onLeave: ((GameInfo, SessionInfo) -> Void)? = nil,
+        onLeave: ((GameInfo, SessionInfo, Bool) -> Void)? = nil,
         cloudMatchClient: CloudMatchClient = CloudMatchClient(),
         orchestrationClient: (any SessionOrchestrationClient)? = nil,
         sessionScheduler: SessionOrchestrationScheduler = .continuous
@@ -165,6 +167,20 @@ struct StreamView: View {
             case .idle, .disconnected, .failed, .sessionEnded:
                 releaseLocalPeerLease()
             }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            let isConnected = switch streamController.state {
+            case .streaming, .reconnecting: true
+            default: false
+            }
+            guard phase == .background,
+                  settings.backgroundBehavior.leavesOnBackground(
+                      isConnected: isConnected,
+                      hasSession: createdSession != nil
+                  )
+            else { return }
+            streamLog.info("App entered background: leaving stream to resume on return")
+            leave(resumesOnReturn: true)
         }
         .onChange(of: streamController.sessionStartedAt) { _, startedAt in
             persistSessionStart(startedAt)
@@ -484,7 +500,7 @@ struct StreamView: View {
                 viewModel.streamSettings.statsMode = next
                 viewModel.saveSettings()
             },
-            onLeave: leave,
+            onLeave: { leave() },
             onEndRequest: {
                 showExitConfirmation = true
             },
@@ -1189,9 +1205,9 @@ struct StreamView: View {
 
     /// Leaves the stream locally without stopping the server session.
     /// GFN keeps the session alive for ~1–2 minutes so it can be resumed from home.
-    private func leave() {
+    private func leave(resumesOnReturn: Bool = false) {
         if let session = createdSession {
-            onLeave?(game, session)
+            onLeave?(game, session, resumesOnReturn)
         }
         if let serverSessionLease {
             cloudSessionCoordinator.parkServerSession(

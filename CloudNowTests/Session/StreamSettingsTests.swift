@@ -50,6 +50,25 @@ struct StreamSettingsTests {
                 == StreamSettings.defaultSessionEndWarningMinutes
         )
         #expect(settings.audioFormat == .automatic)
+        #expect(settings.backgroundBehavior == .resumeOnReturn)
+    }
+
+    @Test(
+        "Only Resume parks a connected stream with a session when the app backgrounds",
+        arguments: [
+            (StreamBackgroundBehavior.resumeOnReturn, true, true, true),
+            (.resumeOnReturn, false, true, false),
+            (.resumeOnReturn, true, false, false),
+            (.keepStreaming, true, true, false),
+        ]
+    )
+    func backgroundLeavePolicy(
+        behavior: StreamBackgroundBehavior,
+        isConnected: Bool,
+        hasSession: Bool,
+        expected: Bool
+    ) {
+        #expect(behavior.leavesOnBackground(isConnected: isConnected, hasSession: hasSession) == expected)
     }
 
     @Test("Maximum bitrate is clamped to the selectable ceiling")
@@ -139,6 +158,7 @@ struct StreamSettingsTests {
         expected.persistInGameSettings = false
         expected.sessionEndWarningMinutes = 30
         expected.audioFormat = .surround51
+        expected.backgroundBehavior = .keepStreaming
 
         let encoded = try JSONEncoder().encode(expected)
         let decoded = try JSONDecoder().decode(StreamSettings.self, from: encoded)

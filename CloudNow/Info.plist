@@ -11,6 +11,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>CloudNow does not use the camera. This string is required because a linked SDK references camera APIs.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.zedle.CloudNow.tokenRefresh</string>

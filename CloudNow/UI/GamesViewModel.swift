@@ -14,6 +14,8 @@ struct ResumableSession {
     let game: GameInfo
     let session: SessionInfo
     let leftAt: Date
+    /// Set when the app left the stream for the background; the next foreground reopens it.
+    var resumesOnReturn = false
     /// Grace window before we stop offering to resume (GFN keeps the session ~2 min).
     static let gracePeriod: TimeInterval = 110
 
@@ -23,6 +25,10 @@ struct ResumableSession {
 
     var isExpired: Bool {
         secondsRemaining == 0
+    }
+
+    var shouldAutoResume: Bool {
+        resumesOnReturn && !isExpired
     }
 
     var expiryIdentity: ResumableSessionExpiryIdentity {

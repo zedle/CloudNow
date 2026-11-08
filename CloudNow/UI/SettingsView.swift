@@ -1361,6 +1361,20 @@ struct SettingsView: View {
                     }
                     .accessibilityIdentifier("settings.game.session-end-warning")
 
+                    CloudNowSettingSelectionRow(
+                        L10n.text("background_behavior"),
+                        description: L10n.text("background_behavior_description"),
+                        selection: $vm.streamSettings.backgroundBehavior,
+                        accessibilityIdentifier: "settings.game.background-behavior",
+                        options: StreamBackgroundBehavior.allCases.map {
+                            CloudNowSettingOption(
+                                value: $0,
+                                title: $0.label,
+                                accessibilityIdentifier: $0.rawValue
+                            )
+                        }
+                    )
+
                     Toggle(isOn: $vm.streamSettings.persistInGameSettings) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(L10n.text("save_in_game_settings"))

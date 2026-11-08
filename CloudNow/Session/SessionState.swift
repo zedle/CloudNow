@@ -68,6 +68,9 @@ nonisolated struct StreamSettings: Codable, Equatable {
         didSet { controllerDeadzone = min(max(controllerDeadzone, Self.minControllerDeadzone), Self.maxControllerDeadzone) }
     }
 
+    /// What the stream does when the user leaves CloudNow (Home/TV button).
+    var backgroundBehavior: StreamBackgroundBehavior = .resumeOnReturn
+
     /// Which controller button triggers the GFN overlay on long-press. Default: Start (≡).
     var overlayTriggerButton: OverlayTriggerButton = .start {
         didSet { normalizeTextInputTriggerSequence() }
@@ -198,6 +201,7 @@ extension StreamSettings {
         case persistInGameSettings
         case sessionEndWarningMinutes
         case audioFormat
+        case backgroundBehavior
         case colorQuality
         case qualityPreset, adjustForPoorNetwork, networkAdjustment
         case prefilterMode, prefilterDenoiseLevel, prefilterSharpnessLevel, hudSharpening
@@ -246,6 +250,10 @@ extension StreamSettings {
             Self.maxControllerDeadzone
         )
         overlayTriggerButton = try c.decodeIfPresent(OverlayTriggerButton.self, forKey: .overlayTriggerButton) ?? d.overlayTriggerButton
+        backgroundBehavior = (try? c.decodeIfPresent(
+            StreamBackgroundBehavior.self,
+            forKey: .backgroundBehavior
+        )) ?? d.backgroundBehavior
         textInputTriggerSequence = (try? c.decode(
             ControllerButtonSequence.self,
             forKey: .textInputTriggerSequence
@@ -332,6 +340,7 @@ extension StreamSettings {
         try c.encode(rumbleIntensity, forKey: .rumbleIntensity)
         try c.encode(controllerDeadzone, forKey: .controllerDeadzone)
         try c.encode(overlayTriggerButton, forKey: .overlayTriggerButton)
+        try c.encode(backgroundBehavior, forKey: .backgroundBehavior)
         try c.encode(textInputTriggerSequence, forKey: .textInputTriggerSequence)
         try c.encode(textInputTriggerDelayMs, forKey: .textInputTriggerDelayMs)
         try c.encode(defaultRemoteInputMode, forKey: .defaultRemoteInputMode)
@@ -411,6 +420,24 @@ nonisolated enum OverlayTriggerButton: String, Codable, CaseIterable {
 
     @MainActor var label: String {
         L10n.overlayTriggerButtonLabel(self)
+    }
+}
+
+/// What a GFN stream does when the user leaves CloudNow.
+nonisolated enum StreamBackgroundBehavior: String, Codable, CaseIterable {
+    /// Park the session like Leave and reconnect automatically on return (GFN keeps it ~2 min).
+    case resumeOnReturn
+    /// Keep the connection running while CloudNow is in the background. Relies on the `audio`
+    /// background mode: the stream's audio output keeps tvOS from suspending the app.
+    case keepStreaming
+
+    @MainActor var label: String {
+        L10n.streamBackgroundBehaviorLabel(self)
+    }
+
+    /// Whether entering the background should park the stream for an automatic resume.
+    func leavesOnBackground(isConnected: Bool, hasSession: Bool) -> Bool {
+        self == .resumeOnReturn && isConnected && hasSession
     }
 }
 
